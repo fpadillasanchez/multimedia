@@ -71,6 +71,7 @@ public class HuffmanTable {
                 probe.next.word += word;
                 probe.next.word = sortString(probe.next.word);
                 dictionary.put(probe.next.word, probe.next.prob);
+                probe.next = first;
                 removeFirst();
                 //una vez avanzado el proceso y nos queden dos nodos, 0.6 y 0.4 
                 //por ejemplo, los unimos en el nodo root del árbol
@@ -83,7 +84,7 @@ public class HuffmanTable {
                 dictionary.put(probe.next.word, probe.next.prob);
                 removeFirst();
             } else {
-                probe = probe.next;
+                probe = first;
             }
         }
     }
