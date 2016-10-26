@@ -56,7 +56,13 @@ public class HuffmanTable {
             size++;
         }
     }
-
+    /*
+        El objetivo de builTree es formar la tabla de Huffman tal y como la solucionamos en papel
+        El procedimiento es el siguiente: la lista enlazada creada en esta clase
+        es ascendiente, por lo que podemos empezar de izquierda a derecha para concatenar strings
+        Cuando unamos las letras con menos prob, E,D -> DE, lo añadimos al diccionario junto
+        con el resto de letras sin juntar.
+    */
     public void buildTree(HuffmanTree tree) {
         //estructura de datos temporal para guardar los nodos
         HashMap<String, Float> dictionary = new HashMap<>();
@@ -72,6 +78,7 @@ public class HuffmanTable {
                 probe.next.word = sortString(probe.next.word);
                 dictionary.put(probe.next.word, probe.next.prob);
                 probe.next = first;
+                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A
                 removeFirst();
                 //una vez avanzado el proceso y nos queden dos nodos, 0.6 y 0.4 
                 //por ejemplo, los unimos en el nodo root del árbol
@@ -82,6 +89,7 @@ public class HuffmanTable {
                 probe.next.word += word;
                 probe.next.word = sortString(probe.next.word);
                 dictionary.put(probe.next.word, probe.next.prob);
+                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A
                 removeFirst();
             } else {
                 probe = first;
