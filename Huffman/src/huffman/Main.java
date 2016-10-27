@@ -1,5 +1,10 @@
 package huffman;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Main {
 
@@ -25,13 +30,13 @@ public class Main {
         HuffmanTree tree = new HuffmanTree();
         /*
          This is gonna be random
-        */
+         */
         HuffmanTable table = new HuffmanTable();
         for (int i = 0; i < 5; i++) {
-            table.setList(String.valueOf(abecedario[i]),prob[0][i]);
+            table.setList(String.valueOf(abecedario[i]), prob[0][i]);
         }
         table.asdf();
-        table.buildTree(tree);
+        HashMap<String, Float> dictionary = table.buildTree(tree);
         /*
         L'arbre implementat està pensat per rebre com a input cada element de les
         taules de probabilitats que es generen fent servir el algorisme de Huffman.
@@ -41,6 +46,12 @@ public class Main {
         Aquesta part encara no tinc clar com fer-la, he estat provant amb llistes
         enllaçades (classe HuffmanTable).
          */
+        Set<Entry <String,Float>> asdf = dictionary.entrySet();
+        Iterator entries = asdf.iterator();
+        
+        while(entries.hasNext()){
+
+        }
         tree.addNode("ABCDE", 1f);
         // 3a iteració
         tree.addNode("BCDE", 0.6f);
@@ -65,8 +76,7 @@ public class Main {
         for (String symbol : lang.keySet()) {
             System.out.println(symbol + " = " + tree.getCode(symbol, 0));
         }
-        */
-
+         */
     }
 
     /**
@@ -78,7 +88,6 @@ public class Main {
         char[] s = new char[26];
         for (int letra = 0; letra < 26; letra++) {
             s[letra] = (char) ('A' + letra);
-
         }
         return s;
     }

@@ -56,14 +56,15 @@ public class HuffmanTable {
             size++;
         }
     }
+
     /*
         El objetivo de builTree es formar la tabla de Huffman tal y como la solucionamos en papel
         El procedimiento es el siguiente: la lista enlazada creada en esta clase
         es ascendiente, por lo que podemos empezar de izquierda a derecha para concatenar strings
         Cuando unamos las letras con menos prob, E,D -> DE, lo añadimos al diccionario junto
         con el resto de letras sin juntar.
-    */
-    public void buildTree(HuffmanTree tree) {
+     */
+    public HashMap<String, Float> buildTree(HuffmanTree tree) {
         //estructura de datos temporal para guardar los nodos
         HashMap<String, Float> dictionary = new HashMap<>();
         Entry probe = first;
@@ -76,10 +77,13 @@ public class HuffmanTable {
                 probe.next.prob += probabilitat;
                 probe.next.word += word;
                 probe.next.word = sortString(probe.next.word);
-                dictionary.put(probe.next.word, probe.next.prob);
-                probe.next = first;
-                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A
+                //añadimos el nuevo nodo, formado de la unión de dos nodos con la misma prob
+                //dictionary.put(probe.next.word, probe.next.prob);
                 removeFirst();
+                probe.next = first;
+                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A   
+                dictionary = enterNodes(dictionary);
+                
                 //una vez avanzado el proceso y nos queden dos nodos, 0.6 y 0.4 
                 //por ejemplo, los unimos en el nodo root del árbol
             } else if (probe.prob != probe.next.prob && size == 2) {
@@ -91,10 +95,13 @@ public class HuffmanTable {
                 dictionary.put(probe.next.word, probe.next.prob);
                 //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A
                 removeFirst();
+                probe.next = first;
+                dictionary = enterNodes(dictionary);
             } else {
                 probe = first;
             }
         }
+        return dictionary;
     }
 
     // Sorted insertion
@@ -130,23 +137,6 @@ public class HuffmanTable {
             first = first.next;
             size--;
         }
-    }
-
-    public Entry removeLast() {
-        Entry probe = first;
-        Entry previousProbe = null;
-        while (probe.next != null) {
-            if (probe.next == null) {
-                previousProbe.next = null; //one entry removed from last position
-                size--;
-                return probe;
-            }
-            previousProbe = probe;
-            probe = probe.next;
-
-        }
-
-        return probe;
     }
 
     private HashMap<String, Float> enterNodes(HashMap<String, Float> dictionary) {
