@@ -1,10 +1,9 @@
 package huffman;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.NavigableMap;
+import java.util.Random;
+import java.util.TreeMap;
 
 public class Main {
 
@@ -12,7 +11,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        Random ran = new Random();
         char[] abecedario = createArray();
         float prob[][] = {
             {0.3f, 0.3f, 0.2f, 0.1f, 0.1f},
@@ -33,10 +32,15 @@ public class Main {
          */
         HuffmanTable table = new HuffmanTable();
         for (int i = 0; i < 5; i++) {
-            table.setList(String.valueOf(abecedario[i]), prob[0][i]);
+            table.setList(String.valueOf(abecedario[i]), prob[ran.nextInt(4)][i]);
         }
         table.asdf();
-        HashMap<String, Float> dictionary = table.buildTree(tree);
+        TreeMap<String, Float> dictionary = table.buildTree(tree);
+        NavigableMap<String,Float> nset = dictionary.descendingMap();
+        
+        for(Entry<String, Float> entry: nset.entrySet()){
+            tree.addNode(entry.getKey(),entry.getValue());
+        }
         /*
         L'arbre implementat està pensat per rebre com a input cada element de les
         taules de probabilitats que es generen fent servir el algorisme de Huffman.
@@ -46,12 +50,7 @@ public class Main {
         Aquesta part encara no tinc clar com fer-la, he estat provant amb llistes
         enllaçades (classe HuffmanTable).
          */
-        Set<Entry <String,Float>> asdf = dictionary.entrySet();
-        Iterator entries = asdf.iterator();
-        
-        while(entries.hasNext()){
-
-        }
+/*
         tree.addNode("ABCDE", 1f);
         // 3a iteració
         tree.addNode("BCDE", 0.6f);
@@ -71,7 +70,7 @@ public class Main {
         tree.addNode("C", 0.1f);
         tree.addNode("D", 0.05f);
         tree.addNode("E", 0.05f);
-
+*/
         /* Mostra per pantalla el codi de cada lletra del llenguatge:
         for (String symbol : lang.keySet()) {
             System.out.println(symbol + " = " + tree.getCode(symbol, 0));

@@ -8,6 +8,7 @@ package huffman;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
@@ -64,9 +65,9 @@ public class HuffmanTable {
         Cuando unamos las letras con menos prob, E,D -> DE, lo añadimos al diccionario junto
         con el resto de letras sin juntar.
      */
-    public HashMap<String, Float> buildTree(HuffmanTree tree) {
+    public TreeMap<String, Float> buildTree(HuffmanTree tree) {
         //estructura de datos temporal para guardar los nodos
-        HashMap<String, Float> dictionary = new HashMap<>();
+        TreeMap<String, Float> dictionary = new TreeMap<>();
         Entry probe = first;
         dictionary = enterNodes(dictionary); //a,b,c,d and e (first iteration)
         while (probe.next != null) {
@@ -139,7 +140,7 @@ public class HuffmanTable {
         }
     }
 
-    private HashMap<String, Float> enterNodes(HashMap<String, Float> dictionary) {
+    private TreeMap<String, Float> enterNodes(TreeMap<String, Float> dictionary) {
         Entry probe = first;
         while (probe.next != null) {
             dictionary.put(probe.word, probe.prob);
