@@ -73,45 +73,6 @@ public class HuffmanTable {
     es bastante fea.
     */
     
-    public TreeMap<String, Float> buildTree(HuffmanTree tree) {
-        //estructura de datos temporal para guardar los nodos
-        TreeMap<String, Float> dictionary = new TreeMap<>();
-        Entry probe = first;
-        dictionary = enterNodes(dictionary); //a,b,c,d and e (first iteration)
-        while (probe.next != null) {
-            // Nodos unidos tienen la misma probabilidad, los unimos
-            if (probe.prob == probe.next.prob) {
-                double probabilitat = probe.prob;
-                String word = probe.word;
-                probe.next.prob += probabilitat;
-                probe.next.word += word;
-                probe.next.word = sortString(probe.next.word);
-                //añadimos el nuevo nodo, formado de la unión de dos nodos con la misma prob
-                //dictionary.put(probe.next.word, probe.next.prob);
-                removeFirst();
-                probe.next = first;
-                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A   
-                dictionary = enterNodes(dictionary);
-                
-                //una vez avanzado el proceso y nos queden dos nodos, 0.6 y 0.4 
-                //por ejemplo, los unimos en el nodo root del árbol
-            } else if (probe.prob != probe.next.prob && size == 2) {
-                double probabilitat = probe.prob;
-                String word = probe.word;
-                probe.next.prob += probabilitat;
-                probe.next.word += word;
-                probe.next.word = sortString(probe.next.word);
-                dictionary.put(probe.next.word, probe.next.prob);
-                //falta añadir el resto de nodos que todavía no se han juntado iteración n: DE,C,B,A
-                removeFirst();
-                probe.next = first;
-                dictionary = enterNodes(dictionary);
-            } else {
-                probe.next = first;  
-            } 
-        }
-        return dictionary;
-    }    
     
     /*
         Construct tree, como su nombre indica, se encarga de construir el arbol de 
@@ -185,14 +146,6 @@ public class HuffmanTable {
         }
     }
 
-    private TreeMap<String, Float> enterNodes(TreeMap<String, Float> dictionary) {
-        Entry probe = first;
-        while (probe != null) {
-            dictionary.put(probe.word, probe.prob);
-            probe = probe.next;
-        }
-        return dictionary;
-    }
 
     public String getFirstWord() {
         if (first == null) {
