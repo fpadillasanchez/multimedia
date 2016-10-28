@@ -1,11 +1,11 @@
 package huffman;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NavigableMap;
 import java.util.Random;
-import java.util.TreeMap;
 
+/**
+ *
+ * @author Sergi Diaz, Fernando Padilla
+ */
 public class Main {
 
     /**
@@ -13,6 +13,7 @@ public class Main {
      */
     public static void main(String[] args) {
         
+        HuffmanTable table = new HuffmanTable();
         Random ran = new Random();
         char[] abecedario = createArray();
         float prob[][] = {
@@ -23,51 +24,26 @@ public class Main {
         };
 
         HuffmanTree tree = new HuffmanTree();
-        
-        /*
-        
-        Yo evitaria usar este método con random, porque la suma de probabilidades no siempre es 1.
-        
-        
-        //This is gonna be random
-        HuffmanTable table = new HuffmanTable();
-        for (int i = 0; i < 5; i++) {
-            System.out.println(String.valueOf(abecedario[i]) + " = " + prob[ran.nextInt(4)][i]);
-            table.setList(String.valueOf(abecedario[i]), prob[ran.nextInt(4)][i]);
-        }
-        */
-        
+                
         System.out.println("Abecedario: "); 
-        HuffmanTable table = new HuffmanTable();
+        //every time we run the program a different prob will be loaded from the prob array
         for (int i = 0; i < 5; i++) {
-            System.out.println(String.valueOf("\t" + abecedario[i]) + " = " + prob[3][i]); // muestra valores iniciales
+            System.out.println(String.valueOf("\t" + abecedario[i]) + " = " + prob[ran.nextInt(4)][i]); // muestra valores iniciales
             table.setList(String.valueOf(abecedario[i]), prob[3][i]);
         }
-        table.asdf();
+        table.fillList();
         table.constructTree(tree);
         
-        // Muestra la codificación obtenida:
+        // It show the codification obtained by the HuffMan Tree:
         System.out.println("\nCodificacion: ");
         for (int i=0; i < 5; i++) {
             System.out.println("\t" + abecedario[i] + " = " + tree.getCode("" + abecedario[i]));
         }
-        
-        /*
-        table.asdf();
 
-        TreeMap<String, Float> dictionary = table.buildTree(tree);
-    
-        NavigableMap<String,Float> nset = dictionary.descendingMap();
-
-        for(Entry<String, Float> entry: nset.entrySet()){
-            System.out.println(entry.getKey() + " = " + entry.getValue());
-            tree.addNode(entry.getKey(),entry.getValue());
-        } 
-        */
     }
 
     /**
-     * Create an array filled with the letter from the alphabet
+     * Create an array filled with each letter of the alphabet
      *
      * @return
      */

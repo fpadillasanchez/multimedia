@@ -6,10 +6,8 @@
 package huffman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *
@@ -43,20 +41,29 @@ public class HuffmanTable {
         }
     }
 
+    /*
+        Constructor Huffman Table's class
+     */
     public HuffmanTable() {
         first = null;
         size = 0;
     }
 
+    /*
+        Add every word with its prob to list (Hashmap)
+     */
     public void setList(String word, float prob) {
         list.put(word, prob);
     }
 
-    public void asdf() {
+    /*
+        Linked list
+     */
+    public void fillList() {
         for (Map.Entry<String, Float> e : list.entrySet()) {
             addEntry(e.getKey(), e.getValue());
             size++;
-        }  
+        }
     }
 
     /*
@@ -65,52 +72,56 @@ public class HuffmanTable {
         es ascendiente, por lo que podemos empezar de izquierda a derecha para concatenar strings
         Cuando unamos las letras con menos prob, E,D -> DE, lo añadimos al diccionario junto
         con el resto de letras sin juntar.
-     */
+
+        Esta funcion suele quedarse pillada en el bucle while.
+        Debajo he añadido una version alternativa que funciona, aunque su implementación
+        es bastante fea.
     
-    /*
-    Esta funcion suele quedarse pillada en el bucle while.
-    Debajo he añadido una version alternativa que funciona, aunque su implementación
-    es bastante fea.
-    */
-    
-    
-    /*
         Construct tree, como su nombre indica, se encarga de construir el arbol de 
         Huffman de la tabla siguiendo el algoritmo de Huffman. No retorna nada,
         pues la misma función se encarga de añadir los nodos en el arbol.
-    */
+     */
+    /**
+     * 
+     * @param tree 
+     */
     public void constructTree(HuffmanTree tree) {
         //estructura de datos temporal para guardar los nodos
         ArrayList<Entry> dictionary = new ArrayList<>();
-        
+
         // Insert current table in the array.
         dictionary.addAll(getArray());
-        
+
         Entry entry = first;
         while (entry != null) {
             // Stop when only one element remains in the table.
-            if (entry.next == null) 
+            if (entry.next == null) {
                 break;
- 
+            }
+
             // Add new entry, such entry set as a union of the 2 elements with
             // the lowest probability.
             addEntry(entry.word + entry.next.word, entry.prob + entry.next.prob);
             // Remove the united elements.
-            removeFirst();      
-            removeFirst();  
+            removeFirst();
+            removeFirst();
             entry = first;
-            
+
             // Insert current table in the array.
             dictionary.addAll(getArray());
-        }  
+        }
         // Build tree.
-        for(int i=dictionary.size()-1; i>=0; i--) { 
+        for (int i = dictionary.size() - 1; i >= 0; i--) {
             tree.addNode(dictionary.get(i).word, dictionary.get(i).prob);
         }
 
     }
 
-    // Sorted insertion
+    /**
+     * Sorted insertion
+     * @param word
+     * @param prob 
+     */
     public void addEntry(String word, float prob) {
         Entry entry = new Entry(word, prob);
         size++;
@@ -119,7 +130,7 @@ public class HuffmanTable {
             first = entry;
             return;
         }
-        
+
         if (entry.isBefore(first)) {
             entry.next = first;
             first = entry;
@@ -138,7 +149,9 @@ public class HuffmanTable {
         }
         probe.next = entry;
     }
-
+    /**
+     * Remove first linked list's node
+     */
     public void removeFirst() {
         if (first != null) {
             first = first.next;
@@ -147,28 +160,17 @@ public class HuffmanTable {
     }
 
 
-    public String getFirstWord() {
-        if (first == null) {
-            return null;
-        }
-        return first.word;
-    }
-
-    public float getLowestProbability() {
-        if (first == null) {
-            return 0f;
-        }
-        return first.prob;
-    }
-
-    public boolean isEmpty() {
-        return first == null;
-    }
-
+    /**
+     *  Returns the size of the list
+     * @return 
+     */
     public int size() {
         return size;
     }
-
+    /**
+     * Method that returns the table which has all nodes
+     * @return 
+     */
     public HashMap<String, Float> getTable() {
         if (first == null) {
             return null;
@@ -181,7 +183,11 @@ public class HuffmanTable {
         }
         return table;
     }
-    
+    /**
+     * Method that returns an arraylist filled with entries. They're just
+     * nodes (word,prob)
+     * @return 
+     */
     private ArrayList<Entry> getArray() {
         if (first == null) {
             return null;
@@ -194,7 +200,10 @@ public class HuffmanTable {
         }
         return table;
     }
-
+    /**
+     * Modified toString method to print each word and prob of every node
+     * @return 
+     */
     @Override
     public String toString() {
         String str = "";
@@ -205,16 +214,6 @@ public class HuffmanTable {
             entry = entry.next;
         }
         return str;
-    }
-
-    /*
-        Sorted (char) string array
-     */
-    private String sortString(String word) {
-
-        char[] chars = word.toCharArray();
-        Arrays.sort(chars);
-        return String.valueOf(chars);
     }
 
 }
