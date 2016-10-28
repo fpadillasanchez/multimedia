@@ -7,6 +7,13 @@ import java.util.Queue;
  *
  * @author Sergi Diaz
  */
+
+/*
+    L'arbre implementat està pensat per rebre com a input cada element de les
+    taules de probabilitats que es generen fent servir el algorisme de Huffman.
+    Es passa cada paraula amb la seva probabilitat associada. L'ordre ha de ser
+    de més a menys probable. No importa que alguns elements estiguin repetits.
+ */
 public class HuffmanTree {
     
     class Node {
@@ -84,10 +91,11 @@ public class HuffmanTree {
     }
     
     // Returns a string with the encoding of a given symbol.
-    public String getCode (String symbol, float prob) {
+    public String getCode (String symbol) {
         String path = ""; 
         
-        Node node = searchNode (new Node(symbol, prob));
+        // Probability is irrelevant to perform the search.
+        Node node = searchNode (new Node(symbol, 0));
         if (node == null) {
             return path; // node not found in the tree
         }
@@ -141,6 +149,7 @@ public class HuffmanTree {
         return null;
     }
     
+    // For testing purpose. Returns some schematics about the content of the tree.
     @Override
     public String toString() {
         String str = "";
@@ -175,54 +184,6 @@ public class HuffmanTree {
         }
         
         return str;
-    }
-    
-    //--------------------------------------------------------------------------
-    
-    // ORDERED INSERTION --- Under development...
-    public void addNode2 (String symbol, float prob) {
-        Node node = new Node(symbol, prob);
-        
-        if (root == null) {
-            root = node;
-            return;
-        }
-        
-        Node probe = root;
-        while (true) {
-            // Abort if the new node is alreafy found in the tree.
-            if (node.isEqual(probe)) {
-                break;
-            }
-            // Replace current node thas a smaller probability than the new.
-            if (probe.prob < prob) {
-                replace(node, probe);
-                break;
-            }
-            // Put new node as current's right child if it has none.
-            if (probe.right == null) {
-                probe.right = node;
-                node.parent = probe;
-                break;
-            } else {
-                if (node.isEqual(probe.right)) { break; } // abort!
-            }
-            // Put new node as current's left child if it has none.
-            if (probe.left == null) {
-                probe.left = node;
-                node.parent = probe;
-                break;
-            } else {
-                if (node.isEqual(probe.right)) { break; } // abort!
-            }
-            // Move to right node if its probability is smaller than that of the
-            // new node. Move to left otherwise.
-            if (probe.right.prob < prob) {
-                probe = probe.right;
-            } else {
-                probe = probe.left;
-            }
-        }
     }
     
     // Node n1 takes n2 position in the tree.

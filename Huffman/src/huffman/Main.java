@@ -1,5 +1,6 @@
 package huffman;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Random;
@@ -11,6 +12,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         Random ran = new Random();
         char[] abecedario = createArray();
         float prob[][] = {
@@ -19,63 +21,49 @@ public class Main {
             {0.5f, 0.2f, 0.1f, 0.05f, 0.05f},
             {0.4f, 0.3f, 0.2f, 0.05f, 0.05f}
         };
-        //HashMap<String, Float> lang = setProbabilites(abecedario,prob); // llenguatge  a codificar
-        /*lang.put("A", 0.4f);    // A = 0.4
-        lang.put("B", 0.4f);    // B = 0.4
-        lang.put("C", 0.1f);    // C = 0.1
-        lang.put("D", 0.05f);   // D = 0.05
-        lang.put("E", 0.05f);   // E = 0.05
-         */
+
         HuffmanTree tree = new HuffmanTree();
+        
         /*
-         This is gonna be random
-         */
+        
+        Yo evitaria usar este método con random, porque la suma de probabilidades no siempre es 1.
+        
+        
+        //This is gonna be random
         HuffmanTable table = new HuffmanTable();
         for (int i = 0; i < 5; i++) {
+            System.out.println(String.valueOf(abecedario[i]) + " = " + prob[ran.nextInt(4)][i]);
             table.setList(String.valueOf(abecedario[i]), prob[ran.nextInt(4)][i]);
         }
+        */
+        
+        System.out.println("Abecedario: "); 
+        HuffmanTable table = new HuffmanTable();
+        for (int i = 0; i < 5; i++) {
+            System.out.println(String.valueOf("\t" + abecedario[i]) + " = " + prob[3][i]); // muestra valores iniciales
+            table.setList(String.valueOf(abecedario[i]), prob[3][i]);
+        }
         table.asdf();
-        TreeMap<String, Float> dictionary = table.buildTree(tree);
-        NavigableMap<String,Float> nset = dictionary.descendingMap();
+        table.constructTree(tree);
         
-        for(Entry<String, Float> entry: nset.entrySet()){
-            tree.addNode(entry.getKey(),entry.getValue());
+        // Muestra la codificación obtenida:
+        System.out.println("\nCodificacion: ");
+        for (int i=0; i < 5; i++) {
+            System.out.println("\t" + abecedario[i] + " = " + tree.getCode("" + abecedario[i]));
         }
+        
         /*
-        L'arbre implementat està pensat per rebre com a input cada element de les
-        taules de probabilitats que es generen fent servir el algorisme de Huffman.
-        Es passa cada paraula amb la seva probabilitat associada. L'ordre ha de ser
-        de més a menys probable. No importa que alguns elements estiguin repetits.
-        
-        Aquesta part encara no tinc clar com fer-la, he estat provant amb llistes
-        enllaçades (classe HuffmanTable).
-         */
-/*
-        tree.addNode("ABCDE", 1f);
-        // 3a iteració
-        tree.addNode("BCDE", 0.6f);
-        tree.addNode("A", 0.4f);
-        // 2a iteració
-        tree.addNode("A", 0.4f);
-        tree.addNode("B", 0.4f);
-        tree.addNode("CDE", 0.2f);
-        // 1a iteració
-        tree.addNode("A", 0.4f);
-        tree.addNode("B", 0.4f);
-        tree.addNode("C", 0.1f);
-        tree.addNode("DE", 0.1f);
-        // inici
-        tree.addNode("A", 0.4f);
-        tree.addNode("B", 0.4f);
-        tree.addNode("C", 0.1f);
-        tree.addNode("D", 0.05f);
-        tree.addNode("E", 0.05f);
-*/
-        /* Mostra per pantalla el codi de cada lletra del llenguatge:
-        for (String symbol : lang.keySet()) {
-            System.out.println(symbol + " = " + tree.getCode(symbol, 0));
-        }
-         */
+        table.asdf();
+
+        TreeMap<String, Float> dictionary = table.buildTree(tree);
+    
+        NavigableMap<String,Float> nset = dictionary.descendingMap();
+
+        for(Entry<String, Float> entry: nset.entrySet()){
+            System.out.println(entry.getKey() + " = " + entry.getValue());
+            tree.addNode(entry.getKey(),entry.getValue());
+        } 
+        */
     }
 
     /**
