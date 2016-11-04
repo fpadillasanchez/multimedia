@@ -7,14 +7,26 @@ package ui;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
 /**
  *
- * @author gondu
+ * @author Fernando Padilla Sergi Díaz
  */
 public class VideoPlayer extends javax.swing.JFrame {
 
+    private static final String OUTPUT_FOLDER = System.getProperty("user.dir" + "src/unzip");
+    private int count = 0;
+    private final byte[] buffer = new byte[1024];
     /**
      * Creates new form VideoPlayer
      */
@@ -32,8 +44,13 @@ public class VideoPlayer extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        buttonLoadZip = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jPanelImage = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jMenuBar2 = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -42,21 +59,64 @@ public class VideoPlayer extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 561, Short.MAX_VALUE)
+            .addGap(0, 646, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 26, Short.MAX_VALUE)
         );
 
-        jButton3.setText("Load zip");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        buttonLoadZip.setText("Load zip");
+        buttonLoadZip.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
+                buttonLoadZipMouseClicked(evt);
             }
         });
 
         jButton2.setText("Exit");
+
+        javax.swing.GroupLayout jPanelImageLayout = new javax.swing.GroupLayout(jPanelImage);
+        jPanelImage.setLayout(jPanelImageLayout);
+        jPanelImageLayout.setHorizontalGroup(
+            jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelImageLayout.setVerticalGroup(
+            jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 486, Short.MAX_VALUE)
+        );
+
+        jButton1.setForeground(new java.awt.Color(25, 25, 25));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292350_audio-video-outline-pause.png"))); // NOI18N
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292353_audio-video-outline-play.png"))); // NOI18N
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292467_More.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+
         setJMenuBar(jMenuBar2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -64,11 +124,13 @@ public class VideoPlayer extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jButton3)
+                .addComponent(buttonLoadZip)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanelImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,17 +138,26 @@ public class VideoPlayer extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton3)
+                        .addComponent(buttonLoadZip)
                         .addComponent(jButton2)))
-                .addGap(0, 389, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        jButtonMouseClickedLoadZip(evt);
-    }//GEN-LAST:event_jButton3MouseClicked
+    private void buttonLoadZipMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonLoadZipMouseClicked
+        try {
+            jButtonMouseClickedLoadZip(evt);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_buttonLoadZipMouseClicked
 
     /**
      * @param args the command line arguments
@@ -124,13 +195,18 @@ public class VideoPlayer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonLoadZip;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelImage;
     // End of variables declaration//GEN-END:variables
 
-    private void jButtonMouseClickedLoadZip(MouseEvent evt) {
+    private void jButtonMouseClickedLoadZip(MouseEvent evt) throws FileNotFoundException, IOException {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("src/Zips"));
 
@@ -139,7 +215,84 @@ public class VideoPlayer extends javax.swing.JFrame {
             // user selects a file
             File selectedFile = chooser.getSelectedFile();
             System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+            unZipImages(selectedFile);
         }
 
+    }
+
+    private void unZipImages(File zipFile) throws FileNotFoundException, IOException {
+        try {
+
+            //create output directory is not exists
+            
+            if (!zipFile.exists()) {
+                zipFile.mkdir();
+            }
+            //get the zip file content
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+            //get the zipped file list entry
+            ZipEntry ze = zis.getNextEntry();
+
+            while (ze != null) {
+
+                String fileName = ze.getName();
+                File newFile = new File(OUTPUT_FOLDER + File.separator + fileName);
+
+                System.out.println("file unzip : " + newFile.getAbsoluteFile());
+
+                //create all non exists folders
+                //else you will hit FileNotFoundException for compressed folder
+                if (ze.isDirectory()) {
+                    new File(newFile.getParent()).mkdirs();
+                } else {
+                    FileOutputStream fos = null;
+
+                    new File(newFile.getParent()).mkdirs();
+                    File output2 = new File("/home/fernanps/Desktop/outputzip/output" + count + ".jpeg");
+                    if (newFile.getName().endsWith("jpeg")) {
+                        output2 = newFile;
+                        fos = new FileOutputStream(output2);
+                    } else if (newFile.getName().endsWith("png")) {
+                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
+                        fos = new FileOutputStream(output2);
+                        saveImage(zis, output2, fos);
+
+                    } else if (newFile.getName().endsWith("bmp")) {
+                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
+                        fos = new FileOutputStream(output2);
+                        saveImage(zis, output2, fos);
+
+                    } else if (newFile.getName().endsWith("gif")) {
+                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
+                        fos = new FileOutputStream(output2);
+                        saveImage(zis, output2, fos);
+
+                    } else {
+                        return;
+                    }
+
+                    fos.close();
+                }
+
+                ze = zis.getNextEntry();
+            }
+
+            zis.closeEntry();
+            zis.close();
+
+            System.out.println("Done");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void saveImage(ZipInputStream zis, File output2, FileOutputStream fos) throws FileNotFoundException, IOException {
+
+        count++;
+        int len;
+        while ((len = zis.read(buffer)) > 0) {
+            fos.write(buffer, 0, len);
+        }
     }
 }
