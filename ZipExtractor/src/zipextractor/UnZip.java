@@ -9,6 +9,7 @@ package zipextractor;
  *
  * @author Fernando Padilla
  */
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,8 +23,8 @@ import javax.imageio.ImageIO;
 public class UnZip {
 
     List<String> fileList;
-    private static final String INPUT_ZIP_FILE = "/home/fernanps/Desktop/cambios_locales.zip";
-    private static final String OUTPUT_FOLDER = "/home/fernanps/Desktop/outputzip";
+    private static final String INPUT_ZIP_FILE = "C:/Users/gondu/Desktop/cambios_locales.zip";
+    private static final String OUTPUT_FOLDER = "C:/Users/gondu/Desktop/outputzip";
     final byte[] buffer = new byte[1024];
     int count = 0;
 
@@ -49,57 +50,61 @@ public class UnZip {
                 folder.mkdir();
             }
 
-            //get the zip file content
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
             //get the zipped file list entry
-            ZipEntry ze = zis.getNextEntry();
-
-            while (ze != null) {
-
-                String fileName = ze.getName();
-                File newFile = new File(OUTPUT_FOLDER + File.separator + fileName);
-
-                System.out.println("file unzip : " + newFile.getAbsoluteFile());
-
-                //create all non exists folders
-                //else you will hit FileNotFoundException for compressed folder
-                if (ze.isDirectory()) {
-                    new File(newFile.getParent()).mkdirs();
-                } else {
-                    FileOutputStream fos = null;
-
-                    new File(newFile.getParent()).mkdirs();
-                    File output2 = new File("/home/fernanps/Desktop/outputzip/output" + count + ".jpeg");
-                    if (newFile.getName().endsWith("jpeg")) {
-                        output2 = newFile;
-                        fos = new FileOutputStream(output2);
-                    } else if (newFile.getName().endsWith("png")) {
-                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
-                        fos = new FileOutputStream(output2);
-                        saveImage(zis, output2, fos);
-
-                    } else if (newFile.getName().endsWith("bmp")) {
-                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
-                        fos = new FileOutputStream(output2);
-                        saveImage(zis, output2, fos);
-
-                    } else if (newFile.getName().endsWith("gif")) {
-                        ImageIO.write(ImageIO.read(newFile), "gif", output2);
-                        fos = new FileOutputStream(output2);
-                        saveImage(zis, output2, fos);
-
+            try ( //get the zip file content
+                    ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
+                //get the zipped file list entry
+                ZipEntry ze = zis.getNextEntry();
+                
+                while (ze != null) {
+                    
+                    String fileName = ze.getName();
+                    File newFile = new File(OUTPUT_FOLDER + File.separator + fileName);
+                    
+                    System.out.println("file unzip : " + newFile.getCanonicalPath());
+                    
+                    //create all non exists folders
+                    //else you will hit FileNotFoundException for compressed folder
+                    if (ze.isDirectory()) {
+                        new File(newFile.getParent()).mkdirs();
                     } else {
-                        return;
+                        FileOutputStream fos = null;
+                        
+                        new File(newFile.getParent()).mkdirs();
+                        File output2 = new File("C:/Users/gondu/Desktop/outputzip/output" + count + ".jpeg");
+                        if (newFile.getName().endsWith("jpeg")) {
+                            output2 = newFile;
+                            fos = new FileOutputStream(output2);
+                        } else if (newFile.getName().endsWith("png")) {
+                            fos = new FileOutputStream(output2);
+                            saveImage(zis, fos);
+                            
+                        } else if (newFile.getName().endsWith("bmp")) {
+                            fos = new FileOutputStream(output2);
+                            saveImage(zis, fos);
+                            
+                        } else if (newFile.getName().endsWith("gif")) {
+                            
+                            fos = new FileOutputStream(output2);
+                            saveImage(zis, fos);
+                        } else if (newFile.getName().endsWith("tiff")) {
+                            
+                            fos = new FileOutputStream(output2);
+                            saveImage(zis, fos);
+                            
+   
+                        } else {
+                            return;
+                        }
+                        
+                        fos.close();
                     }
-
-                    fos.close();
+                    
+                    ze = zis.getNextEntry();
                 }
-
-                ze = zis.getNextEntry();
+                
+                zis.closeEntry();
             }
-
-            zis.closeEntry();
-            zis.close();
 
             System.out.println("Done");
 
@@ -108,7 +113,7 @@ public class UnZip {
         }
     }
 
-    private void saveImage(ZipInputStream zis, File output2, FileOutputStream fos) throws FileNotFoundException, IOException {
+    private void saveImage(ZipInputStream zis, FileOutputStream fos) throws FileNotFoundException, IOException {
 
         count++;
         int len;

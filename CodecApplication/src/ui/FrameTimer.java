@@ -5,7 +5,10 @@
  */
 package ui;
 
+import java.io.IOException;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * FrameTimer es la clase que dependiendo de si fps es mayor o menor que 0
@@ -16,7 +19,7 @@ public class FrameTimer extends TimerTask {
 
     VideoPlayer vp;
 
-    public FrameTimer() {
+    public FrameTimer(VideoPlayer vp) {
         this.vp = vp;
     }
 
@@ -24,8 +27,12 @@ public class FrameTimer extends TimerTask {
     public void run() {
         // si fps mayor que 0, secuencia de imágenes positivo
         if (vp.fps > 0) {
-            vp.next();
-            // si fps menor que 0, secuencia de imágenes negativo
+            try {
+                vp.next();
+                // si fps menor que 0, secuencia de imágenes negativo
+            } catch (IOException ex) {
+                Logger.getLogger(FrameTimer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else if (vp.fps < 0) {
             vp.previous();
 
