@@ -6,17 +6,20 @@
 package ui;
 
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.Timer;
 
 /**
  *
@@ -27,6 +30,12 @@ public class VideoPlayer extends javax.swing.JFrame {
     private static final String OUTPUT_FOLDER = System.getProperty("user.dir" + "src/unzip");
     private int count = 0;
     private final byte[] buffer = new byte[1024];
+    private ArrayList<BufferedImage> images = new ArrayList<>();
+    int fps = 30; // default fps
+    private int indexImage = 0;
+    Timer t;
+    FrameTimer tm;
+    
     /**
      * Creates new form VideoPlayer
      */
@@ -294,5 +303,13 @@ public class VideoPlayer extends javax.swing.JFrame {
         while ((len = zis.read(buffer)) > 0) {
             fos.write(buffer, 0, len);
         }
+    }
+
+    void next() {
+        this.indexImage = this.indexImage + 1;
+    }
+
+    void previous() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
