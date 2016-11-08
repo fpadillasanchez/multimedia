@@ -27,7 +27,7 @@ import javax.swing.Timer;
  */
 public class VideoPlayer extends javax.swing.JFrame {
 
-    private static final String OUTPUT_FOLDER = System.getProperty("user.dir" + "src/unzip");
+    private static final String OUTPUT_FOLDER = System.getProperty("user.dir" + "/src/unzip");
     private int count = 0;
     private final byte[] buffer = new byte[1024];
     private ArrayList<BufferedImage> images = new ArrayList<>();
@@ -259,8 +259,11 @@ public class VideoPlayer extends javax.swing.JFrame {
                     new File(newFile.getParent()).mkdirs();
                     File output2 = new File("/home/fernanps/Desktop/outputzip/output" + count + ".jpeg");
                     if (newFile.getName().endsWith("jpeg")) {
+                        
                         output2 = newFile;
+                        
                         fos = new FileOutputStream(output2);
+                        
                     } else if (newFile.getName().endsWith("png")) {
                         ImageIO.write(ImageIO.read(newFile), "gif", output2);
                         fos = new FileOutputStream(output2);
