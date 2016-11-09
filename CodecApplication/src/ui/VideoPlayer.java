@@ -352,12 +352,12 @@ public class VideoPlayer extends javax.swing.JFrame {
             if (!folder.exists()) {
                 folder.mkdir();
             }
-
+            
             if (isPlaying) {
                 isPlaying = false;
                 isPaused = true;
             }
-
+            images.clear();
             //get the zipped file list entry
             try ( //get the zip file content
                     ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
