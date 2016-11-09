@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class FrameTimer extends TimerTask {
 
     VideoPlayer vp;
-
+   
     public FrameTimer(VideoPlayer vp) {
         this.vp = vp;
     }

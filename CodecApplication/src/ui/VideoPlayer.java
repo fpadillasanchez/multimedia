@@ -12,17 +12,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.Timer;
+import java.util.Timer;
 
 /**
  *
@@ -36,8 +34,10 @@ public class VideoPlayer extends javax.swing.JFrame {
     private ArrayList<String> images = new ArrayList<>();
     int fps = 30; // default fps
     private int indexImage = 0;
-    Timer t;
     FrameTimer tm;
+    Timer t;
+    boolean isPlaying = false;
+    boolean isPaused = false;
 
     /**
      * Creates new form VideoPlayer
@@ -65,7 +65,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jMenuBar2 = new javax.swing.JMenuBar();
 
         jInternalFrame1.setVisible(true);
@@ -116,7 +116,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         );
         jPanelImageLayout.setVerticalGroup(
             jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 486, Short.MAX_VALUE)
+            .addGap(0, 476, Short.MAX_VALUE)
             .addGroup(jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelImageLayout.createSequentialGroup()
                     .addContainerGap(28, Short.MAX_VALUE)
@@ -126,13 +126,13 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         jButton1.setForeground(new java.awt.Color(25, 25, 25));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292350_audio-video-outline-pause.png"))); // NOI18N
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292353_audio-video-outline-play.png"))); // NOI18N
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton3MousePressed(evt);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292353_audio-video-outline-play.png"))); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -140,8 +140,18 @@ public class VideoPlayer extends javax.swing.JFrame {
         });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292467_More.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292467_More.png"))); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1478292467.png"))); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -155,18 +165,22 @@ public class VideoPlayer extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
@@ -212,14 +226,56 @@ public class VideoPlayer extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_buttonLoadZipMouseClicked
 
-    private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
-        tm = new FrameTimer(this);
-        tm.run();
-    }//GEN-LAST:event_jButton3MousePressed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+
+        if (!isPlaying) {
+
+            //hemos aumentado fps, los utilizamos en el scheduler at fixed rate de frametimer
+            this.isPlaying = true;
+            this.isPaused = false;
+            int tempFPS = (int) (1000.0f / Math.abs(this.fps));
+            this.tm = new FrameTimer(this);
+            this.t = new Timer();
+            tm = new FrameTimer(this);
+            this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
+
+        } else {
+            System.out.println("Video already playing.");
+
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if(isPlaying){
+            isPaused = true;
+            isPlaying = false;
+        }
+        this.t.cancel();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        this.fps = this.fps - 5;
+        int tempFPS = (int) (1000.0f / Math.abs(this.fps));
+        this.t.cancel();
+        this.tm = new FrameTimer(this);
+        this.t = new Timer();
+        tm = new FrameTimer(this);
+        this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        this.fps = this.fps + 1;
+        int tempFPS = (int) (1000.0f / Math.abs(this.fps));
+        this.t.cancel();
+        this.tm = new FrameTimer(this);
+        this.t = new Timer();
+        tm = new FrameTimer(this);
+        this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,6 +306,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new VideoPlayer().setVisible(true);
             }
@@ -262,7 +319,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabelImagesSequences;
     private javax.swing.JMenuBar jMenuBar2;
@@ -284,6 +341,7 @@ public class VideoPlayer extends javax.swing.JFrame {
             System.out.println(images);
         }
 
+
     }
 
     private void unZipImages(File zipFile) throws FileNotFoundException, IOException {
@@ -293,6 +351,11 @@ public class VideoPlayer extends javax.swing.JFrame {
             File folder = new File(OUTPUT_FOLDER);
             if (!folder.exists()) {
                 folder.mkdir();
+            }
+
+            if (isPlaying) {
+                isPlaying = false;
+                isPaused = true;
             }
 
             //get the zipped file list entry
@@ -320,7 +383,7 @@ public class VideoPlayer extends javax.swing.JFrame {
                             output2 = newFile;
                             addImage(output2);
                             fos = new FileOutputStream(output2);
-                            
+
                         } else if (newFile.getName().endsWith("png")) {
                             fos = new FileOutputStream(output2);
                             saveImage(zis, fos);
@@ -369,26 +432,24 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     void next() throws IOException {
         this.indexImage = this.indexImage + 1;
-        if(this.indexImage>images.size()){
+        if (this.indexImage >= images.size()) {
             this.indexImage = 0;
         }
-        File tempFile = new File(images.get(this.indexImage));
-        BufferedImage myPicture = ImageIO.read(tempFile);
-        ImageIcon icon = new ImageIcon(myPicture);
+        File image = new File(images.get(this.indexImage));
+        ImageIcon icon = new ImageIcon(image.getAbsolutePath());
         jLabelImagesSequences.setIcon(icon);
     }
 
     void previous() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     private void addImage(File file) throws IOException {
-        if (file.isFile()){
+        if (file.isFile()) {
             images.add(file.getAbsolutePath());
-        }else{
+        } else {
             System.out.println("Lectura incorrecta. No es archivo.");
         }
-        
-               
+
     }
 }
