@@ -1,16 +1,17 @@
 package lz77_package;
 
 /**
- * Fernando Padilla Sergi Díaz
+ * Fernando Padilla
  */
 public class LZ77 {
-
+    // Size of the sliding window, size of the search window.
     private final int Mdes, Ment;
 
     /**
-     *
-     * @param Mdes
-     * @param Ment
+     * Creates a new compressor that uses given window sizes.
+     * 
+     * @param Mdes  search window size
+     * @param Ment  sliding window size
      */
     public LZ77(int Mdes, int Ment) {
         this.Mdes = Mdes;
@@ -18,9 +19,10 @@ public class LZ77 {
     }
 
     /**
-     *
-     * @param bits
-     * @return
+     * Uses Lz77 algorithm to compress the input string. Returns the compressed string.
+     * 
+     * @param bits  string to be compressed
+     * @return      compressed string
      */
     public String compress(String bits) {
         boolean done = false;
@@ -62,9 +64,11 @@ public class LZ77 {
     }
 
     /**
-     *
-     * @param bits
-     * @return
+     * Decompresses the input string and returns the result of such decompression.
+     * Correctness depends on input string having been compressed using Lz77.
+     * 
+     * @param bits  string to be decompressed
+     * @return      decompressed string
      */
     public String decompress(String bits) {
         String res = bits.substring(0, this.Mdes);
