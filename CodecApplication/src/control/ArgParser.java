@@ -94,4 +94,12 @@ public class ArgParser {
     @Parameter(names = {"--batch", "-b"}, description = "Execution through shell")
     public boolean batch = false;
     
+    
+    public String getInput() {
+        return input;
+    }
+    
+    public String getOutput() {
+        return output;
+    }
 }

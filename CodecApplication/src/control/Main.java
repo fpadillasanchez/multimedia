@@ -17,8 +17,6 @@ public class Main {
     static VideoPlayer vp;
     
     public static void main(String[] args) {
-        vp = new VideoPlayer();
-        
         String[] args2 = {"-d"};
     
         ArgParser parser = new ArgParser();
@@ -29,13 +27,13 @@ public class Main {
             
             if (parser.help) 
                 jCom.usage();
-            if (parser.batch)
+            else if (parser.batch)
                 System.out.println("Not implemented");
-            if (parser.decode)
+            else if (parser.decode)
+                decode(parser.getInput(), parser.getOutput());
+            else if (parser.encode)
                 System.out.println("Not implemented");
-            if (parser.encode)
-                System.out.println("Not implemented");
-            playVideo();
+            
     
         } catch(ParameterException ex) {
             System.out.println(ex.getMessage());
@@ -43,13 +41,14 @@ public class Main {
         }
     }
     
-    private static void decode(String path) {
+    private static void decode(String input, String output) {
+        //VideoPlayer.OUTPUT_FOLDER = output;
+        VideoPlayer.INPUT_ZIP = input;
+        vp = new VideoPlayer();
+        vp.setVisible(true);
     }
     
     private static void encode(String path) {
-    }
-    
-    private static void playVideo() { 
     }
     
     

@@ -6,7 +6,6 @@
 package ui;
 
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import java.util.Timer;
@@ -28,7 +26,9 @@ import java.util.Timer;
  */
 public class VideoPlayer extends javax.swing.JFrame {
 
-    private static final String OUTPUT_FOLDER = ("src/unzip");
+    public static String OUTPUT_FOLDER = ("src/unzip");
+    public static String INPUT_ZIP;
+    
     private int count = 0;
     private final byte[] buffer = new byte[1024];
     private ArrayList<String> images = new ArrayList<>();
@@ -336,17 +336,17 @@ public class VideoPlayer extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             // user selects a file
             File selectedFile = chooser.getSelectedFile();
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-            unZipImages(selectedFile);
-            System.out.println(images);
+            INPUT_ZIP = selectedFile.getAbsolutePath();
+            System.out.println("Selected file: " + INPUT_ZIP);
+            unZipImages();
         }
 
 
     }
 
-    private void unZipImages(File zipFile) throws FileNotFoundException, IOException {
+    private void unZipImages() throws FileNotFoundException, IOException {
         try {
-
+            File zipFile = new File(INPUT_ZIP);
             //create output directory is not exists
             File folder = new File(OUTPUT_FOLDER);
             if (!folder.exists()) {

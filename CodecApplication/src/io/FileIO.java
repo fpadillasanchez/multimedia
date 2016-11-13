@@ -5,6 +5,7 @@
  */
 package io;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -29,24 +31,13 @@ public class FileIO {
         }
     };
     
-    public static String[] unZip(String input) throws FileNotFoundException, IOException {
-        ArrayList<String> files = new ArrayList<>();
-
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
-            ZipEntry entry = zis.getNextEntry();
-            
-            while (entry != null) {
-                if(validateExtension(entry.getName()))
-                    files.add(input + File.separator + entry.getName());
-                entry = zis.getNextEntry();
-            } 
-            zis.closeEntry();
-        }
-        
-        return (String[]) files.toArray();
+    public static BufferedImage readImage(String file) throws IOException {
+        if (!validateExtension(file))
+            return null;
+        return ImageIO.read(new File(file));
     }
     
-    public static String[] unZip(String input, String output) throws FileNotFoundException, IOException {
+    public static ArrayList<String> unZip(String input, String output) throws FileNotFoundException, IOException {
         ArrayList<String> files = new ArrayList<>();
         byte[] buffer = new byte[1024];
         int lenght;
@@ -69,14 +60,14 @@ public class FileIO {
                         fos.write(buffer, 0, lenght);
                     }
                     fos.close();
-                    files.add(output + File.separator + entry.getName());
+                    files.add(file.getAbsolutePath());
                 }
                 entry = zis.getNextEntry();
             }
             
             zis.closeEntry();
         }
-        return (String[]) files.toArray();
+        return files;
     }
     
     public static void zip() {
@@ -93,5 +84,6 @@ public class FileIO {
                 return true;
         }
         return true;
+   
     }
 }

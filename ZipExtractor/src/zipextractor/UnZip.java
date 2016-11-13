@@ -43,7 +43,6 @@ public class UnZip {
     public void unZipIt(String zipFile, String outputFolder) throws FileNotFoundException, IOException {
 
         try {
-
             //create output directory is not exists
             File folder = new File(OUTPUT_FOLDER);
             if (!folder.exists()) {
