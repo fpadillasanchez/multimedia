@@ -66,6 +66,10 @@ public class ImageBuffer {
         buffer = new Buffer();
     }
     
+    public int size() {
+        return buffer.size;
+    }
+    
     public void loadBuffer(String input) throws IOException {
         
     }
