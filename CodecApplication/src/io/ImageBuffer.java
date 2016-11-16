@@ -116,6 +116,11 @@ public class ImageBuffer {
 
     }
     
+    public BufferedImage getImage2() {
+
+        return buffer.pop();
+    }
+    
     public void pushImage(BufferedImage image){
         buffer.push(image);
     }

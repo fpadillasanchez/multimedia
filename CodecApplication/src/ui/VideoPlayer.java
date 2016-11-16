@@ -6,6 +6,7 @@
 package ui;
 
 import io.ImageBuffer;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -423,21 +423,23 @@ public class VideoPlayer extends javax.swing.JFrame {
     }
 
     private void parserBinaryImages() throws IOException {
-        
-        boolean finished = false;
-        int count = images.size()-1;
-        while (!finished) {
-            Iterator<BufferedImage> imag = images.iterator();
-            while (imag.hasNext()) {
-                BufferedImage blackNWhite = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-                imgBuffer.pushImage(blackNWhite);
-                count--;
-                if (count < 0) {
-                    finished = true;
-                }
-            }
-            //image binary done
-        }
 
+        boolean finished = false;
+        int i = 0;
+        int count = imgBuffer.size() - 1;
+        while(!finished) {
+            //System.out.println("Not finished");
+            BufferedImage img = imgBuffer.getImage2();
+            BufferedImage blackNWhite = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+            imgBuffer.pushImage(blackNWhite);
+            Graphics2D graphics = blackNWhite.createGraphics();
+            graphics.drawImage(img, 0, 0, null);
+            count--;
+            System.out.println("Count -- "+count);
+            if (count < 0) {
+                finished = true;
+            }
+            i++;
+        }
     }
 }
