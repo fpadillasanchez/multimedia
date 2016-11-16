@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import java.util.Timer;
@@ -427,7 +425,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private void parserBinaryImages() throws IOException {
         
         boolean finished = false;
-        int count = images.size();
+        int count = images.size()-1;
         while (!finished) {
             Iterator<BufferedImage> imag = images.iterator();
             while (imag.hasNext()) {

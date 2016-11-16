@@ -29,7 +29,7 @@ public class ImageBuffer {
         }
 
         public int size;
-        BufferItem first, last;
+        BufferItem first, last, current;
 
         public Buffer() {
             size = 0;
@@ -37,20 +37,21 @@ public class ImageBuffer {
             last = null;
         }
 
-        public void push(BufferedImage image) {
+         public void push(BufferedImage image) {
             size++;
-            BufferItem item = new BufferItem(image);
+            BufferItem item  = new BufferItem(image);
             if (first == null) {
-                first = item;
-                last = item;
+                first = item;            
                 return;
             }
             if (last == null) {
                 last = item;
+                first.next = last;
                 return;
-            }
+            }          
             last.next = item;
-        }
+            last = item;
+         }
 
         public BufferedImage pop() {
             if (size == 0) {
