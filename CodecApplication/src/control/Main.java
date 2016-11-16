@@ -17,13 +17,11 @@ public class Main {
     static VideoPlayer vp;
     
     public static void main(String[] args) {
-        String[] args2 = {"-d"};
-    
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
-    
+
         try {
-            jCom = new JCommander(parser, args2);
+            jCom = new JCommander(parser, args);
             
             if (parser.help) 
                 jCom.usage();
@@ -32,17 +30,17 @@ public class Main {
             else if (parser.decode)
                 decode(parser.getInput(), parser.getOutput());
             else if (parser.encode)
-                System.out.println("Not implemented");
-            
+                System.out.println("Not implemented"); 
+            decode(parser.getInput(), parser.getOutput());
     
         } catch(ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
-        }
+        }   
     }
     
     private static void decode(String input, String output) {
-        //VideoPlayer.OUTPUT_FOLDER = output;
+        VideoPlayer.OUTPUT_FOLDER = output;
         VideoPlayer.INPUT_ZIP = input;
         vp = new VideoPlayer();
         vp.setVisible(true);

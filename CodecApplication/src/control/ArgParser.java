@@ -45,11 +45,11 @@ public class ArgParser {
     
     // Arguments obligatoris
     @Parameter(names = {"--input", "-i"}, 
-            description = "Path to file.zip", required=false)  // TODO: required = true
+            description = "Path to file.zip", required=true)  // TODO: required = true
     private String input;
     
     @Parameter(names = {"--output", "-o"}, 
-            description = "Path to file", required=false)      // TODO: required = true
+            description = "Path to file", required=true)      // TODO: required = true
     private String output;
     
     // Arguments opcionals
