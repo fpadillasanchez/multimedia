@@ -12,31 +12,39 @@ import java.util.Iterator;
 
 /**
  *
- * @author SDP
+ * @author Sergi Diaz, Fernando Padilla
+ * 
+ * 
+ * The puspose of this class is to hold images to be reproduced. We intend to 
+ * reduce the ammount of images loaded during reproduction by loading them before
+ * the video starts. At this point, the buffer is pretty simplistic. Our objective
+ * is to improve its performance before the final release of the codec.
  */
 public class ImageBuffer {
 
+    // Linked queue
     class Buffer {
-
+        // Queue item
         class BufferItem {
 
-            public BufferedImage item;
-            public BufferItem next = null;
+            public BufferedImage item;      // image hold by the item
+            public BufferItem next = null;  // next item in the queue
 
-            public BufferItem(BufferedImage item) {
+            public BufferItem(BufferedImage item) { // Constructor
                 this.item = item;
             }
         }
 
-        public int size;
-        BufferItem first, last, current;
+        public int size;                    // size of the queue
+        BufferItem first, last, current;    // first, last and current items
 
-        public Buffer() {
+        public Buffer() {   // Constructor
             size = 0;
             first = null;
             last = null;
         }
 
+        // Add new image at the end of the queue.
          public void push(BufferedImage image) {
             size++;
             BufferItem item  = new BufferItem(image);
@@ -53,6 +61,7 @@ public class ImageBuffer {
             last = item;
          }
 
+        // Remove the first image in the queue.
         public BufferedImage pop() {
             if (size == 0) {
                 return null;
@@ -79,6 +88,7 @@ public class ImageBuffer {
 
     }
 
+    // Given an array of file paths, buffer gets loaded by images directed by those paths.
     public void loadBuffer(ArrayList<String> files) throws IOException {
         for (String file : files) {
             BufferedImage image = FileIO.readImage(file);
@@ -102,6 +112,8 @@ public class ImageBuffer {
 
     }
 
+    // Return first image in the buffer. If 'circular' is true, the removed image
+    // is inserted again at the end of the queue.
     public BufferedImage getImage(boolean circular) {
         if (buffer.size == 0) {
             return null;

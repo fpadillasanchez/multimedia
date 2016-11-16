@@ -18,7 +18,10 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author SDP
+ * @author Fernando Padilla, Sergi Diaz
+ * 
+ * Class used for loading images from files. Includes a format validator. At 
+ * this moment, only JPEG and PNG images are allowed.
  */
 public class FileIO {
     
@@ -31,12 +34,15 @@ public class FileIO {
         }
     };
     
+    // Loads image if its format is supported.
     public static BufferedImage readImage(String file) throws IOException {
         if (!validateExtension(file))
             return null;
         return ImageIO.read(new File(file));
     }
     
+    // Extracts images from zip, stores them at an output directory and returns
+    // an array of paths to those images.
     public static ArrayList<String> unZip(String input, String output) throws FileNotFoundException, IOException {
         ArrayList<String> files = new ArrayList<>();
         byte[] buffer = new byte[1024];
@@ -70,10 +76,12 @@ public class FileIO {
         return files;
     }
     
+    // TODO: zip images from directory.
     public static void zip() {
         
     }
     
+    // Format validator.
     private static boolean validateExtension(String fileName) {
         int dot = fileName.lastIndexOf(".");
         if (dot == -1 || dot == fileName.length()) 

@@ -27,7 +27,7 @@ import javax.imageio.stream.ImageInputStream;
 
 /**
  *
- * @author Fernando Padilla Sergi Díaz
+ * @author Fernando Padilla, Sergi Díaz
  */
 public class VideoPlayer extends javax.swing.JFrame {
 
@@ -386,26 +386,7 @@ public class VideoPlayer extends javax.swing.JFrame {
             // user selects a file
             File imgFile = chooser.getSelectedFile();
             INPUT_ZIP = imgFile.getAbsolutePath();
-            System.out.println("Selected file: " + INPUT_ZIP);
-
-            System.out.println("Starting to load ZIP file");
-            ZipFile zFl;
-            try {
-                zFl = new ZipFile(imgFile);
-                Enumeration<? extends ZipEntry> entries = zFl.entries();
-                images.clear();//Empty images array
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    InputStream is = zFl.getInputStream(entry);
-                    ImageInputStream iis = ImageIO.createImageInputStream(is);
-                    BufferedImage bufImg = ImageIO.read(iis);
-                    imgBuffer.pushImage(bufImg);
-                }
-                System.out.println("ZIP file Loaded");
-
-            } catch (IOException ex) {
-                Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            loadBuffer(imgFile);
         }
     }
 
@@ -441,5 +422,34 @@ public class VideoPlayer extends javax.swing.JFrame {
             }
             i++;
         }
+    }
+    
+    // Loads images from the given file into the buffer.
+    private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
+        System.out.println("Selected file: " + INPUT_ZIP);
+
+        System.out.println("Starting to load ZIP file");
+        ZipFile zFl;
+        try {
+            zFl = new ZipFile(imgFile);
+            Enumeration<? extends ZipEntry> entries = zFl.entries();
+            images.clear();//Empty images array
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                InputStream is = zFl.getInputStream(entry);
+                ImageInputStream iis = ImageIO.createImageInputStream(is);
+                BufferedImage bufImg = ImageIO.read(iis);
+                imgBuffer.pushImage(bufImg);
+            }
+            System.out.println("ZIP file Loaded");
+
+        } catch (IOException ex) {
+            Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }
+    
+    // Loads images from the input zip path into the buffer. Public access.
+    public void loadBuffer() throws FileNotFoundException, IOException {
+        loadBuffer(new File(INPUT_ZIP));
     }
 }
