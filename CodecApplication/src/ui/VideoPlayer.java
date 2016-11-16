@@ -5,13 +5,17 @@
  */
 package ui;
 
+import io.ImageBuffer;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -19,6 +23,9 @@ import java.util.zip.ZipInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import java.util.Timer;
+import java.util.zip.ZipFile;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 
 /**
  *
@@ -28,23 +35,23 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     public static String OUTPUT_FOLDER = ("src/unzip");
     public static String INPUT_ZIP;
-    
+
     private int count = 0;
-    private final byte[] buffer = new byte[1024];
-    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<BufferedImage> images = new ArrayList<>();
     int fps = 30; // default fps
     private int indexImage = 0;
     FrameTimer tm;
     Timer t;
     boolean isPlaying = false;
     boolean isPaused = false;
+    BufferedImage img;
+    ImageBuffer imgBuffer = new ImageBuffer();
 
     /**
      * Creates new form VideoPlayer
      */
     public VideoPlayer() {
         initComponents();
-        jButton5.setEnabled(false);
     }
 
     /**
@@ -58,7 +65,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jPanel1 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
         buttonLoadZip = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanelImage = new javax.swing.JPanel();
@@ -85,10 +92,10 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton5.setText("Filters");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Binary Image", "Negative Filter", "HSB" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -97,14 +104,15 @@ public class VideoPlayer extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jButton5)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton5))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 12, Short.MAX_VALUE))
         );
 
         buttonLoadZip.setText("Load zip");
@@ -134,7 +142,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         );
         jPanelImageLayout.setVerticalGroup(
             jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 476, Short.MAX_VALUE)
+            .addGap(0, 475, Short.MAX_VALUE)
             .addGroup(jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelImageLayout.createSequentialGroup()
                     .addContainerGap(28, Short.MAX_VALUE)
@@ -265,7 +273,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if(isPlaying){
+        if (isPlaying) {
             isPaused = true;
             isPlaying = false;
         }
@@ -292,30 +300,32 @@ public class VideoPlayer extends javax.swing.JFrame {
         this.t = new Timer();
         tm = new FrameTimer(this);
         this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-        Filters filters = new Filters();
-        filters.setVisible(true);
-        switch(filters.getOption()){
-            case 0:
-                //binary image
-                break;
-            case 1:
-                //negative filter
-                
-                break;
-            case 2:
-                //HSV filter
-                break;         
-        }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void buttonLoadZipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoadZipActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_buttonLoadZipActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        switch (jComboBox1.getSelectedItem().toString()) {
+            case "Binary Image": {
+                try {
+                    System.out.println("Holaaa");
+                    parserBinaryImages();
+                } catch (IOException ex) {
+                    Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            break;
+            case "Negative Filter":
+                break;
+            case "HSB":
+                break;
+
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -359,8 +369,8 @@ public class VideoPlayer extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabelImagesSequences;
     private javax.swing.JMenuBar jMenuBar2;
@@ -376,99 +386,28 @@ public class VideoPlayer extends javax.swing.JFrame {
         int result = chooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             // user selects a file
-            File selectedFile = chooser.getSelectedFile();
-            INPUT_ZIP = selectedFile.getAbsolutePath();
+            File imgFile = chooser.getSelectedFile();
+            INPUT_ZIP = imgFile.getAbsolutePath();
             System.out.println("Selected file: " + INPUT_ZIP);
-            unZipImages();
-            jButton5.setEnabled(true);
-        }
 
-
-    }
-
-    private void unZipImages() throws FileNotFoundException, IOException {
-        try {
-            File zipFile = new File(INPUT_ZIP);
-            //create output directory is not exists
-            File folder = new File(OUTPUT_FOLDER);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-            
-            if (isPlaying) {
-                isPlaying = false;
-                isPaused = true;
-            }
-            images.clear();
-            //get the zipped file list entry
-            try ( //get the zip file content
-                    ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
-                //get the zipped file list entry
-                ZipEntry ze = zis.getNextEntry();
-
-                while (ze != null) {
-
-                    String fileName = ze.getName();
-                    File newFile = new File(OUTPUT_FOLDER + File.separator + fileName);
-
-                    System.out.println("file unzip : " + newFile.getCanonicalPath());
-
-                    //create all non exists folders
-                    //else you will hit FileNotFoundException for compressed folder
-                    if (ze.isDirectory()) {
-
-                    } else {
-                        FileOutputStream fos = null;
-
-                        File output2 = new File("src/unzip/" + count + ".jpeg");
-                        if (newFile.getName().endsWith("jpeg")) {
-                            output2 = newFile;
-                            addImage(output2);
-                            fos = new FileOutputStream(output2);
-
-                        } else if (newFile.getName().endsWith("png")) {
-                            fos = new FileOutputStream(output2);
-                            saveImage(zis, fos);
-                            addImage(output2);
-                        } else if (newFile.getName().endsWith("bmp")) {
-                            fos = new FileOutputStream(output2);
-                            saveImage(zis, fos);
-                            addImage(output2);
-                        } else if (newFile.getName().endsWith("gif")) {
-                            addImage(output2);
-                            fos = new FileOutputStream(output2);
-                            saveImage(zis, fos);
-                        } else if (newFile.getName().endsWith("tiff")) {
-                            addImage(output2);
-                            fos = new FileOutputStream(output2);
-                            saveImage(zis, fos);
-
-                        } else {
-                            return;
-                        }
-
-                        fos.close();
-                    }
-
-                    ze = zis.getNextEntry();
+            System.out.println("Starting to load ZIP file");
+            ZipFile zFl;
+            try {
+                zFl = new ZipFile(imgFile);
+                Enumeration<? extends ZipEntry> entries = zFl.entries();
+                images.clear();//Empty images array
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    InputStream is = zFl.getInputStream(entry);
+                    ImageInputStream iis = ImageIO.createImageInputStream(is);
+                    BufferedImage bufImg = ImageIO.read(iis);
+                    imgBuffer.pushImage(bufImg);
                 }
+                System.out.println("ZIP file Loaded");
 
-                zis.closeEntry();
+            } catch (IOException ex) {
+                Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            System.out.println("Done");
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void saveImage(ZipInputStream zis, FileOutputStream fos) throws FileNotFoundException, IOException {
-
-        count++;
-        int len;
-        while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
         }
     }
 
@@ -477,8 +416,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         if (this.indexImage >= images.size()) {
             this.indexImage = 0;
         }
-        File image = new File(images.get(this.indexImage));
-        ImageIcon icon = new ImageIcon(image.getAbsolutePath());
+        ImageIcon icon = new ImageIcon(imgBuffer.getImage(true));
         jLabelImagesSequences.setIcon(icon);
     }
 
@@ -486,11 +424,21 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     }
 
-    private void addImage(File file) throws IOException {
-        if (file.isFile()) {
-            images.add(file.getAbsolutePath());
-        } else {
-            System.out.println("Lectura incorrecta. No es archivo.");
+    private void parserBinaryImages() throws IOException {
+        
+        boolean finished = false;
+        int count = images.size();
+        while (!finished) {
+            Iterator<BufferedImage> imag = images.iterator();
+            while (imag.hasNext()) {
+                BufferedImage blackNWhite = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+                imgBuffer.pushImage(blackNWhite);
+                count--;
+                if (count < 0) {
+                    finished = true;
+                }
+            }
+            //image binary done
         }
 
     }
