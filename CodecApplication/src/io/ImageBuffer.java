@@ -88,11 +88,16 @@ public class ImageBuffer {
 
     }
 
-    // Given an array of file paths, buffer gets loaded by images directed by those paths.
+    /***
+     * Given an array of file paths, buffer gets loaded by images directed by those paths.
+     * @param files
+     * @throws IOException 
+     */
     public void loadBuffer(ArrayList<String> files) throws IOException {
         for (String file : files) {
             BufferedImage image = FileIO.readImage(file);
             if (image != null) {
+                buffer.pop();
                 buffer.push(image);
             }
         }
@@ -103,7 +108,11 @@ public class ImageBuffer {
             buffer.push(loadImage(file));
         }
     }
-*/
+*/  /***
+    * +
+    * @param files
+    * @throws IOException 
+    */
     public void loadImagesArrayList(ArrayList<BufferedImage> files) throws IOException {
         Iterator<BufferedImage> iter = files.iterator();
         while (iter.hasNext()) {
@@ -112,8 +121,12 @@ public class ImageBuffer {
 
     }
 
-    // Return first image in the buffer. If 'circular' is true, the removed image
-    // is inserted again at the end of the queue.
+    /***
+     * Return first image in the buffer. If 'circular' is true, the removed image
+     * is inserted again at the end of the queue.
+     * @param circular
+     * @return 
+     */
     public BufferedImage getImage(boolean circular) {
         if (buffer.size == 0) {
             return null;

@@ -23,6 +23,7 @@ import java.util.Timer;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -34,7 +35,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     public static String INPUT_ZIP;
 
     private ArrayList<BufferedImage> images = new ArrayList<>();
-    int fps; // default fps
+    int fps = 30; // default fps
     private int indexImage = 0;
     FrameTimer tm;
     Timer t;
@@ -62,6 +63,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jPanel1 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
         jPanelImage = new javax.swing.JPanel();
         jLabelImagesSequences = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -88,15 +90,27 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jButton5.setText("Load Zip");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 590, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 38, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 12, Short.MAX_VALUE)
+                .addComponent(jButton5))
         );
 
         javax.swing.GroupLayout jPanelImageLayout = new javax.swing.GroupLayout(jPanelImage);
@@ -292,6 +306,24 @@ public class VideoPlayer extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/src/Zips"));
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fc.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            System.out.println("Starting to load ZIP file");
+            File imgFile = fc.getSelectedFile();
+            try {
+                imgBuffer.loadBuffer(FileIO.unZip(imgFile.getAbsolutePath(), OUTPUT_FOLDER));
+            } catch (IOException ex) {
+                Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -333,6 +365,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame1;
@@ -351,11 +384,13 @@ public class VideoPlayer extends javax.swing.JFrame {
         ImageIcon icon = new ImageIcon(imgBuffer.getImage(true));
         jLabelImagesSequences.setIcon(icon);
     }
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param bin
      * @param negative
-     * @param average 
+     * @param average
      */
     public void setActiveFilter(Boolean bin, Boolean negative, Integer average) {
 
@@ -370,9 +405,11 @@ public class VideoPlayer extends javax.swing.JFrame {
             loadZipFilter(2);
         }
     }
-    /***
-     * 
-     * @param i 
+
+    /**
+     * *
+     *
+     * @param i
      */
     private void loadZipFilter(int i) {
         System.out.println("Selected file: " + INPUT_ZIP);
@@ -402,21 +439,25 @@ public class VideoPlayer extends javax.swing.JFrame {
             Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param image
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private BufferedImage parserBinaryImages(BufferedImage image) throws IOException {
 
         BufferedImage blackNWhite = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
         return blackNWhite;
     }
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param image
-     * @return 
+     * @return
      */
     private BufferedImage parserNegativeFilter(BufferedImage image) {
 
@@ -424,11 +465,13 @@ public class VideoPlayer extends javax.swing.JFrame {
         return negFilter.invertImage(image);
     }
 
-    /***
+    /**
+     * *
      * Loads images from the given file into the buffer.
+     *
      * @param imgFile
      * @throws FileNotFoundException
-     * @throws IOException 
+     * @throws IOException
      */
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
         System.out.println("Selected file: " + INPUT_ZIP);
@@ -438,19 +481,22 @@ public class VideoPlayer extends javax.swing.JFrame {
         System.out.println("ZIP file Loaded");
     }
 
-    /***
+    /**
+     * *
      * Set frames per second.
-     * @param fps 
+     *
+     * @param fps
      */
-    
     public void setFPS(int fps) {
         this.fps = fps;
     }
 
-    /***
+    /**
+     * *
      * Loads images from the input zip path into the buffer. Public access.
+     *
      * @throws FileNotFoundException
-     * @throws IOException 
+     * @throws IOException
      */
     public void loadBuffer() throws FileNotFoundException, IOException {
         loadBuffer(new File(INPUT_ZIP));
