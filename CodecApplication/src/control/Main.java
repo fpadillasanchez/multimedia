@@ -22,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
-
+        
         try {
             jCom = new JCommander(parser, args);
             
@@ -38,7 +38,7 @@ public class Main {
         } catch(ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
-        }   
+        }    
     }
     
     // Decodes ZIP and loades images into the videoplayer GUI.

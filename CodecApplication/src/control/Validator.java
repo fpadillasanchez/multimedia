@@ -11,36 +11,42 @@ import java.io.File;
 
 /**
  *
- * @author sdiazpla7.alumnes
+ * @author Sergi Diaz, Fernando Padilla
+ * 
+ * Custom parameter validator.
  */
 public class Validator implements IParameterValidator{
 
     @Override
     public void validate(String name, String value) throws ParameterException {
+        
         try {
             switch(name) {
-                case "input":
+                case "--input":
+                case "-i":
+                    System.out.println(name);
                     fileValidation(name, value);
                     break;
-                case "output":
+                case "--output":
+                case "-o":
                     directoryValidation(name, value);
                     break;
-                case "fps":
+                case "--fps":
                     integerValidation(name, value, 1, 100);
                     break;
-                case "bin":
+                case "--bin":
                     integerValidation(name, value, 0, 1);
                     break;
-                case "average":
+                case "--average":
                     integerValidation(name, value, 1, 255);
                     break;
-                case "seekRange":
+                case "--seekRange":
                     integerValidation(name, value, 1, 100);
                     break;
-                case "gop":
+                case "--gop":
                     integerValidation(name, value, 1, 100);
                     break;
-                case "quality":
+                case "--quality":
                     integerValidation(name, value, 0, 100);
             }
             
@@ -49,6 +55,7 @@ public class Validator implements IParameterValidator{
         }
     }
     
+    // Validation for integer arguments. Value must be parseable and be among a specified range.
     private void integerValidation(String name, String value, int minValue, int maxValue) throws ParameterException {
         try {
             int i = Integer.parseInt(value);
@@ -59,6 +66,7 @@ public class Validator implements IParameterValidator{
         }
     }
     
+    // Validation for file arguments (aka input). Path must adress a file, which can't be a directory.
     private void fileValidation(String name, String value) throws ParameterException {
         File f = new File(value);
         if (!f.exists()) 
@@ -68,6 +76,7 @@ public class Validator implements IParameterValidator{
                 throw new ParameterException(name + " is not a file.");
     }
     
+    // Validation for directory arguments (aka output). Path must adress a directory.
     private void directoryValidation(String name, String value) throws ParameterException {
         File d = new File(value);
         if (!d.exists())
