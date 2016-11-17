@@ -33,7 +33,7 @@ public class Main {
             } else if (parser.batch) {
                 System.out.println("Not implemented yet.");
             } else if (parser.decode) {
-                decode(parser.getInput(), parser.getOutput(), parser.getFPS());
+                decode(parser.getInput(), parser.getOutput(), parser.getFPS(), parser.getBin(), parser.isNegative(), parser.getAverage());
             } else if (parser.encode) {
                 encode(parser.getInput(), parser.getOutput());
             }

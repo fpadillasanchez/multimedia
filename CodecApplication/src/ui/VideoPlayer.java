@@ -310,19 +310,15 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
+        // TODO add your handling code here:
         switch (jComboBox1.getSelectedItem().toString()) {
-            case "Binary Image": {
-                try {
-                    parserBinaryImages();
-                } catch (IOException ex) {
-                    Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            break;
-            case "Negative Filter":
-                parserNegativeFilter();
+            case "Binary Image":
+                loadZipFilter(0);
                 break;
-            case "HSB":
+            case "Negative Filter":
+                loadZipFilter(1);
+                break;
+            case "Average":
                 break;
 
         }
@@ -402,69 +398,80 @@ public class VideoPlayer extends javax.swing.JFrame {
         jLabelImagesSequences.setIcon(icon);
     }
 
-    void previous() {
+    public void setActiveFilter(Boolean bin, Boolean negative, Integer average) {
 
-    }
+        if (bin) {
+            //apliquem binari  
+            loadZipFilter(0);
 
-    private void parserBinaryImages() throws IOException {
+        } else if (negative) {
+            loadZipFilter(1);
 
-        boolean finished = false;
-        int i = 0;
-        int count = imgBuffer.size() - 1;
-        while(!finished) {
-            //System.out.println("Not finished");
-            BufferedImage img = imgBuffer.getImage2();
-            BufferedImage blackNWhite = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-            imgBuffer.pushImage(blackNWhite);
-            Graphics2D graphics = blackNWhite.createGraphics();
-            graphics.drawImage(img, 0, 0, null);
-            count--;
-            System.out.println("Count -- "+count);
-            if (count < 0) {
-                finished = true;
-            }
-            i++;
+        } else if (average > 0) {
+            //apliquem average    
+            // TODO
         }
     }
-    
-    private void parserNegativeFilter() {
-        boolean finished = false;
-        int i = 0;
-        int count = imgBuffer.size() - 1;
-        while(!finished) {
-            //System.out.println("Not finished");
-            BufferedImage img = imgBuffer.getImage2();
-            negFilter = new NegativeFilter(img);
-            imgBuffer.pushImage(negFilter.invertImage(img));
-            count--;
-            System.out.println("Count -- "+count);
-            if (count < 0) {
-                finished = true;
+
+    private void loadZipFilter(int i) {
+        System.out.println("Selected file: " + INPUT_ZIP);
+
+        System.out.println("Starting to load ZIP file");
+        ZipFile zFl;
+        try {
+            zFl = new ZipFile(INPUT_ZIP);
+            Enumeration<? extends ZipEntry> entries = zFl.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                InputStream is = zFl.getInputStream(entry);
+                ImageInputStream iis = ImageIO.createImageInputStream(is);
+                BufferedImage bufImg = ImageIO.read(iis);
+                if (i == 0) {
+                    imgBuffer.pushImage(parserBinaryImages(bufImg));
+                } else if (i == 1) {
+                    imgBuffer.pushImage(parserNegativeFilter(bufImg));
+                } else if (i == 2) {
+
+                }
+
             }
-            i++;
+            System.out.println("ZIP file Loaded and filter applied.");
+
+        } catch (IOException ex) {
+            Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
-    
+
+    private BufferedImage parserBinaryImages(BufferedImage image) throws IOException {
+
+        BufferedImage blackNWhite = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        return blackNWhite;
+    }
+
+    private BufferedImage parserNegativeFilter(BufferedImage image) {
+
+        negFilter = new NegativeFilter(image);
+        return negFilter.invertImage(image);
+    }
+
     // Loads images from the given file into the buffer.
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
         System.out.println("Selected file: " + INPUT_ZIP);
 
         System.out.println("Starting to load ZIP file");
         images.clear();
-        imgBuffer.loadBuffer(FileIO.unZip(INPUT_ZIP, OUTPUT_FOLDER)); 
+        imgBuffer.loadBuffer(FileIO.unZip(INPUT_ZIP, OUTPUT_FOLDER));
         System.out.println("ZIP file Loaded");
     }
-    
+
     // Set frames per second.
     public void setFPS(int fps) {
         this.fps = fps;
     }
-    
+
     // Loads images from the input zip path into the buffer. Public access.
     public void loadBuffer() throws FileNotFoundException, IOException {
         loadBuffer(new File(INPUT_ZIP));
     }
 
-    
 }

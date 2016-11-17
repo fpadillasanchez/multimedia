@@ -37,7 +37,7 @@ public class ArgParser {
     @Parameter(names = "--binarization", 
             description = "Binarization filtering using given threshold", 
             validateWith = Validator.class)
-    private Integer bin = null;
+    private boolean bin = false;
     
     @Parameter(names = "--negative", description = "Negative filtering", 
             validateWith = Validator.class)
@@ -87,4 +87,17 @@ public class ArgParser {
     public Integer getFPS() {
         return fps;
     }
+
+    public boolean getBin() {
+        return bin;
+    }
+
+    public boolean isNegative() {
+        return negative;
+    }
+
+    public Integer getAverage() {
+        return average;
+    }
+    
 }
