@@ -32,7 +32,7 @@ public class ArgParser {
     
     @Parameter(names = "--fps", description = "Frames per second", 
             validateWith = Validator.class)
-    private Integer fps = 10;
+    private Integer fps = 30;
     
     @Parameter(names = "--binarization", 
             description = "Binarization filtering using given threshold", 
@@ -75,12 +75,16 @@ public class ArgParser {
             validateWith = Validator.class)
     public boolean batch = false;
     
-    
+    //-- GETTERS:  
     public String getInput() {
         return input;
     }
     
     public String getOutput() {
         return output;
+    }
+    
+    public Integer getFPS() {
+        return fps;
     }
 }

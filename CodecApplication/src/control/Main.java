@@ -32,7 +32,7 @@ public class Main {
             else if (parser.batch)
                 System.out.println("Not implemented yet.");
             else if (parser.decode)
-                decode(parser.getInput(), parser.getOutput());
+                decode(parser.getInput(), parser.getOutput(), parser.getFPS());
             else if (parser.encode)
                 encode(parser.getInput(), parser.getOutput());
     
@@ -43,12 +43,13 @@ public class Main {
     }
     
     // Decodes ZIP and loades images into the videoplayer GUI.
-    private static void decode(String input, String output) {
+    private static void decode(String input, String output, Integer fps) {
         // Set videoplayer parameters
         VideoPlayer.OUTPUT_FOLDER = output;
         VideoPlayer.INPUT_ZIP = input;
         vp = new VideoPlayer();
         try {
+            vp.setFPS(fps);
             // Try to load image buffer
             vp.loadBuffer();
             // Visualize GUI

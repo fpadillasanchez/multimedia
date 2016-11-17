@@ -452,7 +452,10 @@ public class VideoPlayer extends javax.swing.JFrame {
         }    
     }
     
-    
+    // Set frames per second.
+    public void setFPS(int fps) {
+        this.fps = fps;
+    }
     
     // Loads images from the input zip path into the buffer. Public access.
     public void loadBuffer() throws FileNotFoundException, IOException {
