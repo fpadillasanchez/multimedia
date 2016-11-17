@@ -7,6 +7,7 @@ package control;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import io.FileIO;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class Main {
             else if (parser.decode)
                 decode(parser.getInput(), parser.getOutput());
             else if (parser.encode)
-                System.out.println("Not implemented yet."); 
+                encode(parser.getInput(), parser.getOutput());
     
         } catch(ParameterException ex) {
             System.out.println(ex.getMessage());
@@ -58,9 +59,13 @@ public class Main {
     }
     
     // TODO: Implement encoding.
-    private static void encode(String path) {
+    private static void encode(String input, String output) {
+        try {
+            //FileIO.zip(input, output);
+            FileIO.formatedZip(input, output);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
-    
-    
     
 }
