@@ -32,9 +32,6 @@ public class Validator implements IParameterValidator{
                 case "--fps":
                     integerValidation(name, value, 1, 100);
                     break;
-                case "--bin":
-                    integerValidation(name, value, 0, 1);
-                    break;
                 case "--average":
                     integerValidation(name, value, 1, 255);
                     break;

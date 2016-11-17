@@ -127,13 +127,9 @@ public class ImageBuffer {
         return image;
 
     }
-    
-    public BufferedImage getImage2() {
-
-        return buffer.pop();
-    }
-    
+   
     public void pushImage(BufferedImage image){
+        buffer.pop();
         buffer.push(image);
     }
 /*

@@ -54,9 +54,10 @@ public class Main {
             vp.setFPS(fps);
             // Try to load image buffer
             vp.loadBuffer();
+            vp.setActiveFilter(bin, negative, average);
             // Visualize GUI
             vp.setVisible(true);
-            vp.setActiveFilter(bin, negative, average);
+            
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

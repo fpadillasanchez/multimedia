@@ -10,14 +10,18 @@ import java.awt.image.BufferedImage;
 
 /**
  *
- * @author SDP
+ * @author Sergi Diaz
  */
 public class NegativeFilter extends SimpleFilter{
 
     public NegativeFilter(BufferedImage image) {
         super(image);
     }
-
+    /***
+     * 
+     * @param image
+     * @return 
+     */
     public BufferedImage invertImage(BufferedImage image) {
        
         for (int x = 0; x < image.getWidth(); x++) {

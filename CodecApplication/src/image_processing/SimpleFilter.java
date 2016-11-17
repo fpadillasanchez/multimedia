@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  *
- * @author SDP
+ * @author Sergi Diaz
  */
 public abstract class SimpleFilter {
     
