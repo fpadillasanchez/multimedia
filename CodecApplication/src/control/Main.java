@@ -18,30 +18,32 @@ import ui.VideoPlayer;
  * @author Fernando Padilla, Sergi Diaz
  */
 public class Main {
+
     static VideoPlayer vp;  // GUI
-    
+
     public static void main(String[] args) {
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
-        
+
         try {
             jCom = new JCommander(parser, args);
-            
-            if (parser.help) 
+
+            if (parser.help) {
                 jCom.usage();
-            else if (parser.batch)
+            } else if (parser.batch) {
                 System.out.println("Not implemented yet.");
-            else if (parser.decode)
+            } else if (parser.decode) {
                 decode(parser.getInput(), parser.getOutput(), parser.getFPS());
-            else if (parser.encode)
+            } else if (parser.encode) {
                 encode(parser.getInput(), parser.getOutput());
-    
-        } catch(ParameterException ex) {
+            }
+
+        } catch (ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
-        }    
+        }
     }
-    
+
     // Decodes ZIP and loades images into the videoplayer GUI.
     private static void decode(String input, String output, Integer fps) {
         // Set videoplayer parameters
@@ -58,7 +60,7 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     // TODO: Implement encoding.
     private static void encode(String input, String output) {
         try {
@@ -68,5 +70,5 @@ public class Main {
             System.out.println(ex.getMessage());
         }
     }
-    
+
 }

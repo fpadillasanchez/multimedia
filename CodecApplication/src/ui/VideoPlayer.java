@@ -5,6 +5,7 @@
  */
 package ui;
 
+import image_processing.NegativeFilter;
 import io.ImageBuffer;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -36,7 +37,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private int count = 0;
     private ArrayList<BufferedImage> images = new ArrayList<>();
-    int fps = 30; // default fps
+    int fps; // default fps
     private int indexImage = 0;
     FrameTimer tm;
     Timer t;
@@ -44,6 +45,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     boolean isPaused = false;
     BufferedImage img;
     ImageBuffer imgBuffer = new ImageBuffer();
+    NegativeFilter negFilter;
 
     /**
      * Creates new form VideoPlayer
@@ -425,6 +427,21 @@ public class VideoPlayer extends javax.swing.JFrame {
     }
     
     private void parserNegativeFilter() {
+        boolean finished = false;
+        int i = 0;
+        int count = imgBuffer.size() - 1;
+        while(!finished) {
+            //System.out.println("Not finished");
+            BufferedImage img = imgBuffer.getImage2();
+            negFilter = new NegativeFilter(img);
+            imgBuffer.pushImage(negFilter.invertImage(img));
+            count--;
+            System.out.println("Count -- "+count);
+            if (count < 0) {
+                finished = true;
+            }
+            i++;
+        }
         
     }
     
