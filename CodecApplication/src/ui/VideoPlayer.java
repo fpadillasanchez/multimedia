@@ -36,7 +36,6 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private ArrayList<BufferedImage> images = new ArrayList<>();
     int fps = 30; // default fps
-    private int indexImage = 0;
     FrameTimer tm;
     Timer t;
     boolean isPlaying = false;
@@ -377,16 +376,14 @@ public class VideoPlayer extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void next() throws IOException {
-        this.indexImage = this.indexImage + 1;
-        if (this.indexImage >= images.size()) {
-            this.indexImage = 0;
-        }
+
         ImageIcon icon = new ImageIcon(imgBuffer.getImage(true));
         jLabelImagesSequences.setIcon(icon);
     }
 
     /**
      * *
+     *
      *
      * @param bin
      * @param negative
@@ -408,6 +405,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     /**
      * *
+     *
      *
      * @param i
      */
@@ -476,8 +474,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
         System.out.println("Selected file: " + INPUT_ZIP);
         System.out.println("Starting to load ZIP file");
-        images.clear();
-        imgBuffer.loadBuffer(FileIO.unZip(INPUT_ZIP, OUTPUT_FOLDER));
+        imgBuffer.loadBuffer(FileIO.unZip(imgFile.toString(), OUTPUT_FOLDER));
         System.out.println("ZIP file Loaded");
     }
 
