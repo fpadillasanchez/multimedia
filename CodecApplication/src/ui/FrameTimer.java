@@ -13,12 +13,13 @@ import java.util.logging.Logger;
 /**
  * FrameTimer es la clase que dependiendo de si fps es mayor o menor que 0
  * mostrar una secuencia de imágenes en orden o no.
+ *
  * @author Fernando Padilla Sergi Díaz
  */
 public class FrameTimer extends TimerTask {
 
     VideoPlayer vp;
-   
+
     public FrameTimer(VideoPlayer vp) {
         this.vp = vp;
     }
@@ -33,10 +34,6 @@ public class FrameTimer extends TimerTask {
             } catch (IOException ex) {
                 Logger.getLogger(FrameTimer.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (vp.fps < 0) {
-            vp.previous();
-
         }
     }
-
 }

@@ -45,7 +45,7 @@ public class Main {
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
-    private static void decode(String input, String output, Integer fps) {
+    private static void decode(String input, String output, Integer fps, Boolean bin, Boolean negative, Integer average) {
         // Set videoplayer parameters
         VideoPlayer.OUTPUT_FOLDER = output;
         VideoPlayer.INPUT_ZIP = input;
@@ -56,6 +56,7 @@ public class Main {
             vp.loadBuffer();
             // Visualize GUI
             vp.setVisible(true);
+            vp.setActiveFilter(bin, negative, average);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
