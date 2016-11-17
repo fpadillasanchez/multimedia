@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -35,6 +34,8 @@ public class FileIO {
             this.value = value;
         }
     };
+    
+    // --ACCESSIBLE FUNCTIONS--
     
     // Loads image if its format is supported.
     public static BufferedImage readImage(String file) throws IOException {
@@ -60,13 +61,15 @@ public class FileIO {
             FileOutputStream fos;
             while (entry != null) {
                 if(validateExtension(entry.getName())) {
+                    // Create temporary file containing the info of the entry
+                    System.out.println(output + File.separator + entry.getName());
                     File file = new File(output + File.separator + entry.getName());
                     fos = new FileOutputStream(file);
                     
                     while ((lenght = zis.read(buffer)) > 0) {
                         fos.write(buffer, 0, lenght);
                     }
-                    fos.close();
+                    fos.close();  
                     files.add(file.getAbsolutePath());
                 }
                 entry = zis.getNextEntry();
@@ -109,6 +112,8 @@ public class FileIO {
         formatedZip(files, output);
     }
     
+    // --PRIVATE FUNCTIONS--
+    
     // Creates the zip file.
     private static void zip(ArrayList<File> files, String output) throws IOException {
         File zipfile = new File(output);
@@ -144,6 +149,12 @@ public class FileIO {
         }
         return true;
    
+    }
+    
+    // Takes the image directed by a given path and stores a copy in the same
+    // directory using given supported format.
+    private static File storeImage(String file, SupportedFormats format) throws IOException {   
+        return storeImage(FileIO.readImage(file), file, format);
     }
     
     // Given a path and a supported format, the method stores there an image.

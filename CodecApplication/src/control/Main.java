@@ -64,7 +64,6 @@ public class Main {
     // TODO: Implement encoding.
     private static void encode(String input, String output) {
         try {
-            //FileIO.zip(input, output);
             FileIO.formatedZip(input, output);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
