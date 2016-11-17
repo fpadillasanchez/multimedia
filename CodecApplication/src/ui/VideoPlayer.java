@@ -310,7 +310,6 @@ public class VideoPlayer extends javax.swing.JFrame {
         switch (jComboBox1.getSelectedItem().toString()) {
             case "Binary Image": {
                 try {
-                    System.out.println("Holaaa");
                     parserBinaryImages();
                 } catch (IOException ex) {
                     Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,6 +317,7 @@ public class VideoPlayer extends javax.swing.JFrame {
             }
             break;
             case "Negative Filter":
+                parserNegativeFilter();
                 break;
             case "HSB":
                 break;
@@ -424,6 +424,10 @@ public class VideoPlayer extends javax.swing.JFrame {
         }
     }
     
+    private void parserNegativeFilter() {
+        
+    }
+    
     // Loads images from the given file into the buffer.
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
         System.out.println("Selected file: " + INPUT_ZIP);
@@ -448,8 +452,12 @@ public class VideoPlayer extends javax.swing.JFrame {
         }    
     }
     
+    
+    
     // Loads images from the input zip path into the buffer. Public access.
     public void loadBuffer() throws FileNotFoundException, IOException {
         loadBuffer(new File(INPUT_ZIP));
     }
+
+    
 }
