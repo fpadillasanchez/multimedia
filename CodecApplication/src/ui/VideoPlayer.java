@@ -6,6 +6,7 @@
 package ui;
 
 import image_processing.NegativeFilter;
+import io.FileIO;
 import io.ImageBuffer;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -450,23 +451,9 @@ public class VideoPlayer extends javax.swing.JFrame {
         System.out.println("Selected file: " + INPUT_ZIP);
 
         System.out.println("Starting to load ZIP file");
-        ZipFile zFl;
-        try {
-            zFl = new ZipFile(imgFile);
-            Enumeration<? extends ZipEntry> entries = zFl.entries();
-            images.clear();//Empty images array
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                InputStream is = zFl.getInputStream(entry);
-                ImageInputStream iis = ImageIO.createImageInputStream(is);
-                BufferedImage bufImg = ImageIO.read(iis);
-                imgBuffer.pushImage(bufImg);
-            }
-            System.out.println("ZIP file Loaded");
-
-        } catch (IOException ex) {
-            Logger.getLogger(VideoPlayer.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        images.clear();
+        imgBuffer.loadBuffer(FileIO.unZip(INPUT_ZIP, OUTPUT_FOLDER)); 
+        System.out.println("ZIP file Loaded");
     }
     
     // Set frames per second.

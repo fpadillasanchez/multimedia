@@ -62,15 +62,19 @@ public class FileIO {
             while (entry != null) {
                 if(validateExtension(entry.getName())) {
                     // Create temporary file containing the info of the entry
-                    System.out.println(output + File.separator + entry.getName());
                     File file = new File(output + File.separator + entry.getName());
                     fos = new FileOutputStream(file);
-                    
+                    // Store the info hold in the zip entry into the temporary file
                     while ((lenght = zis.read(buffer)) > 0) {
                         fos.write(buffer, 0, lenght);
                     }
                     fos.close();  
-                    files.add(file.getAbsolutePath());
+                    
+                    // Store a copy of the image temporary file using default format JPEG
+                    // TODO: allow other formats
+                    files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG).getAbsolutePath());
+                    // Delete temporary file
+                    file.delete();
                 }
                 entry = zis.getNextEntry();
             }
