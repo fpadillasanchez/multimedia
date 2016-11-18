@@ -17,6 +17,8 @@ import ui.VideoPlayer;
 /**
  *
  * @author Fernando Padilla, Sergi Diaz
+ * 
+ * 
  */
 public class Main {
 
@@ -84,6 +86,7 @@ public class Main {
     private static void encode(String input, String output) {
         try {
             FileIO.formatedZip(input, output);
+            System.out.println("Done!");
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
