@@ -19,10 +19,14 @@ public abstract class LinearTransformation {
     protected BufferedImage image; 
     
     // Apply the transformation on the image and returns the image.
-    public BufferedImage apply() {
+    // TODO: Optimization
+    public BufferedImage apply() {      
         int width = image.getWidth();
         int height = image.getHeight();
-        int radius = mask.length;
+        int radius = mask.length / 2;
+        
+        // Stores computed pixel value
+        int pixel[][][] = new int[width][height][3];
         
         // Iterate through the image pixels
         for(int i=0; i<width; i++) {
@@ -32,21 +36,28 @@ public abstract class LinearTransformation {
                 int x1 = Integer.min(width, i + radius);    // right boundary
                 int y0 = Integer.max(0, j - radius);        // upper boundary
                 int y1 = Integer.min(height, j + radius);   // down boundary
-                Color c = new Color(image.getRGB(i, j));    // pixel color
                 float R = 0; float G = 0; float B = 0;
                 // Iterate though neighboring pixels that lie inside the mask
                 for (int x=x0; x<x1; x++) {
                     for (int y=y0; y<y1; y++) {
+                        Color c = new Color(image.getRGB(x0, y0));    // neighbor color
                         // Compute new pixel value
-                        R += mask[x][y] * c.getRed();
-                        G += mask[x][y] * c.getGreen();
-                        B += mask[x][y] * c.getBlue();
+                        R += c.getRed() * mask[x - x0][y - y0];
+                        G += c.getGreen() * mask[x - x0][y - y0];
+                        B += c.getBlue() * mask[x - x0][y - y0];
                     }   
                 }
-                // Assign new value to the pixel
-                image.setRGB(i, j, (new Color(R, G, B)).getRGB());
-            }
+                // Store new value
+                pixel[i][j][0] = (int)R; pixel[i][j][1] = (int)G; pixel[i][j][2] = (int)B; 
+            }         
         }
+        
+        // Reassign pixel values
+        for (int i=0; i<width; i++)
+            for (int j=0; j<height; j++)
+                image.setRGB(i, j, new Color(pixel[i][j][0], pixel[i][j][1], pixel[i][j][2]).getRGB());
+        
         return image;
+        
     }
 }

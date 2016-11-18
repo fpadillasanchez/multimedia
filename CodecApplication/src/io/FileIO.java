@@ -5,6 +5,7 @@
  */
 package io;
 
+import image_processing.FilterManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -165,8 +166,9 @@ public class FileIO {
     // Returns the path to the new file.
     private static File storeImage(BufferedImage image, String file, SupportedFormats format) throws IOException {
         File outputFile = new File(stripExtension(file) + "." + format.value);
-        ImageIO.write(image, format.value, outputFile);
         
+        // Filtration process done during store.
+        ImageIO.write(FilterManager.filtrate(image), format.value, outputFile); 
         return outputFile;
     }
     

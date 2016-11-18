@@ -37,7 +37,7 @@ public class ArgParser {
     @Parameter(names = "--binarization", 
             description = "Binarization filtering using given threshold", 
             validateWith = Validator.class)
-    private boolean bin = false;
+    private Integer bin = 1;
     
     @Parameter(names = "--negative", description = "Negative filtering", 
             validateWith = Validator.class)
@@ -46,7 +46,7 @@ public class ArgParser {
     @Parameter(names = "--averaging", 
             description = "Averaging filtering over zones of value x value", 
             validateWith = Validator.class)
-    private Integer average = null;
+    private Integer average = 3;
     
     @Parameter(names = "--seekRange", 
             description = "Maximum range of the tile search", 
@@ -88,7 +88,7 @@ public class ArgParser {
         return fps;
     }
 
-    public boolean getBin() {
+    public Integer getBin() {
         return bin;
     }
 

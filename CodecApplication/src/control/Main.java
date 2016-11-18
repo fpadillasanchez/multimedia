@@ -7,6 +7,7 @@ package control;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import image_processing.FilterManager;
 import io.FileIO;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,13 +28,29 @@ public class Main {
 
         try {
             jCom = new JCommander(parser, args);
-
+            
+            // Make filter selection
+            // TODO: Make these assignations through ArgParser
+            for (String arg : args) {
+                if (arg.equals("--binarization")) {
+                    FilterManager.setFilter(FilterManager.SupportedFilters.Binary, 
+                            parser.getAverage(), parser.getBin());
+                    break;
+                }
+                if (arg.equals("--averaging")) {
+                    FilterManager.setFilter(FilterManager.SupportedFilters.Average, 
+                            parser.getAverage(), parser.getBin());
+                    break;
+                }  
+            }
+            if (parser.isNegative())
+                FilterManager.setFilter(FilterManager.SupportedFilters.Negative, 
+                        parser.getAverage(), parser.getBin());
+            
             if (parser.help) {
                 jCom.usage();
-            } else if (parser.batch) {
-                System.out.println("Not implemented yet.");
             } else if (parser.decode) {
-                decode(parser.getInput(), parser.getOutput(), parser.getFPS(), parser.getBin(), parser.isNegative(), parser.getAverage());
+                decode(!parser.batch, parser.getInput(), parser.getOutput(), parser.getFPS()); // do not show GUI if batch
             } else if (parser.encode) {
                 encode(parser.getInput(), parser.getOutput());
             }
@@ -45,8 +62,9 @@ public class Main {
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
-    private static void decode(String input, String output, Integer fps, Boolean bin, Boolean negative, Integer average) {
+    private static void decode(boolean visible, String input, String output, int fps) {
         // Set videoplayer parameters
+        // TODO: Take these parameters, held at CodecConfig, from VideoPlayer
         VideoPlayer.OUTPUT_FOLDER = output;
         VideoPlayer.INPUT_ZIP = input;
         vp = new VideoPlayer();
@@ -54,16 +72,15 @@ public class Main {
             vp.setFPS(fps);
             // Try to load image buffer
             vp.loadBuffer();
-            vp.setActiveFilter(bin, negative, average);
             // Visualize GUI
-            vp.setVisible(true);
+            vp.setVisible(visible);
             
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    // TODO: Implement encoding.
+    // ZIP compression
     private static void encode(String input, String output) {
         try {
             FileIO.formatedZip(input, output);
@@ -71,5 +88,4 @@ public class Main {
             System.out.println(ex.getMessage());
         }
     }
-
 }

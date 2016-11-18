@@ -84,10 +84,6 @@ public class ImageBuffer {
         return buffer.size;
     }
 
-    public void loadBuffer(String input) throws IOException {
-
-    }
-
     /***
      * Given an array of file paths, buffer gets loaded by images directed by those paths.
      * @param files
@@ -97,18 +93,14 @@ public class ImageBuffer {
         for (String file : files) {
             BufferedImage image = FileIO.readImage(file);
             if (image != null) {
-                buffer.pop();
+                //buffer.pop();
                 buffer.push(image);
             }
+            System.out.println(file);
         }
     }
-/*
-    public void loadImages(String[] files) throws IOException {
-        for (String file : files) {
-            buffer.push(loadImage(file));
-        }
-    }
-*/  /***
+    
+    /***
     * +
     * @param files
     * @throws IOException 
@@ -118,7 +110,6 @@ public class ImageBuffer {
         while (iter.hasNext()) {
             buffer.push(iter.next());
         }
-
     }
 
     /***

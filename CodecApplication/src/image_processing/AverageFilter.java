@@ -46,7 +46,7 @@ public class AverageFilter extends LinearTransformation {
     private void setMask(int maskSize) {
         mask = new float[maskSize][maskSize];
         
-        float value = 1 / (maskSize * maskSize);
+        float value = 1f / (maskSize * maskSize);
         for (int i=0; i<maskSize; i++) {
             for (int j=0; j<maskSize; j++) {
                 mask[i][j] = value;
