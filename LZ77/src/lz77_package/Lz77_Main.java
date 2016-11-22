@@ -1,5 +1,9 @@
 package lz77_package;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -7,39 +11,40 @@ import java.util.Scanner;
  * Fernando Padilla, Sergi Diaz
  */
 public class Lz77_Main {
+
     // Default parameters
     private static int Ment = 4;        // size of the search window
     private static int Mdes = 8;        // size of the sliding window
     private static int entrySize = 25;  // size of the input string
+    private static String fileEntry = "";
 
     @SuppressWarnings("empty-statement")
     public static void main(String[] args) {
         System.out.println("Starting...");
         Scanner sc = new Scanner(System.in);
+        System.out.println("Enter file input: ");
+        fileEntry = sc.nextLine();
         System.out.print("Enter the binary sequence length : ");
         try {
             entrySize = sc.nextInt();
-        } catch(InputMismatchException e) {;
+        } catch (InputMismatchException e) {;
             System.out.println("Length set as default " + entrySize);
-            sc.next();          
+            sc.next();
         }
 
-        String bits = create_binary_String(entrySize);
-        entrySize = bits.length();
-        
         System.out.print("Enter the INPUT WINDOW size: ");
         try {
             Ment = sc.nextInt();;
-        } catch(InputMismatchException e) {;
+        } catch (InputMismatchException e) {;
             System.out.println("Size set as default " + Ment);
-            sc.next();          
+            sc.next();
         }
-        
+
         System.out.print("Enter the SLIDING WINDOW size: ");
         try {
             Mdes = sc.nextInt();;
-        } catch(InputMismatchException e) {;
-            System.out.println("Size set as default " + Mdes);        
+        } catch (InputMismatchException e) {;
+            System.out.println("Size set as default " + Mdes);
         }
 
         if (!configControl(Ment, Mdes, entrySize)) {
@@ -59,7 +64,7 @@ public class Lz77_Main {
                 System.out.println("Original Bits: \t" + bits.length());
                 System.out.println("Compressed Bits: \t" + compressed_bits.length());
                 System.out.println("Decompressed Bits: \t" + decompressed_bits.length());
-                System.out.println("Compression: \t" 
+                System.out.println("Compression: \t"
                         + (float) (compressed_bits.length() / (float) decompressed_bits.length()) * 100 + "%");
                 System.out.println("Decompressed sequence: " + bits);
                 if (bits.equals(decompressed_bits)) {
@@ -69,30 +74,15 @@ public class Lz77_Main {
                 }
             }
         }
-        
-    }
-
-    /**
-     * Returns a string of randomly generated binary values (0,1).
-     * 
-     * @param size  size of the returned string
-     * @return      string of randomly generated binaries
-     */
-    private static String create_binary_String(int size) {
-        String ret = "";
-        for (int i = 0; i < size; i++) {
-            ret = ret + Math.round(Math.random());
-        }
-        return ret;
     }
 
     /**
      * Returns true if compression can be performed using the given parameters.
-     * 
-     * @param Ment      input window size
-     * @param Mdes      sliding window size
+     *
+     * @param Ment input window size
+     * @param Mdes sliding window size
      * @param entrySize input string size
-     * @return          compression can be performed.
+     * @return compression can be performed.
      */
     private static boolean configControl(int Ment, int Mdes, int entrySize) {
         if (Ment > Mdes) {
@@ -118,11 +108,39 @@ public class Lz77_Main {
 
     /**
      * Given an integer, returns true if the value is power of two.
-     * 
-     * @param x     integer
-     * @return      x is power of two
+     *
+     * @param x integer
+     * @return x is power of two
      */
     private static boolean isPowerOfTwo(int x) {
         return (x != 0) && ((x & (x - 1)) == 0);
+    }
+
+    private void readFiles(String path) {
+        BufferedReader br = null;
+        File file = new File("src/recources/" + path);
+        file.getPath();
+
+        try {
+
+            String sCurrentLine;
+
+            br = new BufferedReader(new FileReader("C:\\testing.txt"));
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                System.out.println(sCurrentLine);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
