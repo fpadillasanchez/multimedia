@@ -1,5 +1,7 @@
 package lz77_package;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Fernando Padilla
  */
@@ -25,6 +27,8 @@ public class LZ77 {
      * @return      compressed string
      */
     public String compress(String bits) {
+ 
+        long time1= System.nanoTime();
         boolean done = false;
         int i = 0;
         String Ment_str;
@@ -60,6 +64,9 @@ public class LZ77 {
             }
             i++;
         }
+        long time2 = System.nanoTime();
+        long timeSpent = time2-time1;
+        System.out.println("Nano time: "+ timeSpent/1000000000.0);
         return res;
     }
 
