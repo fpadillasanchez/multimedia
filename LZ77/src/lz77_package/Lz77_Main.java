@@ -22,9 +22,9 @@ public class Lz77_Main {
 
         System.out.println("Starting...");
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter file input: ");
-        fileEntry = sc.nextLine();
-        bits = cargarTxt("src/resources/"+fileEntry);
+        //System.out.println("Enter file input: ");
+        //fileEntry = sc.nextLine();
+        bits = cargarTxt("src/resources/quijote_short.txt");
         
         System.out.print("Enter the INPUT WINDOW size: ");
         try {
@@ -61,7 +61,7 @@ public class Lz77_Main {
                 System.out.println("Compression: \t"
                         + (float) (compressed_bits.length() / (float) decompressed_bits.length()) * 100 + "%");
                 System.out.println("Decompressed sequence: " + bits);
-                if (bits.equals(decompressed_bits)) {
+                if (bits.toString().equals(decompressed_bits)) {
                     System.out.println("Compression completed");
                     System.out.println("Decompressed sequence: "+ ASCIIbin2string(new StringBuffer(compressed_bits)));
                 } else {
