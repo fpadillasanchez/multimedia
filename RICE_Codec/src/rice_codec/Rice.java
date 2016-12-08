@@ -27,7 +27,7 @@ public class Rice {
         
         
         // Assignem bit de signe
-        if (n > 0)
+        if (n >= 0)
             output = "1"; // primer bit es 1 si el nombre es positiu
         else
             output = "0"; // segon bit es 0 si el nombre es negatiu
@@ -40,15 +40,23 @@ public class Rice {
         
         // Allarga R posant 0 davant fins a tenir log(M) bits
         int bits = (int) log2(M);
+        String aux = "";
         for(int j=0; j<(bits - R.length()); j++) {
-            R = "0" + R;
+            aux += "0";
         }
+        R = aux + R;
         
         output += "0" + R; // <signe><quocient><residu>      
         return output; // retorna cadena de sortida amb el nombre codificat
     }
     
     public static double log2(int num) {
+        if (num < 0) {
+            return Double.NaN;
+        }
+        if (num == 0) {
+            return 1;
+        }
         return Math.log(num) / Math.log(2);
     }
 }
