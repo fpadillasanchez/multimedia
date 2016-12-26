@@ -41,23 +41,23 @@ public class BinarizationFilter extends SimpleFilter {
         if (threshold == -1)
             return color;
         
-        int r;
-        int g;
-        int b;
-        if (color.getRed() > threshold)
-            r = 255;
-        else
-            r = 0;
-        if (color.getGreen() > threshold)
-            g = 255;
-        else
-            g = 0;
-        if (color.getBlue() > threshold)
-            b = 255;
-        else
-            b = 0;
+        // Grayscale value
+        int gray = average(color.getRed(), color.getGreen(), color.getBlue());
         
-        return new Color(r, g, b);
+        // Set color as white if value surpasses threshold. Set as black otherwise
+        
+        if (gray > threshold) {
+            gray = 0;
+        } else {
+            gray = 255;
+        }
+        
+        // Return new value
+        return new Color(gray, gray, gray);
+    }
+    
+    private int average(int R, int G, int B) {
+        return (R + G + B) / 3;
     }
     
 }
