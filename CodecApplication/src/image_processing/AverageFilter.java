@@ -41,7 +41,7 @@ public class AverageFilter extends LinearTransformation {
         this.image = ImageIO.read(new File(image));
         setMask(3);
     }
-    
+
     // Compute averaging mask.
     private void setMask(int maskSize) {
         mask = new float[maskSize][maskSize];

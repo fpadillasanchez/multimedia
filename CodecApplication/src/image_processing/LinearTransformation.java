@@ -19,45 +19,36 @@ public abstract class LinearTransformation {
     protected BufferedImage image; 
     
     // Apply the transformation on the image and returns the image.
-    // TODO: Optimization
-    public BufferedImage apply() {      
-        int width = image.getWidth();
-        int height = image.getHeight();
+    // TODO: Optimization    
+    public BufferedImage apply() {
+ 
+        for (int y = 1; y + 1 < image.getHeight(); y++) {
+            for (int x = 1; x + 1 < image.getWidth(); x++) {
+                Color tempColor = getFilteredValue(y, x);
+                image.setRGB(x, y, tempColor.getRGB());
+            }
+        }
+        return image;
+    }
+    
+    // Return pixel color after filtering, input pixel defined by (x,y) coordinates.
+    private Color getFilteredValue(int y, int x) {
         int radius = mask.length / 2;
         
-        // Stores computed pixel value
-        int pixel[][][] = new int[width][height][3];
-        
-        // Iterate through the image pixels
-        for(int i=0; i<width; i++) {
-            for(int j=0; j<height; j++) {
-                // Get the boundaries of the mask
-                int x0 = Integer.max(0, i - radius);        // left boundary
-                int x1 = Integer.min(width, i + radius);    // right boundary
-                int y0 = Integer.max(0, j - radius);        // upper boundary
-                int y1 = Integer.min(height, j + radius);   // down boundary
-                float R = 0; float G = 0; float B = 0;
-                // Iterate though neighboring pixels that lie inside the mask
-                for (int x=x0; x<x1; x++) {
-                    for (int y=y0; y<y1; y++) {
-                        Color c = new Color(image.getRGB(x0, y0));    // neighbor color
-                        // Compute new pixel value
-                        R += c.getRed() * mask[x - x0][y - y0];
-                        G += c.getGreen() * mask[x - x0][y - y0];
-                        B += c.getBlue() * mask[x - x0][y - y0];
-                    }   
+        int r = 0, g = 0, b = 0;
+        for (int j = 0; j < mask.length; j++) {
+            for (int k = 0; k < mask[j].length; k++) {
+                try {
+                    r += (mask[j][k] * (new Color(image.getRGB(x - radius - k, 
+                            y - radius + j))).getRed());
+                    g += (mask[j][k] * (new Color(image.getRGB(x - radius + k, 
+                            y - radius + j))).getGreen());
+                    b += (mask[j][k] * (new Color(image.getRGB(x - radius + k, 
+                            y - radius + j))).getBlue());
+                }catch(ArrayIndexOutOfBoundsException ex) {
                 }
-                // Store new value
-                pixel[i][j][0] = (int)R; pixel[i][j][1] = (int)G; pixel[i][j][2] = (int)B; 
-            }         
+            }
         }
-        
-        // Reassign pixel values
-        for (int i=0; i<width; i++)
-            for (int j=0; j<height; j++)
-                image.setRGB(i, j, new Color(pixel[i][j][0], pixel[i][j][1], pixel[i][j][2]).getRGB());
-        
-        return image;
-        
+        return new Color(r, g, b);
     }
 }
