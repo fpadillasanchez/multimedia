@@ -32,8 +32,7 @@ public class Main {
             jCom = new JCommander(parser, args);
             
             // Make filter selection
-            // TODO: Make these assignations through ArgParser
-            for (String arg : args) {
+            for (String arg : args) { // following filters require input values
                 if (arg.equals("--binarization")) {
                     FilterManager.setFilter(FilterManager.SupportedFilters.Binary, 
                             parser.getAverage(), parser.getBin());
@@ -44,10 +43,15 @@ public class Main {
                             parser.getAverage(), parser.getBin());
                     break;
                 }  
-            }
-            if (parser.isNegative())
-                FilterManager.setFilter(FilterManager.SupportedFilters.Negative, 
-                        parser.getAverage(), parser.getBin());
+            } // following inputs do not require input values
+            if (parser.isNegative())       // negative filtering
+                FilterManager.setFilter(FilterManager.SupportedFilters.Negative);
+            else if (parser.isBlur())      // blur filtering
+                FilterManager.setFilter(FilterManager.SupportedFilters.Blur);
+            else if (parser.isSharpen())   // sharpen filtering
+                FilterManager.setFilter(FilterManager.SupportedFilters.Sharpen);
+            else if (parser.isLaplacian()) // laplacian filtering
+                FilterManager.setFilter(FilterManager.SupportedFilters.Laplacian);
             
             if (parser.help) {
                 jCom.usage();

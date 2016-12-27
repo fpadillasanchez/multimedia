@@ -58,6 +58,5 @@ public class BinarizationFilter extends SimpleFilter {
     
     private int average(int R, int G, int B) {
         return (R + G + B) / 3;
-    }
-    
+    }   
 }

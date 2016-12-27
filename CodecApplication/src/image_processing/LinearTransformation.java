@@ -32,23 +32,35 @@ public abstract class LinearTransformation {
     }
     
     // Return pixel color after filtering, input pixel defined by (x,y) coordinates.
-    private Color getFilteredValue(int y, int x) {
+    protected Color getFilteredValue(int y, int x) {
         int radius = mask.length / 2;
         
         int r = 0, g = 0, b = 0;
         for (int j = 0; j < mask.length; j++) {
             for (int k = 0; k < mask[j].length; k++) {
                 try {
-                    r += (mask[j][k] * (new Color(image.getRGB(x - radius - k, 
+                    r += (mask[j][k] * (new Color(image.getRGB(x - radius + k, 
                             y - radius + j))).getRed());
                     g += (mask[j][k] * (new Color(image.getRGB(x - radius + k, 
                             y - radius + j))).getGreen());
                     b += (mask[j][k] * (new Color(image.getRGB(x - radius + k, 
                             y - radius + j))).getBlue());
+                    
+                    // Bound RGB values
+                    r = Math.min(Math.max(0, r), 255);
+                    g = Math.min(Math.max(0, g), 255);
+                    b = Math.min(Math.max(0, b), 255);
                 }catch(ArrayIndexOutOfBoundsException ex) {
                 }
             }
         }
-        return new Color(r, g, b);
+        try {
+            return new Color(r, g, b);
+        } catch (IllegalArgumentException e) {
+            return new Color(0, 0, 0);
+        }
+        
     }
+    
+    protected abstract void setMask();
 }

@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
  */
 public class FilterManager {
     public enum SupportedFilters {
-        Negative, Binary, Average, Emboss, Sharpen
+        Negative, Binary, Average, Emboss, Sharpen, Blur, Laplacian
     }
     
     private static SupportedFilters filter;
@@ -41,6 +41,10 @@ public class FilterManager {
                 return (new EmbossFilter(image)).apply();
             case Sharpen:
                 return (new SharpenFilter(image)).apply();
+            case Blur:
+                return (new BlurFilter(image)).apply();
+            case Laplacian:
+                return (new LaplacianFilter(image)).apply();
             default:
                 return image;
         }
@@ -50,6 +54,10 @@ public class FilterManager {
         filter = f;
         maskSize = size;
         threshold = thr;
+    }
+    
+    public static void setFilter(SupportedFilters f) {
+        filter = f;
     }
     
     

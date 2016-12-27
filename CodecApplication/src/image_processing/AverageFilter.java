@@ -18,32 +18,41 @@ import javax.imageio.ImageIO;
  */
 public class AverageFilter extends LinearTransformation {   
     
+    private int maskSize;
+    
     // Basic builder. Both buffered image and mask size required.
     public AverageFilter(BufferedImage image, int maskSize) {
+        this.maskSize = maskSize;
+        
         this.image = image;
-        setMask(maskSize);
+        setMask();
     }
     
     // Load image from file. Mask size still required.
     public AverageFilter(String image, int maskSize) throws IOException {
         this.image = ImageIO.read(new File(image));
-        setMask(maskSize);
+        this.maskSize = maskSize;
+        
+        setMask();
     }
     
     // Non-loader builder with default mask size 3.
     public AverageFilter(BufferedImage image) {
         this.image = image;
-        setMask(3);
+        this.maskSize = 3;
+        setMask();
     }
     
     // Loader builder with default mask size 3.
     public AverageFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
-        setMask(3);
+        this.maskSize = 3;
+        setMask();
     }
 
     // Compute averaging mask.
-    private void setMask(int maskSize) {
+    @Override
+    protected void setMask() {
         mask = new float[maskSize][maskSize];
         
         float value = 1f / (maskSize * maskSize);

@@ -48,6 +48,22 @@ public class ArgParser {
             validateWith = Validator.class)
     private Integer average = 3;
     
+    @Parameter(names = "--emboss", description = "Emboss filtering", 
+            validateWith = Validator.class)
+    private boolean emboss = false;
+    
+    @Parameter(names = "--sharpen", description = "Sharpen filtering", 
+            validateWith = Validator.class)
+    private boolean sharpen = false;
+    
+    @Parameter(names = "--blur", description = "Blur filtering", 
+            validateWith = Validator.class)
+    private boolean blur = false;
+    
+    @Parameter(names = "--laplacian", description = "Laplacian filtering", 
+            validateWith = Validator.class)
+    private boolean laplacian = false;
+    
     @Parameter(names = "--seekRange", 
             description = "Maximum range of the tile search", 
             validateWith = Validator.class)
@@ -94,6 +110,18 @@ public class ArgParser {
 
     public boolean isNegative() {
         return negative;
+    }
+    
+    public boolean isSharpen() {
+        return sharpen;
+    }
+    
+    public boolean isBlur() {
+        return blur;
+    }
+    
+    public boolean isLaplacian() {
+        return laplacian;
     }
 
     public Integer getAverage() {

@@ -12,26 +12,23 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author Sergi Diaz, Fernando Padilla
- * 
- * TODO: Consider to integrate this feature inside its superclass.
+ * @author SDP
  */
-public class SharpenFilter extends LinearTransformation {
+public class BlurFilter extends LinearTransformation {
     
-    public SharpenFilter(BufferedImage image) {
+    public BlurFilter(BufferedImage image) {
         this.image = image;
         setMask();
     }
     
-    public SharpenFilter(String image) throws IOException {
+    public BlurFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         setMask();
     }
     
     @Override
     protected void setMask() {
-        float[][] sharpen = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};
-        mask = sharpen;
+        float[][] blur = {{0, 0.2f, 0}, {0.2f, 0.2f, 0.2f}, {0, 0.2f, 0}};
+        mask = blur;
     }
-    
 }
