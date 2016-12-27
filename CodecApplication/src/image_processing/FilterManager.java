@@ -15,10 +15,10 @@ import java.awt.image.BufferedImage;
  */
 public class FilterManager {
     public enum SupportedFilters {
-        Negative, Binary, Average, Emboss, Sharpen, Blur, Laplacian
+        Negative, Binary, Average, Emboss, Sharpen, Blur, Laplacian, NONE
     }
     
-    private static SupportedFilters filter;
+    private static SupportedFilters filter = SupportedFilters.NONE;
     // Average
     private static int maskSize;
     // Binary
@@ -50,6 +50,27 @@ public class FilterManager {
         }
     }
     
+    public static BufferedImage filtrate(SupportedFilters f, BufferedImage image) {
+        switch(f) {
+            case Negative:
+                return (new NegativeFilter(image)).apply();
+            case Binary:
+                return (new BinarizationFilter(image, threshold)).apply();
+            case Average:
+                return (new AverageFilter(image, maskSize)).apply();
+            case Emboss:
+                return (new EmbossFilter(image)).apply();
+            case Sharpen:
+                return (new SharpenFilter(image)).apply();
+            case Blur:
+                return (new BlurFilter(image)).apply();
+            case Laplacian:
+                return (new LaplacianFilter(image)).apply();
+            default:
+                return image;
+        }
+    }
+    
     public static void setFilter(SupportedFilters f, int size, int thr) {
         filter = f;
         maskSize = size;
@@ -58,6 +79,11 @@ public class FilterManager {
     
     public static void setFilter(SupportedFilters f) {
         filter = f;
+    }
+    
+    public static BufferedImage average(BufferedImage image, int maskSize) {
+        //return (new AverageFilter(image, maskSize)).apply();
+        return (new LaplacianFilter(image)).apply();
     }
     
     

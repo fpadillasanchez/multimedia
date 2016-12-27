@@ -5,6 +5,7 @@
  */
 package control;
 
+import codec.Encoder;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
@@ -25,6 +26,7 @@ public class Main {
     static VideoPlayer vp;  // GUI
 
     public static void main(String[] args) {
+        
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
@@ -65,6 +67,17 @@ public class Main {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
+        
+        /*
+        String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
+        String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
+        Encoder e = new Encoder();
+        try {
+            e.loadBuffer(input, output);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        */
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.

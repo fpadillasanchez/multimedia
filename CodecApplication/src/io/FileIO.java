@@ -166,7 +166,7 @@ public class FileIO {
     
     // Given a path and a supported format, the method stores there an image.
     // Returns the path to the new file.
-    private static File storeImage(BufferedImage image, String file, SupportedFormats format) throws IOException {
+    public static File storeImage(BufferedImage image, String file, SupportedFormats format) throws IOException {
         File outputFile = new File(stripExtension(file) + "." + format.value);
         
         // Filtration process done during store.

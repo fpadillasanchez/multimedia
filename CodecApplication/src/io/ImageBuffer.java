@@ -96,7 +96,7 @@ public class ImageBuffer {
                 //buffer.pop();
                 buffer.push(image);
             }
-            System.out.println(file);
+            //System.out.println(file);
         }
     }
     
@@ -133,7 +133,7 @@ public class ImageBuffer {
     }
    
     public void pushImage(BufferedImage image){
-        buffer.pop();
+        //buffer.pop();
         buffer.push(image);
     }
 /*
