@@ -91,7 +91,8 @@ public class MotionCompensator {
                         movements[i][j][1] = 0;
                         
                         // Delete tile if coincidence
-                        other.tesselation[i][j] = 0;
+                        //other.tesselation[i][j] = 0;
+                        other.deleteTile(i, j);
                     } else {
                         movements[i][j] = searchTile(other, i, j, tolerance);         
                     }
@@ -116,6 +117,21 @@ public class MotionCompensator {
                 }
             }  
             return vector;
+        }
+        
+        // Call this function for deleting both the tile and the set of pixels that
+        // belong to that tile
+        private void deleteTile(int x, int y) {
+            Color color = new Color(0,0,0);
+            
+            for (int i=0; i<tileWidth; i++) {
+                for (int j=0; j<tileHeight; j++) {
+                    try {
+                        image.setRGB(i + x * tileWidth, j + y * tileHeight, color.getRGB());
+                    }catch(Exception e){} 
+                }
+            } 
+            tesselation[x][y] = 0;
         }
         
         public BufferedImage getImage() {
