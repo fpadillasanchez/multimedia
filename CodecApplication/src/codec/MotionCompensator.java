@@ -72,8 +72,50 @@ public class MotionCompensator {
             tesselation[x][y] = (new Color(r /size, g /size, b /size)).getRGB();
         }
         
-        private void compare(SubImage other) {
-            int movements[][] = new int[tesselation.length][tesselation[0].length];
+        // Movement detection-compensation
+        private int[][][] compare(SubImage other, float tol) {
+            float tolerance = tol * tileWidth * tileHeight;
+            int numTiles_x = tesselation.length;
+            int numTiles_y = tesselation[0].length;
+            
+            // Matrix holds movement vectors for each tile in the original image (this).
+            // Such vectors point to destination position in the matrix and use current
+            // position as a reference.
+            int movements[][][] = new int[numTiles_x][numTiles_y][2];   // 2D vectors
+            
+            for (int i=0; i<numTiles_x; i++) {
+                for (int j=0; j<numTiles_y; j++) {
+                    // Don't bother to search for the tile in the other image if tile values are similar.
+                    if (Math.abs(tesselation[i][j] - other.tesselation[i][j]) < tolerance) {
+                        movements[i][j][0] = 0; // does not require movement
+                        movements[i][j][1] = 0;
+                        
+                        // Delete tile if coincidence
+                        other.tesselation[i][j] = 0;
+                    } else {
+                        movements[i][j] = searchTile(other, i, j, tolerance);         
+                    }
+                }
+            }
+  
+            return movements;
+        }
+        
+        // Returns a 2D vector that contains the displacement necessary for the 
+        // (x, y) tile to match that of the other image.
+        private int[] searchTile(SubImage other, int x, int y, float tol) {
+            int[] vector = {0, 0};
+            
+            for (int i=0; i<other.tesselation.length; i++) {
+                for (int j=0; j<other.tesselation[0].length; j++) {
+                    if (Math.abs(tesselation[x][y] - other.tesselation[i][j]) < tol) {
+                        vector[0] = i - x; 
+                        vector[1] = j - y;
+                        return vector;      // return if coincidence found
+                    }
+                }
+            }  
+            return vector;
         }
         
         public BufferedImage getImage() {
