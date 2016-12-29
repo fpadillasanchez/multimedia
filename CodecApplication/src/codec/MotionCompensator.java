@@ -1,0 +1,138 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package codec;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+
+/**
+ *
+ * @author SDP
+ */
+public class MotionCompensator {
+    
+    
+    public class SubImage {
+        private BufferedImage image;            // image
+        private boolean delete;                 // deletion flag 
+        
+        private int[][] tesselation;            // tile matrix
+        private int tileWidth, tileHeight;      // tile size in pixels
+        
+        public SubImage(BufferedImage image, int numTiles_x, int numTiles_y) {
+            this.image = image;
+
+            tesselation = new int[numTiles_x][numTiles_y];
+            
+            // Compute tile size. Keep into account that the last tiles might contain
+            // less pixels than the others. It is a way to ensure that all pixels in
+            // the image are procesed.
+            tileWidth = Math.max(1, (int)Math.ceil((float)image.getWidth() / numTiles_x)); 
+            tileHeight = Math.max(1, (int)Math.ceil((float)image.getHeight() / numTiles_y));
+            System.out.println("w= " + tileWidth + ", h= " + tileHeight);
+        }
+        
+        // Compute tile matrix
+        private void tesselate() {   
+            // Size of tile in pixels       
+            for (int i=0; i<tesselation.length; i++) {
+                for (int j=0; j<tesselation[0].length; j++) {
+                    evaluate(i, j);
+                } 
+            }
+            System.out.println("tesselation completed!");
+        }
+        
+        // Sets value of (x,y) tile as the average value in the tile.
+        private void evaluate(int x, int y){  
+            int size = tileWidth * tileHeight;
+            int r = 0;  // average red value
+            int g = 0;  // average green value
+            int b = 0;  // average blue value
+            for (int i=0; i<tileWidth; i++) {
+                for (int j=0; j<tileHeight; j++) {
+                    
+                    try {
+                        Color color = new Color(image.getRGB(i + tileWidth * x, j + tileHeight * y));
+                        r += color.getRed();
+                        g += color.getGreen();
+                        b += color.getBlue();
+                    } catch(Exception ex) { 
+                        // pixel coord out of range
+                    }
+                }
+            }
+            tesselation[x][y] = (new Color(r /size, g /size, b /size)).getRGB();
+        }
+        
+        private void compare(SubImage other) {
+            int movements[][] = new int[tesselation.length][tesselation[0].length];
+        }
+        
+        public BufferedImage getImage() {
+            return image;
+        }
+            
+        
+        // FOR TESTING PURPOSE: Stores tiled image into a file with the given path.
+        public void DEBUG_Image(String path) {
+            BufferedImage debug = image; 
+            
+            // Apply colors from tesselation
+            for (int i=0; i<debug.getWidth(); i++) {
+                for (int j=0; j<debug.getHeight(); j++) {
+                    int x = Math.min(i / tileWidth, tesselation.length-1);
+                    int y = Math.min(j / tileHeight, tesselation[0].length-1);
+                    Color color = new Color(tesselation[x][y]);
+                    debug.setRGB(i, j, color.getRGB());
+                } 
+            }
+            
+            // Try to store image in a new file
+            try {            
+                File outputfile = new File(path);
+                ImageIO.write(debug, "jpg", outputfile);
+            } catch (IOException e) {
+            }
+        }
+    }
+    
+    private SubImage reference;
+    private ArrayList<SubImage> imageSet;   
+    
+    private SubImage DEBUG_image;
+    
+    public MotionCompensator(ArrayList<BufferedImage> images, int tileSize_x, int tileSize_y) {
+        for (BufferedImage image : images) {
+            imageSet.add(new SubImage(image, tileSize_x, tileSize_y));
+        }
+    }
+    
+    public MotionCompensator(BufferedImage debug_image, int x, int y) {
+        DEBUG_image = new SubImage(debug_image, x, y);
+        
+        DEBUG_image.tesselate();
+    }
+    
+    public MotionCompensator(BufferedImage reference, ArrayList<BufferedImage> images, int tileSize_x, int tileSize_y) {
+        this.reference = new SubImage(reference, tileSize_x, tileSize_y);
+        for (BufferedImage image : images) {
+            imageSet.add(new SubImage(image, tileSize_x, tileSize_y));
+        }
+    }
+    
+    public void DEBUG_TesselatedImage(String path) {
+        DEBUG_image.DEBUG_Image(path);
+    }
+    
+    private void motionDetection() {
+        
+    }
+}
