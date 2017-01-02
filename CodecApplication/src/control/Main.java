@@ -9,7 +9,6 @@ import codec.Encoder;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
-import io.FileIO;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,11 +24,11 @@ public class Main {
 
     static VideoPlayer vp;  // GUI
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {   
         
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
-
+        
         try {
             jCom = new JCommander(parser, args);
             
@@ -60,7 +59,7 @@ public class Main {
             } else if (parser.decode) {
                 decode(!parser.batch, parser.getInput(), parser.getOutput(), parser.getFPS()); // do not show GUI if batch
             } else if (parser.encode) {
-                encode(parser.getInput(), parser.getOutput());
+                encode(parser.getInput(), parser.getOutput(), "my_video.zip");
             }
 
         } catch (ParameterException ex) {
@@ -68,15 +67,12 @@ public class Main {
             System.out.println("Try --help for help.");
         }
         
+        
         /*
         String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
         String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
-        Encoder e = new Encoder();
-        try {
-            e.loadBuffer(input, output);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        encode(input, output, "my_video.zip");   
         */
     }
 
@@ -100,12 +96,20 @@ public class Main {
     }
 
     // ZIP compression
-    private static void encode(String input, String output) {
+    private static void encode(String input, String output, String videoname) {
+        long t1, t2;    // used for measuring elapsed time
+         
+        t1 = System.nanoTime();
         try {
-            FileIO.formatedZip(input, output);
-            System.out.println("Done!");
+            Encoder e = new Encoder();  // initalize encoder.
+            e.encode(input, output, videoname);
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        t2 = System.nanoTime();
+        
+        double elapsedTime = (t2 - t1) * 000000.1;
+        
+        System.out.println("Elapsed time: " + elapsedTime + " ms");
     }
 }

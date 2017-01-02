@@ -9,11 +9,10 @@ import image_processing.FilterManager;
 import io.FileIO;
 import io.ImageBuffer;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -40,24 +39,6 @@ public class Encoder {
         setTiling(nTiles);
     }
     
-    public void debugStore() {
-        if (images == null)
-            return;
-        
-        String path = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip\\DEBUG";
-        int counter = images.size();
-        while (counter > 0) {
-            try {
-                //FileIO.storeImage(image, path, FileIO.SupportedFormats.JPEG)
-                BufferedImage img = images.getImage(true);
-                FileIO.storeImage(img, path + "\\image" + counter + ".jpg", FileIO.SupportedFormats.JPEG);
-                counter--;
-            } catch (IOException ex) {
-                Logger.getLogger(Encoder.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
     // Set number of images between two reference images
     public void setGOP(int gop) {
         this.gop = gop;
@@ -79,11 +60,25 @@ public class Encoder {
         nTiles_y = i;
     }
     
-    public void encode(String input, String output) throws IOException {
+    // Performs encoding over images in input directory:
+    //      input: adress to the input zip
+    //      output: directory where the output video will be stored
+    //      videoname: name of the output file
+    //
+    public void encode(String input, String output, String videoname) throws IOException {
         loadBuffer(input, output); 
         
-        ArrayList<BufferedImage> outImg = new ArrayList<>();
+        // Temporary directory, where temporary images get stored
+        String temp = output + File.separator + "temp";     // TODO: manage the existance of a temp folder in output dir
+        new File(temp).mkdir();
         
+        /*
+        String dir = output.substring(
+                output.lastIndexOf(File.separator) + 1); // output directory, without file name
+        */
+        ArrayList<File> outImg = new ArrayList<>();
+
+        int counter = 0;
         while (!images.isEmpty()) { // iterate until the buffer has been emptied
 
             // Obtain the reference image
@@ -95,13 +90,20 @@ public class Encoder {
             }
             MotionCompensator mot = new MotionCompensator(reference, set, nTiles_x, nTiles_y);   
             mot.motionDetection();
-            outImg.addAll(mot.getImages());
+            //outImg.addAll(mot.getImages());
+            
+            for (BufferedImage img : mot.getImages()) {                         // store images in temp files
+                outImg.add(FileIO.storeImage(FilterManager.average(img, 3),     // average image before storing
+                        temp + File.separator +  "img_" + counter, FileIO.SupportedFormats.JPEG));
+                counter++;
+            }
         }
-        
-        FileIO.compress(outImg, output, "my_video.zip");
+
+        FileIO.formatedZip(outImg, output + File.separator + videoname);    // compress     
+        (new File(temp)).delete();  // delete temporary directory    
     }
     
-    public void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
+    private void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
         images.loadBuffer(FileIO.unZip(input, output));   // Load buffer
     }
 

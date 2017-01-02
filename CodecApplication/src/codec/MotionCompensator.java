@@ -90,7 +90,6 @@ public class MotionCompensator {
                         movements[i][j][1] = 0;
 
                         // Delete tile if coincidence
-                        //other.tesselation[i][j] = 0;
                         other.deleteTile(i, j);
                     } else {
                         movements[i][j] = searchTile(other, i, j, tolerance);
@@ -191,7 +190,7 @@ public class MotionCompensator {
     
     public void motionDetection() {
         for (SubImage sub : imageSet) {
-            reference.compare(sub, 2500);
+            reference.compare(sub, 50);
         }
     }
     

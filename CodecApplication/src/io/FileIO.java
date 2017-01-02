@@ -90,7 +90,6 @@ public class FileIO {
     }
     
     // Compresses a list of files into an output zip. Default format: JPEG.
-    // TODO: Allow other formats.
     public static void formatedZip(ArrayList<File> files, String output) throws IOException {
         ArrayList<File> newFiles = new ArrayList<>();
         for (File file : files) {
@@ -105,8 +104,7 @@ public class FileIO {
     }
     
     // Compresses files in input directory into an output zip. Default format: JPEG.
-    // TODO: Allow other formats.
-    public static void formatedZip(String input, String output) throws IOException {
+    public static void compress(String input, String output) throws IOException {
         File folder = new File(input);
         if (!folder.isDirectory())
             throw new IOException(input + " is not a valid directory.");
@@ -119,32 +117,37 @@ public class FileIO {
                     files.add(file);
         }   
         formatedZip(files, output);
-    }
-    
-    // Compress set of buffered images into a zip file
-    public static void compress(ArrayList<BufferedImage> images, String output, String zip) {
-
-        try {
-            int counter = 0;
-            ArrayList<File> temp = new ArrayList<>(); // temporary files
-            
-            for (BufferedImage img : images) {
-                // Images are averaged before storing
-                temp.add(storeImage(FilterManager.average(img, 3), output + "\\img_" + counter, SupportedFormats.JPEG));
-                counter++;
-            }
-            zip(temp, output + "\\" + zip); // zip images
-            
-            for (File file : temp) { // delete temporary files
-                file.delete();
-            }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(FileIO.class.getName()).log(Level.SEVERE, null, ex);
+        
+        for (File file : files) {
+            file.delete();  // delete compressed files
         }
     }
     
     // --PRIVATE FUNCTIONS--
+    
+    private static void zip(String input, String output) {
+        
+        File dir = new File(input); // open input directory
+        
+        if (dir.isDirectory()) { // make sure it's a directory
+            for (final File f : dir.listFiles()) {
+                BufferedImage img;
+
+                try {
+                    img = ImageIO.read(f);
+
+                    // you probably want something more involved here
+                    // to display in your UI
+                    System.out.println("image: " + f.getName());
+                    System.out.println(" width : " + img.getWidth());
+                    System.out.println(" height: " + img.getHeight());
+                    System.out.println(" size  : " + f.length());
+                } catch (final IOException e) {
+                    // handle errors here
+                }
+            }
+        }
+    }
     
     // Creates the zip file.
     private static void zip(ArrayList<File> files, String output) throws IOException {
@@ -174,7 +177,7 @@ public class FileIO {
         int dot = fileName.lastIndexOf(".");
         if (dot == -1 || dot == fileName.length()) 
             return false;
-        String ext = fileName.substring(dot+1);
+        String ext = fileName.substring(dot + 1);
         for (SupportedFormats sf : SupportedFormats.values()) {
             if (ext.equals(sf.value))
                 return true;
