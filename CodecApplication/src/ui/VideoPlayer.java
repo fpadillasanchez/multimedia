@@ -16,14 +16,15 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.util.Timer;
 
+
 /**
  *
  * @author Fernando Padilla, Sergi Díaz
  */
 public class VideoPlayer extends javax.swing.JFrame {
 
-    public static String OUTPUT_FOLDER = ("src/unzip");
-    public static String INPUT_ZIP;
+    private final String OUTPUT_FOLDER;
+    private final String INPUT_ZIP;
 
     private ArrayList<BufferedImage> images = new ArrayList<>();
     int fps = 30; // default fps
@@ -37,8 +38,13 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     /**
      * Creates new form VideoPlayer
+     * @param input
+     * @param output
      */
-    public VideoPlayer() {
+    public VideoPlayer(String input, String output) {
+        this.INPUT_ZIP = input;
+        this.OUTPUT_FOLDER = output;
+        
         initComponents();
     }
 
@@ -248,42 +254,6 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VideoPlayer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VideoPlayer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VideoPlayer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VideoPlayer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new VideoPlayer().setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
@@ -312,10 +282,10 @@ public class VideoPlayer extends javax.swing.JFrame {
      * @throws IOException
      */
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
-        System.out.println("Selected file: " + INPUT_ZIP);
-        System.out.println("Starting to load ZIP file");
+        //System.out.println("Selected file: " + INPUT_ZIP);
+        //System.out.println("Starting to load ZIP file");
         imgBuffer.loadBuffer(FileIO.unZip(imgFile.toString(), OUTPUT_FOLDER));
-        System.out.println("ZIP file Loaded");
+        //System.out.println("ZIP file Loaded");
     }
 
     /**
