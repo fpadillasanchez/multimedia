@@ -82,8 +82,7 @@ public class FilterManager {
     }
     
     public static BufferedImage average(BufferedImage image, int maskSize) {
-        //return (new AverageFilter(image, maskSize)).apply();
-        return (new LaplacianFilter(image)).apply();
+        return (new AverageFilter(image, maskSize)).apply();
     }
     
     

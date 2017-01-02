@@ -36,7 +36,8 @@ public class MotionCompensator {
             // the image are procesed.
             tileWidth = Math.max(1, (int) Math.ceil((float) image.getWidth() / numTiles_x));
             tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / numTiles_y));
-            System.out.println("w= " + tileWidth + ", h= " + tileHeight);
+
+            tesselate();
         }
 
         // Compute tile matrix
@@ -47,7 +48,6 @@ public class MotionCompensator {
                     evaluate(i, j);
                 }
             }
-            System.out.println("tesselation completed!");
         }
 
         // Sets value of (x,y) tile as the average value in the tile.
@@ -162,7 +162,7 @@ public class MotionCompensator {
     }
 
     private SubImage reference;
-    private ArrayList<SubImage> imageSet;
+    private ArrayList<SubImage> imageSet = new ArrayList<>();
 
     private SubImage DEBUG_image;
 
@@ -188,8 +188,22 @@ public class MotionCompensator {
     public void DEBUG_TesselatedImage(String path) {
         DEBUG_image.DEBUG_Image(path);
     }
-
-    private void motionDetection() {
-
+    
+    public void motionDetection() {
+        for (SubImage sub : imageSet) {
+            reference.compare(sub, 2500);
+        }
     }
+    
+    public ArrayList<BufferedImage> getImages() {
+        ArrayList<BufferedImage> images = new ArrayList<>();
+        
+        // List composed by reference + set:
+        images.add(reference.image);
+        for (SubImage sub : imageSet) {
+            images.add(sub.image);
+        }
+        return images;
+    } 
+    
 }

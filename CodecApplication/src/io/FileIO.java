@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -117,6 +119,29 @@ public class FileIO {
                     files.add(file);
         }   
         formatedZip(files, output);
+    }
+    
+    // Compress set of buffered images into a zip file
+    public static void compress(ArrayList<BufferedImage> images, String output, String zip) {
+
+        try {
+            int counter = 0;
+            ArrayList<File> temp = new ArrayList<>(); // temporary files
+            
+            for (BufferedImage img : images) {
+                // Images are averaged before storing
+                temp.add(storeImage(FilterManager.average(img, 3), output + "\\img_" + counter, SupportedFormats.JPEG));
+                counter++;
+            }
+            zip(temp, output + "\\" + zip); // zip images
+            
+            for (File file : temp) { // delete temporary files
+                file.delete();
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(FileIO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     // --PRIVATE FUNCTIONS--

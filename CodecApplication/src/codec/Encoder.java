@@ -6,12 +6,12 @@
 package codec;
 
 import image_processing.FilterManager;
-import image_processing.FilterManager.SupportedFilters;
 import io.FileIO;
 import io.ImageBuffer;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,19 +35,10 @@ public class Encoder {
         images = new ImageBuffer();
     }
     
-    /*
-    public Encoder(String input, String output) {
-        this.input = input;
-        this.output = output;
-    }
-    
     public Encoder(String input, String output, int gop, int[] nTiles) {
-        this.input = input;
-        this.output = output;
         setGOP(gop);
         setTiling(nTiles);
     }
-    */
     
     public void debugStore() {
         if (images == null)
@@ -83,28 +74,35 @@ public class Encoder {
     
     // Set number of tiles by giving the desired size in pixels as a parameter
     public void setTiling(int size) {
-        /*
         int i = (int)Math.sqrt(size);
         nTiles_x = i;
         nTiles_y = i;
-        */
+    }
+    
+    public void encode(String input, String output) throws IOException {
+        loadBuffer(input, output); 
+        
+        ArrayList<BufferedImage> outImg = new ArrayList<>();
+        
+        while (!images.isEmpty()) { // iterate until the buffer has been emptied
+
+            // Obtain the reference image
+            BufferedImage reference = images.getImage(false);
+            ArrayList<BufferedImage> set = new ArrayList<>(); // interframes
+                   
+            for (int i=0; i<gop; i++) {
+                set.add(images.getImage(false));
+            }
+            MotionCompensator mot = new MotionCompensator(reference, set, nTiles_x, nTiles_y);   
+            mot.motionDetection();
+            outImg.addAll(mot.getImages());
+        }
+        
+        FileIO.compress(outImg, output, "my_video.zip");
     }
     
     public void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
-        images.loadBuffer(FileIO.unZip(input, output));      
-        average();
-        //debugStore();
+        images.loadBuffer(FileIO.unZip(input, output));   // Load buffer
     }
-    
-    // Apply averaging filter to all images in buffer
-    private void average() {
-        int counter = images.size();
-        
-        while (counter > 0) {
-            BufferedImage img = FilterManager.average(images.getImage(false), 3);
-            images.pushImage(img);
-            counter--;
-        }
-    }
-    
+
 }

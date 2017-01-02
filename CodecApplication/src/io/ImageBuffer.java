@@ -71,6 +71,18 @@ public class ImageBuffer {
             first = first.next;
             return image;
         }
+        
+        // Return an array List with all the images contained in the buffer
+        public ArrayList<BufferedImage> getList() {
+            ArrayList<BufferedImage> list = new ArrayList<>();
+            BufferItem probe = first;
+            
+            while (probe != null) {
+                list.add(probe.item);
+                probe = probe.next;
+            }
+            return list;
+        }
     }
 
     // TODO: limit the ammount of images in the buffer
@@ -136,9 +148,12 @@ public class ImageBuffer {
         //buffer.pop();
         buffer.push(image);
     }
-/*
-    private BufferedImage loadImage(String file) throws IOException {
-        return ImageIO.read(new File(file));
+    
+    public ArrayList<BufferedImage> getList() {
+        return buffer.getList();
     }
-*/
+    
+    public boolean isEmpty() {
+        return buffer.size == 0;
+    }
 }
