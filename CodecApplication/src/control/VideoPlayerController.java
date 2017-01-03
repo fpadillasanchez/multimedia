@@ -6,6 +6,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ui.VideoPlayer;
@@ -17,6 +18,8 @@ import ui.VideoPlayer;
 public class VideoPlayerController extends Thread {
     public static String input, output;
     public static int fps;
+    
+    public static ArrayList<String> imageFiles;
     
     VideoPlayer vp;
     

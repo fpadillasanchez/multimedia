@@ -9,10 +9,11 @@ import codec.Encoder;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
+import io.FileIO;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ui.VideoPlayer;
 
 /**
  *
@@ -21,8 +22,6 @@ import ui.VideoPlayer;
  * 
  */
 public class Main {
-
-    static VideoPlayer vp;  // GUI
 
     public static void main(String[] args) {   
         
@@ -66,50 +65,62 @@ public class Main {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
-        
-        
+    
         /*
         String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
         String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
 
         encode(input, output, "my_video.zip");   
-        */
+        */     
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
     private static void decode(boolean visible, String input, String output, int fps) {
-        // Set videoplayer parameters
-        // TODO: Take these parameters, held at CodecConfig, from VideoPlayer
-        VideoPlayer.OUTPUT_FOLDER = output;
-        VideoPlayer.INPUT_ZIP = input;
-        vp = new VideoPlayer();
-        try {
-            vp.setFPS(fps);
-            // Try to load image buffer
-            vp.loadBuffer();
-            // Visualize GUI
-            vp.setVisible(visible);
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        /*
+        if (visible)
+            visualize(input, output, fps);
+        */
     }
 
     // ZIP compression
-    private static void encode(String input, String output, String videoname) {
-        long t1, t2;    // used for measuring elapsed time
-         
-        t1 = System.nanoTime();
+    private static void encode(String input, String output, String videoname) {  
         try {
+            long t1, t2;    // used for measuring encoding nelapsed time
+            ArrayList<String> inputFiles = getImageFiles(input, output);
+            
+            visualize(inputFiles, input, output, 30); 
+ 
+            // -- ENCODING --
+            t1 = System.nanoTime();
             Encoder e = new Encoder();  // initalize encoder.
+            e.loadBuffer(inputFiles);
             e.encode(input, output, videoname);
+            t2 = System.nanoTime();
+            // --------------
+
+            double elapsedTime = (t2 - t1) * 000000.1;    
+            System.out.println("Elapsed time: " + elapsedTime + " ms");
+        
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        t2 = System.nanoTime();
-        
-        double elapsedTime = (t2 - t1) * 000000.1;
-        
-        System.out.println("Elapsed time: " + elapsedTime + " ms");
+        }        
     }
+    
+    // Manages video visualization
+    private static void visualize(ArrayList<String> imageFiles, String input, String output, int fps) {
+        
+        // Set videoplayer parameters
+        VideoPlayerController.input = input;
+        VideoPlayerController.output = output;
+        VideoPlayerController.fps = fps;
+        VideoPlayerController.imageFiles = imageFiles;
+        
+        VideoPlayerController vpc = new VideoPlayerController();
+        (new Thread(vpc)).start();              // video displayed on another thread
+    }
+    
+    private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
+        return FileIO.unZip(input, output);
+    }
+    
 }

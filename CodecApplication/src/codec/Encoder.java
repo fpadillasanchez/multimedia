@@ -66,7 +66,8 @@ public class Encoder {
     //      videoname: name of the output file
     //
     public void encode(String input, String output, String videoname) throws IOException {
-        loadBuffer(input, output); 
+        if (images  == null)    // abort if buffer is not initialized
+            return;
         
         // Temporary directory, where temporary images get stored
         String temp = output + File.separator + "temp";     // TODO: manage the existance of a temp folder in output dir
@@ -90,7 +91,6 @@ public class Encoder {
             }
             MotionCompensator mot = new MotionCompensator(reference, set, nTiles_x, nTiles_y);   
             mot.motionDetection();
-            //outImg.addAll(mot.getImages());
             
             for (BufferedImage img : mot.getImages()) {                         // store images in temp files
                 outImg.add(FileIO.storeImage(FilterManager.average(img, 3),     // average image before storing
@@ -103,8 +103,14 @@ public class Encoder {
         (new File(temp)).delete();  // delete temporary directory    
     }
     
-    private void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
+    public void loadBuffer (ArrayList<String> files) throws IOException {
+        images.loadBuffer(files);
+    }
+    
+    public void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
         images.loadBuffer(FileIO.unZip(input, output));   // Load buffer
     }
+    
+    
 
 }

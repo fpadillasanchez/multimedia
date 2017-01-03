@@ -308,5 +308,9 @@ public class VideoPlayer extends javax.swing.JFrame {
     public void loadBuffer() throws FileNotFoundException, IOException {
         loadBuffer(new File(INPUT_ZIP));
     }
+    
+    public void LoadBuffer(ArrayList<String> files) throws IOException {
+        imgBuffer.loadBuffer(files);
+    }
 
 }
