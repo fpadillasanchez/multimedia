@@ -7,7 +7,7 @@ package ui;
 
 import image_processing.NegativeFilter;
 import io.FileIO;
-import io.ImageBuffer;
+import utils.CircularBuffer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +33,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     boolean isPlaying = false;
     boolean isPaused = false;
     BufferedImage img;
-    ImageBuffer imgBuffer = new ImageBuffer();
+    CircularBuffer imgBuffer;
     NegativeFilter negFilter;
 
     /**
@@ -269,7 +269,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     void next() throws IOException {
 
-        ImageIcon icon = new ImageIcon(imgBuffer.getImage(true));
+        ImageIcon icon = new ImageIcon(imgBuffer.getImage());
         jLabelImagesSequences.setIcon(icon);
     }
 
@@ -282,10 +282,9 @@ public class VideoPlayer extends javax.swing.JFrame {
      * @throws IOException
      */
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
-        //System.out.println("Selected file: " + INPUT_ZIP);
-        //System.out.println("Starting to load ZIP file");
-        imgBuffer.loadBuffer(FileIO.unZip(imgFile.toString(), OUTPUT_FOLDER));
-        //System.out.println("ZIP file Loaded");
+        
+        imgBuffer = new CircularBuffer(FileIO.unZip(imgFile.toString(), OUTPUT_FOLDER), 10);
+        imgBuffer.load();
     }
 
     /**
@@ -310,7 +309,8 @@ public class VideoPlayer extends javax.swing.JFrame {
     }
     
     public void LoadBuffer(ArrayList<String> files) throws IOException {
-        imgBuffer.loadBuffer(files);
+        imgBuffer = new CircularBuffer(files, 10);
+        imgBuffer.load();
     }
 
 }

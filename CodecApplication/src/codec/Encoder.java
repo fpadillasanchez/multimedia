@@ -7,7 +7,7 @@ package codec;
 
 import image_processing.FilterManager;
 import io.FileIO;
-import io.ImageBuffer;
+import utils.CircularBuffer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,10 +28,10 @@ public class Encoder {
     private int nTiles_y = 4;
     
     // Images
-    ImageBuffer images = null;
+    CircularBuffer images = null;
     
     public Encoder() {
-        images = new ImageBuffer();
+        //images = new ImageBuffer();
     }
     
     public Encoder(String input, String output, int gop, int[] nTiles) {
@@ -83,11 +83,11 @@ public class Encoder {
         while (!images.isEmpty()) { // iterate until the buffer has been emptied
 
             // Obtain the reference image
-            BufferedImage reference = images.getImage(false);
+            BufferedImage reference = images.getImage();
             ArrayList<BufferedImage> set = new ArrayList<>(); // interframes
                    
             for (int i=0; i<gop; i++) {
-                set.add(images.getImage(false));
+                set.add(images.getImage());
             }
             MotionCompensator mot = new MotionCompensator(reference, set, nTiles_x, nTiles_y);   
             mot.motionDetection();
@@ -104,11 +104,13 @@ public class Encoder {
     }
     
     public void loadBuffer (ArrayList<String> files) throws IOException {
-        images.loadBuffer(files);
+        images = new CircularBuffer(files, 10);
+        images.load();
     }
     
     public void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
-        images.loadBuffer(FileIO.unZip(input, output));   // Load buffer
+        images = new CircularBuffer(FileIO.unZip(input, output), 10);
+        images.load();   // Load buffer
     }
     
     
