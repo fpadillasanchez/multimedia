@@ -16,7 +16,6 @@ import ui.VideoPlayer;
  * @author SDP
  */
 public class VideoPlayerController extends Thread {
-    public static String input, output;
     public static int fps;
     
     public static ArrayList<String> imageFiles;
@@ -30,7 +29,7 @@ public class VideoPlayerController extends Thread {
     
     // Builder
     public VideoPlayerController() {      
-        vp = new VideoPlayer(input, output);    // init videoplayer
+        vp = new VideoPlayer(CodecConfig.input, CodecConfig.output);    // init videoplayer
         
         vp.setFPS(fps);                // set frames per second
         

@@ -128,4 +128,15 @@ public class ArgParser {
         return average;
     }
     
+    // Store current configuration
+    public void setConfig() {      
+        CodecConfig.input = input;
+        CodecConfig.output = output;
+        
+        CodecConfig.fps = fps;
+        CodecConfig.gop = gop;
+        CodecConfig.seekRange = seekRange;
+        CodecConfig.quality = quality;
+    }
+    
 }

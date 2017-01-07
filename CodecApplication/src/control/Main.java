@@ -58,20 +58,20 @@ public class Main {
             } else if (parser.decode) {
                 decode(!parser.batch, parser.getInput(), parser.getOutput(), parser.getFPS()); // do not show GUI if batch
             } else if (parser.encode) {
-                encode(parser.getInput(), parser.getOutput(), "my_video.zip");
+                encode("my_video.zip");
             }
 
         } catch (ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
-    
+        
         /*
-        String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
-        String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
+        CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
+        CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
 
-        encode(input, output, "my_video.zip");   
-        */     
+        encode("my_video.zip");   
+        */
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
@@ -83,8 +83,11 @@ public class Main {
     }
 
     // ZIP compression
-    private static void encode(String input, String output, String videoname) {  
+    private static void encode(String videoname) {  
         try {
+            String input = CodecConfig.input;
+            String output = CodecConfig.output;
+            
             long t1, t2;    // used for measuring encoding nelapsed time
             ArrayList<String> inputFiles = getImageFiles(input, output);
             
@@ -110,8 +113,6 @@ public class Main {
     private static void visualize(ArrayList<String> imageFiles, String input, String output, int fps) {
         
         // Set videoplayer parameters
-        VideoPlayerController.input = input;
-        VideoPlayerController.output = output;
         VideoPlayerController.fps = fps;
         VideoPlayerController.imageFiles = imageFiles;
         
