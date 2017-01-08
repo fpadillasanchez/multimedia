@@ -26,7 +26,6 @@ public class Validator implements IParameterValidator{
                 case "-i":
                 //case "--output":
                 //case "-o":
-                    System.out.println(name);
                     fileValidation(name, value);
                     break;
                 case "--fps":

@@ -43,7 +43,9 @@ public class Main {
                             parser.getAverage(), parser.getBin());
                     break;
                 }  
-            } // following inputs do not require input values
+            }         
+            
+            // Following inputs do not require input values
             if (parser.isNegative())       // negative filtering
                 FilterManager.setFilter(FilterManager.SupportedFilters.Negative);
             else if (parser.isBlur())      // blur filtering
@@ -53,14 +55,16 @@ public class Main {
             else if (parser.isLaplacian()) // laplacian filtering
                 FilterManager.setFilter(FilterManager.SupportedFilters.Laplacian);
             
+            parser.setConfig();     // set codec configuration  
+            
             if (parser.help) {
                 jCom.usage();
             } else if (parser.decode) {
                 decode(!parser.batch, parser.getInput(), parser.getOutput(), parser.getFPS()); // do not show GUI if batch
-            } else if (parser.encode) {
+            } else if (parser.encode) { 
                 encode("my_video.zip");
             }
-
+            
         } catch (ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
@@ -83,11 +87,12 @@ public class Main {
     }
 
     // ZIP compression
-    private static void encode(String videoname) {  
+    private static void encode(String videoname) { 
+
         try {
             String input = CodecConfig.input;
             String output = CodecConfig.output;
-            
+
             long t1, t2;    // used for measuring encoding nelapsed time
             ArrayList<String> inputFiles = getImageFiles(input, output);
             
