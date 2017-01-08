@@ -29,6 +29,7 @@ import javax.imageio.ImageIO;
  */
 public class FileIO {
     
+    // Supported image formats. Used for unzipping duties
     public static enum SupportedFormats {
         JPEG("jpg"), PNG("png"), GIF("gif");
         
@@ -38,13 +39,38 @@ public class FileIO {
         }
     };
     
-    // --ACCESSIBLE FUNCTIONS--
-    
-    // Loads image if its format is supported.
-    public static BufferedImage readImage(String file) throws IOException {
-        if (!validateExtension(file))
-            return null;
-        return ImageIO.read(new File(file));
+    // Compress all files inside input directory into an output zip file
+    public static void zip(String input, String output) throws IOException {
+        File folder;                    // input must be a valid directory
+        File zipfile;                   // output zip file
+        byte[] buf = new byte[1024];    // buffer for reading the files
+        
+        folder = new File(input);              
+        if (!folder.isDirectory())
+            throw new IOException(input + " is not a valid directory.");   
+        zipfile = new File(output);            
+        
+        
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
+        
+        for (File file : folder.listFiles()) {      
+            if (file.isFile()) {
+                FileInputStream in = new FileInputStream(file);  
+                out.putNextEntry(new ZipEntry(file.getName())); // add ZIP entry to output stream
+
+                int len;
+                while((len = in.read(buf)) > 0) { // transfer bytes from the file to the ZIP file
+                    out.write(buf, 0, len);
+                }
+                // complete the entry
+                out.closeEntry();
+                in.close();
+                
+                file.delete();  // delete file
+            }                       
+        }
+        // ZIP file completed
+        out.close();  
     }
     
     // Extracts images from zip and returns an array of paths to those images.
@@ -87,87 +113,11 @@ public class FileIO {
         return files;
     }
     
-    // Compresses a list of files into an output zip. Default format: JPEG.
-    public static void formatedZip(ArrayList<File> files, String output) throws IOException {
-        ArrayList<File> newFiles = new ArrayList<>();
-        for (File file : files) {
-            // For each file store a temporary formated copy.
-            newFiles.add(storeImage(ImageIO.read(file), file.getCanonicalPath(), SupportedFormats.JPEG));
-        }
-        zip(newFiles, output); // zip newly created files.
-        
-        // Delete the copies
-        for (File newFile : newFiles)
-            newFile.delete();
-    }
-    
-    // Compresses files in input directory into an output zip. Default format: JPEG.
-    public static void compress(String input, String output) throws IOException {
-        File folder = new File(input);
-        if (!folder.isDirectory())
-            throw new IOException(input + " is not a valid directory.");
-        
-        ArrayList<File> files = new ArrayList<>();
-        // Get array of files in input directory.
-        for (File file : folder.listFiles()) {
-            if (file.isFile())
-                if (validateExtension(file.getAbsolutePath())) // check if is an imatge with supported format
-                    files.add(file);
-        }   
-        formatedZip(files, output);
-        
-        for (File file : files) {
-            file.delete();  // delete compressed files
-        }
-    }
-    
-    // --PRIVATE FUNCTIONS--
-    
-    private static void zip(String input, String output) {
-        
-        File dir = new File(input); // open input directory
-        
-        if (dir.isDirectory()) { // make sure it's a directory
-            for (final File f : dir.listFiles()) {
-                BufferedImage img;
-
-                try {
-                    img = ImageIO.read(f);
-
-                    // you probably want something more involved here
-                    // to display in your UI
-                    System.out.println("image: " + f.getName());
-                    System.out.println(" width : " + img.getWidth());
-                    System.out.println(" height: " + img.getHeight());
-                    System.out.println(" size  : " + f.length());
-                } catch (final IOException e) {
-                    // handle errors here
-                }
-            }
-        }
-    }
-    
-    // Creates the zip file.
-    private static void zip(ArrayList<File> files, String output) throws IOException {
-        File zipfile = new File(output);
-        byte[] buf = new byte[1024]; // buffer for reading the files
-        
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
-        // compress the files
-        for(int i=0; i<files.size(); i++) {
-            FileInputStream in = new FileInputStream(files.get(i).getCanonicalPath());  
-            out.putNextEntry(new ZipEntry(files.get(i).getName())); // add ZIP entry to output stream
-
-            int len;
-            while((len = in.read(buf)) > 0) { // transfer bytes from the file to the ZIP file
-                out.write(buf, 0, len);
-            }
-            // complete the entry
-            out.closeEntry();
-            in.close();
-        }
-        // complete the ZIP file
-        out.close();
+    // Loads image if its format is supported.
+    public static BufferedImage readImage(String file) throws IOException {
+        if (!validateExtension(file))
+            return null;
+        return ImageIO.read(new File(file));
     }
     
     // Format validator.
@@ -186,17 +136,11 @@ public class FileIO {
     
     // Takes the image directed by a given path and stores a copy in the same
     // directory using given supported format.
-    private static File storeImage(String file, SupportedFormats format) throws IOException {   
-        return storeImage(FileIO.readImage(file), file, format);
-    }
-    
-    // Given a path and a supported format, the method stores there an image.
-    // Returns the path to the new file.
-    public static File storeImage(BufferedImage image, String file, SupportedFormats format) throws IOException {
+    private static File storeImage(String file, SupportedFormats format) throws IOException {     
         File outputFile = new File(stripExtension(file) + "." + format.value);
         
         // Filtration process done during store.
-        ImageIO.write(FilterManager.filtrate(image), format.value, outputFile); 
+        ImageIO.write(FilterManager.filtrate(ImageIO.read(new File(file))), format.value, outputFile);      
         return outputFile;
     }
     

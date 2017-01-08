@@ -5,114 +5,76 @@
  */
 package codec;
 
-import image_processing.FilterManager;
+import control.CodecConfig;
 import io.FileIO;
-import utils.CircularBuffer;
+import io.FrameData;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import utils.Buffer;
 
 /**
  *
  * @author SDP
  */
-public class Encoder {    
-    //private String input, output;   // input and output files
+public class Encoder {
     
-    private int gop = 1;
-    
-    // Tiling
-    private int nTiles_x = 4;
-    private int nTiles_y = 4;
-    
-    // Images
-    CircularBuffer images = null;
+    private Buffer buffer;
     
     public Encoder() {
-        //images = new ImageBuffer();
     }
     
-    public Encoder(String input, String output, int gop, int[] nTiles) {
-        setGOP(gop);
-        setTiling(nTiles);
-    }
-    
-    // Set number of images between two reference images
-    public void setGOP(int gop) {
-        this.gop = gop;
-    }
-    
-    // Set number of tiles on the X and y axis.
-    public void setTiling(int[] args) {
-        if (args.length != 2)
-            return;
+    public void encode(String videoname) throws IOException {
+        String output;          // path to encoded video
         
-        nTiles_x = args[0];
-        nTiles_y = args[1];
-    }
-    
-    // Set number of tiles by giving the desired size in pixels as a parameter
-    public void setTiling(int size) {
-        int i = (int)Math.sqrt(size);
-        nTiles_x = i;
-        nTiles_y = i;
-    }
-    
-    // Performs encoding over images in input directory:
-    //      input: adress to the input zip
-    //      output: directory where the output video will be stored
-    //      videoname: name of the output file
-    //
-    public void encode(String input, String output, String videoname) throws IOException {
-        if (images  == null)    // abort if buffer is not initialized
-            return;
+        ArrayList<String> encoded_files;        // encoded files
+        String temp_dir;                        // directory used by the encoder to store temporary files
+        int num_images = 1 + CodecConfig.gop;   // number of images per set
+        int counter = 0;                        // image counter
         
-        // Temporary directory, where temporary images get stored
-        String temp = output + File.separator + "temp";     // TODO: manage the existance of a temp folder in output dir
-        new File(temp).mkdir();
+        encoded_files = new ArrayList<>();
+        temp_dir = CodecConfig.output + File.separator +  CodecConfig.encoder_sub_directory;     
+        new File(temp_dir).mkdir();     // create temp directory
         
-        /*
-        String dir = output.substring(
-                output.lastIndexOf(File.separator) + 1); // output directory, without file name
-        */
-        ArrayList<File> outImg = new ArrayList<>();
-
-        int counter = 0;
-        while (!images.isEmpty()) { // iterate until the buffer has been emptied
-
-            // Obtain the reference image
-            BufferedImage reference = images.getImage();
-            ArrayList<BufferedImage> set = new ArrayList<>(); // interframes
-                   
-            for (int i=0; i<gop; i++) {
-                set.add(images.getImage());
-            }
-            MotionCompensator mot = new MotionCompensator(reference, set, nTiles_x, nTiles_y);   
-            mot.motionDetection();
+        // Process buffered images
+        while (!buffer.isEmpty()) { 
+            // Buffered images are divided in sets for compression purposes
             
-            for (BufferedImage img : mot.getImages()) {                         // store images in temp files
-                outImg.add(FileIO.storeImage(FilterManager.average(img, 3),     // average image before storing
-                        temp + File.separator +  "img_" + counter, FileIO.SupportedFormats.JPEG));
+            ArrayList<FrameData> frames;                            // frames set
+            ArrayList<BufferedImage> images = new ArrayList<>();    // images set
+            for (int i=0; i< num_images; i++) {
+                BufferedImage image = buffer.getImage();    // extract image from set
+                if (image == null)                          // stop if buffer is empty
+                    break;
+               
+                images.add(image);      // add image into the set             
+            }
+            
+            // Perform motion detection-compensation
+            frames = MotionCompensator.motionDetection(images, counter);
+            
+            for (FrameData frame : frames) {    // Store frames in temp directory
+                String file = temp_dir + File.separator + counter + CodecConfig.data_format;
+                FrameData.store(frame, file);
+                encoded_files.add(file);
                 counter++;
             }
         }
-
-        FileIO.formatedZip(outImg, output + File.separator + videoname);    // compress     
-        (new File(temp)).delete();  // delete temporary directory    
+        
+        // Compress files in temp directory
+        output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;
+        FileIO.zip(temp_dir, output);
+        
+        (new File(temp_dir)).delete();  // delete temporary directory
     }
     
-    public void loadBuffer (ArrayList<String> files) throws IOException {
-        images = new CircularBuffer(files, 10);
-        images.load();
+    public void load() throws IOException {
+        ArrayList<String> input_paths;  // paths to input images
+        input_paths = FileIO.unZip(CodecConfig.input, CodecConfig.output);  // extract images
+        
+        buffer = new Buffer(input_paths, CodecConfig.buffer_size);  // init buffer
+        buffer.load();                                              // load buffer
     }
-    
-    public void loadBuffer(String input, String output) throws FileNotFoundException, IOException {
-        images = new CircularBuffer(FileIO.unZip(input, output), 10);
-        images.load();   // Load buffer
-    }
-    
-    
-
+ 
 }

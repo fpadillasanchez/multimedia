@@ -28,7 +28,7 @@ import java.util.zip.ZipFile;
 public class Main {
 
     public static void main(String[] args) {
-
+        
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
@@ -78,13 +78,21 @@ public class Main {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
-
+        
         /*
         CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
         CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
-
-        encode("my_video.zip");   
-         */
+        Encoder encoder = new Encoder();
+        
+        try {
+            encoder.load();
+            encoder.encode("my_video");
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        */
+         
+        
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
@@ -112,8 +120,8 @@ public class Main {
             // -- ENCODING --
             t1 = System.nanoTime();
             Encoder e = new Encoder();  // initalize encoder.
-            e.loadBuffer(inputFiles);
-            e.encode(input, output, videoname);
+            e.load();
+            e.encode(videoname);
             t2 = System.nanoTime();
             // --------------
             int repe = 0;
@@ -137,7 +145,7 @@ public class Main {
             }
             repe = 0;
             try {
-                zf2 = new ZipFile(output+"my_video.zip");
+                zf2 = new ZipFile(output + File.separator + videoname + CodecConfig.video_format);
 
                 Enumeration ee = zf2.entries();
                 while (ee.hasMoreElements()) {

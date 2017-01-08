@@ -29,4 +29,7 @@ public class CodecConfig {
     public static int n_tiles_x = 100;      // number of tiles on the x axis
     public static int n_tiles_y = 100;      // number of tiles on the y axis
     
+    // Formats
+    public static String data_format = ".data";
+    public static String video_format = ".zip";
 }
