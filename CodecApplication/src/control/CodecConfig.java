@@ -26,5 +26,7 @@ public class CodecConfig {
     public static int gop = 1;              // num of images between two reference images
     public static int quality = 1;          // used to determine when two tiles are coincident
     public static int seekRange = 1;        // max distance in tiles when searching for coincidences
+    public static int n_tiles_x = 100;      // number of tiles on the x axis
+    public static int n_tiles_y = 100;      // number of tiles on the y axis
     
 }

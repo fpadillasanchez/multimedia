@@ -5,6 +5,7 @@
  */
 package io;
 
+import control.CodecConfig;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ public class FrameData implements Serializable{
     private BufferedImage image;    // image
     
     // Params relevant to motion detection
-    private int [][][] tilemap = null;
+    private int [][] tilemap = null;
     private int [][][] movements = null;
     
     public FrameData(int id, BufferedImage image) {
@@ -33,7 +34,7 @@ public class FrameData implements Serializable{
         this.image = image;
     } 
     
-    public FrameData(int id, BufferedImage image, int[][][] tilemap, int[][][] movements) {
+    public FrameData(int id, BufferedImage image, int[][] tilemap, int[][][] movements) {
         this.id = id;
         this.image = image;
         this.movements = movements;
@@ -41,16 +42,22 @@ public class FrameData implements Serializable{
     }
     
     // Setter
-    public void setTileMap(int [][][] tilemap) {
-        this.tilemap = tilemap;
+    public void setTileMap(int [][] tilemap) {
+        if (tilemap == null) 
+            this.tilemap = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y];
+        else
+            this.tilemap = tilemap;
     }
     
     public void setMovements(int [][][] mov) {
-        this.movements = mov;
+        if (mov == null) 
+            movements = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y][2];
+        else
+            this.movements = mov;
     } 
     
     // Getters
-    public int[][][] getTileMap() {
+    public int[][] getTileMap() {
         return tilemap;
     }
     
@@ -81,9 +88,7 @@ public class FrameData implements Serializable{
         
         for (int i=0; i<w; i++) {       // Store tilemap data
             for (int j=0; j<h; j++) {
-                out.writeInt(data.tilemap[i][j][0]);
-                out.writeInt(data.tilemap[i][j][1]);
-                out.writeInt(data.tilemap[i][j][2]);
+                out.writeInt(data.tilemap[i][j]);
             }
         }  
      
@@ -109,7 +114,7 @@ public class FrameData implements Serializable{
     // Retrieve stored frame data
     public static FrameData load(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         BufferedImage img;
-        int id, tilemap[][][], movements[][][];
+        int id, tilemap[][], movements[][][];
         
         FileInputStream fileIn = new FileInputStream(path);
         ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -120,13 +125,11 @@ public class FrameData implements Serializable{
         int w = in.readInt();       // read tilemap size
         int h = in.readInt();
         
-        tilemap = new int[w][h][3];
+        tilemap = new int[w][h];
         
         for (int i=0; i<w; i++) {       // read tilemap data
             for (int j=0; j<h; j++) {
-                tilemap[i][j][0] = in.readInt();
-                tilemap[i][j][1] = in.readInt();
-                tilemap[i][j][2] = in.readInt();
+                tilemap[i][j] = in.readInt();
             }
         } 
         
