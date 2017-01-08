@@ -99,7 +99,7 @@ public class Main {
     private static void encode(String videoname) {
         long pesoOriginal = 0;
         long pesoNuevo = 0;
-         
+  
         try {
             String input = CodecConfig.input;
             String output = CodecConfig.output;
@@ -123,16 +123,15 @@ public class Main {
             ZipFile zf2;
             try {
                 zf = new ZipFile(input);
-
+                long suma = 0;
                 Enumeration ee = zf.entries();
-                while (ee.hasMoreElements() && repe < 1) {
+                while (ee.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
                     long compressedSize = ze.getCompressedSize();
+                    pesoOriginal = pesoOriginal + compressedSize;
 
-                    System.out.println("Original zip: "+compressedSize);
-                    pesoOriginal = compressedSize;
-                    repe++;
                 }
+                System.out.println("Original zip: "+pesoOriginal);
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -141,14 +140,14 @@ public class Main {
                 zf2 = new ZipFile(output+"my_video.zip");
 
                 Enumeration ee = zf2.entries();
-                while (ee.hasMoreElements() && repe < 1) {
+                while (ee.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
                     long compressedSize = ze.getCompressedSize();
-
-                    System.out.println("New compressed zip after encoding: "+compressedSize);
-                    pesoNuevo = compressedSize;
-                    repe++;
+                    pesoNuevo = pesoNuevo + compressedSize;
+                    
+                    
                 }
+                System.out.println("New compressed zip after encoding: "+pesoNuevo);
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
