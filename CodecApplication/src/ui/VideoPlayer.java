@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.util.Timer;
@@ -27,6 +28,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private final String INPUT_ZIP;
 
     private ArrayList<BufferedImage> images = new ArrayList<>();
+    TextAreaClass console;
     int fps = 30; // default fps
     FrameTimer tm;
     Timer t;
@@ -46,6 +48,9 @@ public class VideoPlayer extends javax.swing.JFrame {
         this.OUTPUT_FOLDER = output;
         
         initComponents();
+        console = new TextAreaClass(this.jTextArea1);
+        PrintStream consolePoint = new PrintStream(console);
+        System.setOut(consolePoint);
     }
 
     /**
@@ -66,7 +71,8 @@ public class VideoPlayer extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jMenuBar2 = new javax.swing.JMenuBar();
 
         jInternalFrame1.setVisible(true);
@@ -145,11 +151,16 @@ public class VideoPlayer extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jTextArea1InputMethodTextChanged(evt);
             }
         });
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,8 +175,8 @@ public class VideoPlayer extends javax.swing.JFrame {
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1)
+                .addGap(44, 44, 44)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -184,9 +195,7 @@ public class VideoPlayer extends javax.swing.JFrame {
                                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 20, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jTextField1)))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
 
@@ -218,7 +227,7 @@ public class VideoPlayer extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         if (!isPlaying) {
-
+            
             this.isPlaying = true;
             this.isPaused = false;
             int tempFPS = (int) (1000.0f / Math.abs(this.fps));
@@ -226,6 +235,7 @@ public class VideoPlayer extends javax.swing.JFrame {
             this.t = new Timer();
             tm = new FrameTimer(this);
             this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
+            System.out.println(String.valueOf(tempFPS));
 
         } else {
             System.out.println("Video already playing.");
@@ -248,6 +258,7 @@ public class VideoPlayer extends javax.swing.JFrame {
      */
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         this.fps = this.fps - 5;
+        System.out.println("FPS:"+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
@@ -258,6 +269,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         this.fps = this.fps + 1;
+        System.out.println("FPS: "+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
@@ -267,9 +279,9 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        jTextField1.setText(String.valueOf(this.fps));
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void jTextArea1InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextArea1InputMethodTextChanged
+        
+    }//GEN-LAST:event_jTextArea1InputMethodTextChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -282,7 +294,8 @@ public class VideoPlayer extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelImage;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
     void next() throws IOException {
