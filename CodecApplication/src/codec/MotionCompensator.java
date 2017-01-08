@@ -17,29 +17,29 @@ import java.util.ArrayList;
  */
 public class MotionCompensator {
 
-    public static ArrayList<FrameData> motionDetection (ArrayList<BufferedImage> images, int counter) {
+    public static ArrayList<FrameData> motionDetection(ArrayList<BufferedImage> images, int counter) {
         ArrayList<FrameData> frames = new ArrayList<>();
-        
+
         // Compute reference frame
         FrameData reference = new FrameData(counter, images.remove(0)); // take reference from set 
         reference.setTileMap(tesselate(reference.getImage()));          // tesselate reference
         reference.setMovements(null);                                   // empty movement matrix
         counter++;
         frames.add(reference);
-        
+
         // Compute non-referencial frames 
         while (!images.isEmpty()) {
             FrameData frame = new FrameData(counter, images.remove(0)); // take image from set
             frame.setTileMap(tesselate(reference.getImage()));          // tesselate frame
-            frame.setMovements(getMovements(reference, frame));         // compute movements
-            counter++;   
-            
+            frame.setMovements(getMovements(reference, frame));         // compute movements   
+
+            counter++;
             frames.add(frame);
-        } 
-        
+        }
+
         return frames;
     }
-    
+
     // Tesselate given image. Return tesselation matrix
     public static int[][] tesselate(BufferedImage image) {
         int[][] tilemap;                // tile matrix
@@ -53,16 +53,16 @@ public class MotionCompensator {
                 tilemap[i][j] = evaluate(image, i, j);
             }
         }
-        
+
         return tilemap;
     }
-    
+
     // Sets value of (x,y) tile as the average color value in the tile.
     private static int evaluate(BufferedImage image, int x, int y) {
         // Tile size in pixels
         int tileWidth = Math.max(1, (int) Math.ceil((float) image.getWidth() / CodecConfig.n_tiles_x));
         int tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / CodecConfig.n_tiles_y));
-        
+
         int size = tileWidth * tileHeight;
         int r = 0;  // average red value
         int g = 0;  // average green value
@@ -79,16 +79,16 @@ public class MotionCompensator {
                 }
             }
         }
-        
+
         return (new Color(r / size, g / size, b / size)).getRGB();
-    } 
-    
-    private static int[][][] getMovements(FrameData refer_frame, FrameData other_frame) { 
-        int [][] refer_tilemap = refer_frame.getTileMap();   // tilemaps
-        int [][] other_tilemap = other_frame.getTileMap();
-        
-        int [][][] movements;                               // movements matrix
- 
+    }
+
+    private static int[][][] getMovements(FrameData refer_frame, FrameData other_frame) {
+        int[][] refer_tilemap = refer_frame.getTileMap();   // tilemaps
+        int[][] other_tilemap = other_frame.getTileMap();
+
+        int[][][] movements;                               // movements matrix
+
         int w = CodecConfig.n_tiles_x;                      // matrix size;
         int h = CodecConfig.n_tiles_y;
         float tolerance = CodecConfig.quality * w * h;      // tolerance
@@ -115,7 +115,7 @@ public class MotionCompensator {
 
         return movements;
     }
-    
+
     // Search for the (x,y) tile from reference into another tilemap. Return movement vector
     private static int[] searchTile(int[][] refer_tilemap, int[][] other_tilemap, int x, int y, float tol) {
         int[] vector = {0, 0};

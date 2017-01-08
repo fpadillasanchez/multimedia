@@ -100,7 +100,6 @@ public class FileIO {
                     fos.close();  
                     
                     // Store a copy of the image temporary file using default format JPEG
-                    // TODO: allow other formats
                     files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG).getAbsolutePath());
                     // Delete temporary file
                     file.delete();
@@ -139,7 +138,7 @@ public class FileIO {
     private static File storeImage(String file, SupportedFormats format) throws IOException {     
         File outputFile = new File(stripExtension(file) + "." + format.value);
         
-        // Filtration process done during store.
+        // Filtration process done during storing
         ImageIO.write(FilterManager.filtrate(ImageIO.read(new File(file))), format.value, outputFile);      
         return outputFile;
     }
