@@ -7,8 +7,11 @@ package control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import ui.VideoPlayer;
 
 /**
@@ -16,32 +19,34 @@ import ui.VideoPlayer;
  * @author SDP
  */
 public class VideoPlayerController extends Thread {
+
     public static int fps;
-    
     public static ArrayList<String> imageFiles;
-    
+
     VideoPlayer vp;
-    
+
     @Override
     public void run() {
         vp.setVisible(true);                    // show GUI
+        
+
     }
-    
+
     // Builder
-    public VideoPlayerController() {      
+    public VideoPlayerController() {
         vp = new VideoPlayer(CodecConfig.input, CodecConfig.output);    // init videoplayer
-        
+
         vp.setFPS(fps);                // set frames per second
-        
+
         try {   // Try to load buffer
             vp.loadBuffer();
         } catch (IOException ex) {
             Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void main(String args[]) {
         (new VideoPlayerController()).start();
     }
-    
+
 }

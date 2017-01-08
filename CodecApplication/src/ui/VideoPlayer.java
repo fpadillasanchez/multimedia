@@ -258,7 +258,7 @@ public class VideoPlayer extends javax.swing.JFrame {
      */
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         this.fps = this.fps - 5;
-        System.out.println("FPS:"+String.valueOf(this.fps));
+        System.out.println("New FPS:"+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
@@ -269,7 +269,7 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         this.fps = this.fps + 1;
-        System.out.println("FPS: "+String.valueOf(this.fps));
+        System.out.println("New FPS: "+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
