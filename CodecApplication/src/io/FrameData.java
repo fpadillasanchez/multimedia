@@ -6,6 +6,7 @@
 package io;
 
 import control.CodecConfig;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,6 +49,7 @@ public class FrameData implements Serializable {
         } else {
             this.tilemap = tilemap;
         }
+
     }
 
     public void setMovements(int[][][] mov) {
@@ -79,6 +81,51 @@ public class FrameData implements Serializable {
         return id;
     }
 
+    // Given the position (x, y) of the tilemap, returns a matrix with the values of the pixels inside the tile
+    public int[][][] getImageFragment(int x, int y) {
+        int w = image.getWidth() / CodecConfig.n_tiles_x;   // segment width in pixels
+        int h = image.getHeight() / CodecConfig.n_tiles_y;  // segment height in pixels
+
+        int fragment[][][] = new int[w][h][3];     // fragment of the image associated with tile (x, y)
+        if (image == null || tilemap == null) {
+            return fragment;     // return empty segment if it cannot be computed
+        }
+
+        // Fill fragment with pixel values inside the tile
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                Color color = new Color(image.getRGB(i + x, j + y));
+
+                fragment[i - x][j - y][0] = color.getRed();
+                fragment[i - x][j - y][1] = color.getGreen();
+                fragment[i - x][j - y][2] = color.getBlue();
+            }
+        }
+
+        return fragment;
+    }
+
+    // Given a matrix containing pixel values, uses that values to color a fraction of the image
+    public void setImageFragment(int[][][] fragment, int x, int y) {
+        int w = fragment.length;        // fragment width in pixels
+        int h = fragment[0].length;     // fragment height in pixels
+
+        // Set image color to match the given fragment
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                Color color = new Color(fragment[i][j][0], fragment[i][j][1], fragment[i][j][2]);
+                image.setRGB(i + x, j + y, color.getRGB());
+            }
+        }
+    }
+
+    // Return true if frame has movement associated with tile (x, y)
+    public boolean hasMovement(int x, int y) {
+        int mov[] = movements[x][y];
+
+        return (mov[0] + mov[1] != 0);
+    }
+
     // Store given frame data
     public static void store(FrameData data, String path) throws FileNotFoundException, IOException {
         FileOutputStream fileOut = new FileOutputStream(path);
@@ -86,21 +133,10 @@ public class FrameData implements Serializable {
 
         out.writeInt(data.id);                  // store image id
 
-        // Store tilemap             
-        int w = data.tilemap.length;    // Store tilemap size
-        int h = data.tilemap[0].length;
-        out.writeInt(w);
-        out.writeInt(h);
-
-        for (int i = 0; i < w; i++) {       // Store tilemap data
-            for (int j = 0; j < h; j++) {
-                out.writeInt(data.tilemap[i][j]);
-            }
-        }
-
+        // We are not storing the tilemap, the image will be re-tesselated during decompression
         // Store movements matrix
-        w = data.movements.length;      // Store matrix size
-        h = data.movements[0].length;
+        int w = data.movements.length;      // Store matrix size
+        int h = data.movements[0].length;
         out.writeInt(w);
         out.writeInt(h);
 
@@ -120,28 +156,16 @@ public class FrameData implements Serializable {
     // Retrieve stored frame data
     public static FrameData load(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         BufferedImage img;
-        int id, tilemap[][], movements[][][];
+        int id, movements[][][];
 
         FileInputStream fileIn = new FileInputStream(path);
         ObjectInputStream in = new ObjectInputStream(fileIn);
 
         id = in.readInt();          // read id
 
-        // Read tilemap
-        int w = in.readInt();       // read tilemap size
-        int h = in.readInt();
-
-        tilemap = new int[w][h];
-
-        for (int i = 0; i < w; i++) {       // read tilemap data
-            for (int j = 0; j < h; j++) {
-                tilemap[i][j] = in.readInt();
-            }
-        }
-
         // Read movements matrix
-        w = in.readInt();       // read movements size
-        h = in.readInt();
+        int w = in.readInt();       // read movements size
+        int h = in.readInt();
         movements = new int[w][h][2];
 
         for (int i = 0; i < w; i++) {       // read movements data
@@ -156,7 +180,10 @@ public class FrameData implements Serializable {
         in.close();     // close streams
         fileIn.close();
 
-        return new FrameData(id, img, tilemap, movements);
+        FrameData data = new FrameData(id, img);
+        data.setMovements(movements);
+        return data;
+        //return new FrameData(id, img, tilemap, movements);
     }
 
 }

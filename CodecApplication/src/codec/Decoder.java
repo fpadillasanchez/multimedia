@@ -53,5 +53,33 @@ public class Decoder {
         return data.getImage();
     }
     
+    public static BufferedImage retrieveImage(FrameData reference, FrameData other) {
+        
+        // TODO: Move this segment outside to avoid tiling reference multiple times
+        // Process frame tilemaps
+        int refer_tilemap[][];      // reference tilemap
+        int other_tilemap[][];      // other frame tilemap
+        
+        refer_tilemap = MotionCompensator.tesselate(reference.getImage());
+        other_tilemap = MotionCompensator.tesselate(other.getImage());
+        reference.setTileMap(refer_tilemap);
+        other.setTileMap(other_tilemap);
+        // ------------------------------------------------------------------------
+        
+        int w = CodecConfig.n_tiles_x;
+        int h = CodecConfig.n_tiles_y;
+        
+        // Iterate through tiles
+        for (int i=0; i<w; i++) {
+            for (int j=0; j<h; j++) {
+                // Obtain movements associated to the tile
+                int mov[] = other.getMovements()[i][j];
+                // Displace tile in reference and move into the other frame
+                other.setImageFragment(reference.getImageFragment(i - mov[0], j - mov[1]), i, j);
+            }
+        }  
+        
+        return other.getImage();
+    }  
     
 }
