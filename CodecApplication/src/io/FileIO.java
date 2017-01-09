@@ -31,7 +31,7 @@ public class FileIO {
 
     // Supported image formats. Used for unzipping duties
     public static enum SupportedFormats {
-        JPEG("jpg"), PNG("png"), GIF("gif");
+        JPEG("jpg"), PNG("png"), GIF("gif"), TIFF("tiff");
 
         public String value;
 
@@ -89,24 +89,27 @@ public class FileIO {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
             ZipEntry entry = zis.getNextEntry();
 
-            FileOutputStream fos;
-            while (entry != null) {
-                String path;    // location of the new file where we are storing the extracted information
-
-                path = output + File.separator + entry.getName();
-                File file = new File(path); // create new File
-
-                // Store the info hold in the zip entry into the new file
-                fos = new FileOutputStream(file);
-                while ((lenght = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, lenght);
-                }
-                fos.close();
-
-                files.add(path);            // insert path into the array
-                entry = zis.getNextEntry(); // move to next entry
+            if (entry.isDirectory()) {
             }
-            zis.closeEntry();   // extraction completed
+                FileOutputStream fos;
+                while (entry != null) {
+                    String path;    // location of the new file where we are storing the extracted information
+
+                    path = output + File.separator + entry.getName();
+                    File file = new File(path); // create new File
+
+                    // Store the info hold in the zip entry into the new file
+                    fos = new FileOutputStream(file);
+                    while ((lenght = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, lenght);
+                    }
+                    fos.close();
+
+                    files.add(path);            // insert path into the array
+                    entry = zis.getNextEntry(); // move to next entry
+                }
+                zis.closeEntry();   // extraction completed
+            
         }
         return files;
     }

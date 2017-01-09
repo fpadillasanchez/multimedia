@@ -29,8 +29,8 @@ import java.util.zip.ZipFile;
  */
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
-        
+    public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException, IOException {
+
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
@@ -80,8 +80,7 @@ public class Main {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
-        
-        
+
         /*
         //CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
         //CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
@@ -97,23 +96,23 @@ public class Main {
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
-    
+         */
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
-    private static void decode(boolean visible, String input, String output, int fps) {
-        /*
-        if (visible)
-            visualize(input, output, fps);
-         */
+    private static void decode(boolean visible, String input, String output, int fps) throws IOException {
+
+        if (visible) {
+            visualize(getImageFiles(input, output), input, output, fps);
+        }
+
     }
 
     // ZIP compression
     private static void encode(String videoname) {
         long pesoOriginal = 0;
         long pesoNuevo = 0;
-  
+
         try {
             String input = CodecConfig.input;
             String output = CodecConfig.output;
@@ -145,7 +144,7 @@ public class Main {
                     pesoOriginal = pesoOriginal + compressedSize;
 
                 }
-                System.out.println("Original zip: "+pesoOriginal);
+                System.out.println("Original zip: " + pesoOriginal);
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -158,14 +157,13 @@ public class Main {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
                     long compressedSize = ze.getCompressedSize();
                     pesoNuevo = pesoNuevo + compressedSize;
-                    
-                    
+
                 }
-                System.out.println("New compressed zip after encoding: "+pesoNuevo);
+                System.out.println("New compressed zip after encoding: " + pesoNuevo);
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Factor de compresion: "+pesoOriginal/pesoNuevo*100+"%");
+            System.out.println("Factor de compresion: " + pesoOriginal / pesoNuevo * 100 + "%");
 
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
