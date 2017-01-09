@@ -314,7 +314,7 @@ public class VideoPlayer extends javax.swing.JFrame {
      */
     private void loadBuffer(File imgFile) throws FileNotFoundException, IOException {
         
-        imgBuffer = new CircularBuffer(FileIO.unZip(imgFile.toString(), OUTPUT_FOLDER), 10);
+        imgBuffer = new CircularBuffer(FileIO.extractImages(imgFile.toString(), OUTPUT_FOLDER), 10);
         imgBuffer.load();
     }
 

@@ -21,75 +21,113 @@ import javax.imageio.ImageIO;
 /**
  *
  * @author Fernando Padilla, Sergi Diaz
- * 
- * Class used for loading images from files. Includes a format validator. At 
+ *
+ * Class used for loading images from files. Includes a format validator. At
  * this moment, only JPEG and PNG images are allowed.
- * 
+ *
  * Filtering is done here!
  */
 public class FileIO {
-    
+
     // Supported image formats. Used for unzipping duties
     public static enum SupportedFormats {
         JPEG("jpg"), PNG("png"), GIF("gif");
-        
+
         public String value;
+
         SupportedFormats(String value) {
             this.value = value;
         }
     };
-    
-    // Compress all files inside input directory into an output zip file
-    public static void zip(String input, String output) throws IOException {
+
+    // Compress all files inside input directory into an output zip video
+    public static void compress(String input, String output) throws IOException {
         File folder;                    // input must be a valid directory
         File zipfile;                   // output zip file
         byte[] buf = new byte[1024];    // buffer for reading the files
-        
-        folder = new File(input);              
-        if (!folder.isDirectory())
-            throw new IOException(input + " is not a valid directory.");   
-        zipfile = new File(output);            
-        
-        
+
+        folder = new File(input);
+        if (!folder.isDirectory()) {
+            throw new IOException(input + " is not a valid directory.");
+        }
+        zipfile = new File(output);
+
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
-        
-        for (File file : folder.listFiles()) {      
+
+        for (File file : folder.listFiles()) {
             if (file.isFile()) {
-                FileInputStream in = new FileInputStream(file);  
+                FileInputStream in = new FileInputStream(file);
                 out.putNextEntry(new ZipEntry(file.getName())); // add ZIP entry to output stream
 
                 int len;
-                while((len = in.read(buf)) > 0) { // transfer bytes from the file to the ZIP file
+                while ((len = in.read(buf)) > 0) { // transfer bytes from the file to the ZIP file
                     out.write(buf, 0, len);
                 }
                 // complete the entry
                 out.closeEntry();
                 in.close();
-                
+
                 file.delete();  // delete file
-            }                       
+            }
         }
         // ZIP file completed
-        out.close();  
+        out.close();
     }
-    
-    // Extracts images from zip and returns an array of paths to those images.
-    public static ArrayList<String> unZip(String input, String output) throws FileNotFoundException, IOException {
-        ArrayList<String> files = new ArrayList<>();
+
+    // Decompress entries from a zip video into an output directory
+    public static ArrayList<String> decompress(String input, String output) throws FileNotFoundException, IOException {
+        ArrayList<String> files = new ArrayList<>();    // output files paths array
         byte[] buffer = new byte[1024];
         int lenght;
 
-        File outputDirectory = new File(output);
+        File outputDirectory = new File(output);        // output must be a valid directory
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdir();
+        }
+
+        // Try to extract entries in the zip
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
+            ZipEntry entry = zis.getNextEntry();
+
+            FileOutputStream fos;
+            while (entry != null) {
+                String path;    // location of the new file where we are storing the extracted information
+
+                path = output + File.separator + entry.getName();
+                File file = new File(path); // create new File
+
+                // Store the info hold in the zip entry into the new file
+                fos = new FileOutputStream(file);
+                while ((lenght = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, lenght);
+                }
+                fos.close();
+
+                files.add(path);            // insert path into the array
+                entry = zis.getNextEntry(); // move to next entry
+            }
+            zis.closeEntry();   // extraction completed
+        }
+        return files;
+    }
+
+    // Extracts images from zip and returns an array of paths to those images.
+    public static ArrayList<String> extractImages(String input, String output) throws FileNotFoundException, IOException {
+        ArrayList<String> files = new ArrayList<>();    // output files paths array
+        byte[] buffer = new byte[1024];
+        int lenght;
+
+        File outputDirectory = new File(output);        // output must be a valid directory
         if (!outputDirectory.exists()) {
             outputDirectory.mkdir();
         }
 
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
             ZipEntry entry = zis.getNextEntry();
-            
+
             FileOutputStream fos;
             while (entry != null) {
-                if(validateExtension(entry.getName())) {
+                if (validateExtension(entry.getName())) {
                     // Create temporary file containing the info of the entry
                     File file = new File(output + File.separator + entry.getName());
                     fos = new FileOutputStream(file);
@@ -97,58 +135,70 @@ public class FileIO {
                     while ((lenght = zis.read(buffer)) > 0) {
                         fos.write(buffer, 0, lenght);
                     }
-                    fos.close();  
-                    
+                    fos.close();
+
                     // Store a copy of the image temporary file using default format JPEG
                     files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG).getAbsolutePath());
                     // Delete temporary file
                     file.delete();
                 }
-                entry = zis.getNextEntry();
+                entry = zis.getNextEntry(); // extraction completed
             }
-            
+
             zis.closeEntry();
         }
         return files;
     }
-    
+
     // Loads image if its format is supported.
     public static BufferedImage readImage(String file) throws IOException {
-        if (!validateExtension(file))
+        if (!validateExtension(file)) {
             return null;
+        }
         return ImageIO.read(new File(file));
     }
-    
+
+    // Stores given buffered image into a new file. Stored as a JPEG image.
+    public static void writeImage(BufferedImage image, String output) throws IOException {
+        String format = SupportedFormats.JPEG.toString();
+        ImageIO.write(image, format, new File(output + "." + format));
+    }
+
     // Format validator.
     private static boolean validateExtension(String fileName) {
         int dot = fileName.lastIndexOf(".");
-        if (dot == -1 || dot == fileName.length()) 
+        if (dot == -1 || dot == fileName.length()) {
             return false;
+        }
         String ext = fileName.substring(dot + 1);
         for (SupportedFormats sf : SupportedFormats.values()) {
-            if (ext.equals(sf.value))
+            if (ext.equals(sf.value)) {
                 return true;
+            }
         }
         return true;
-   
+
     }
-    
+
     // Takes the image directed by a given path and stores a copy in the same
     // directory using given supported format.
-    private static File storeImage(String file, SupportedFormats format) throws IOException {     
+    private static File storeImage(String file, SupportedFormats format) throws IOException {
         File outputFile = new File(stripExtension(file) + "." + format.value);
-        
+
         // Filtration process done during storing
-        ImageIO.write(FilterManager.filtrate(ImageIO.read(new File(file))), format.value, outputFile);      
+        ImageIO.write(FilterManager.filtrate(ImageIO.read(new File(file))), format.value, outputFile);
         return outputFile;
     }
-    
-    private static String stripExtension(String file) {
-        if (file == null) 
+
+    public static String stripExtension(String file) {
+        if (file == null) {
             return null;
+        }
         int pos = file.lastIndexOf(".");
-        if (pos == -1) 
+        if (pos == -1) {
             return file;
+        }
         return file.substring(0, pos);
     }
+
 }

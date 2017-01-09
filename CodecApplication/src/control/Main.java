@@ -5,12 +5,14 @@
  */
 package control;
 
+import codec.Decoder;
 import codec.Encoder;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
 import io.FileIO;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -27,7 +29,7 @@ import java.util.zip.ZipFile;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
         
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
@@ -79,20 +81,24 @@ public class Main {
             System.out.println("Try --help for help.");
         }
         
+        
         /*
-        CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
+        //CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
+        //CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
+        CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip\\my_video.zip";
         CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
-        Encoder encoder = new Encoder();
+        //Encoder encoder = new Encoder();
+        
         
         try {
-            encoder.load();
-            encoder.encode("my_video");
+            Decoder.decode(CodecConfig.input, CodecConfig.output);
+            //encoder.load();
+            //encoder.encode("my_video");
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         */
-         
-        
+    
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
@@ -177,7 +183,7 @@ public class Main {
     }
 
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
-        return FileIO.unZip(input, output);
+        return FileIO.extractImages(input, output);
     }
 
 }

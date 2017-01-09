@@ -70,14 +70,14 @@ public class Encoder {
 
         // Compress files in temp directory
         output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;
-        FileIO.zip(temp_dir, output);
+        FileIO.compress(temp_dir, output);
 
         (new File(temp_dir)).delete();  // delete temporary directory
     }
 
     public void load() throws IOException {
         ArrayList<String> input_paths;  // paths to input images
-        input_paths = FileIO.unZip(CodecConfig.input, CodecConfig.output);  // extract images
+        input_paths = FileIO.extractImages(CodecConfig.input, CodecConfig.output);  // extract images
 
         buffer = new Buffer(input_paths, CodecConfig.buffer_size);  // init buffer
         buffer.load();                                              // load buffer
