@@ -89,27 +89,25 @@ public class FileIO {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
             ZipEntry entry = zis.getNextEntry();
 
-            if (entry.isDirectory()) {
-            }
-                FileOutputStream fos;
-                while (entry != null) {
-                    String path;    // location of the new file where we are storing the extracted information
+            FileOutputStream fos;
+            while (entry != null) {
+                String path;    // location of the new file where we are storing the extracted information
 
-                    path = output + File.separator + entry.getName();
-                    File file = new File(path); // create new File
+                path = output + File.separator + entry.getName();
+                File file = new File(path); // create new File
 
-                    // Store the info hold in the zip entry into the new file
-                    fos = new FileOutputStream(file);
-                    while ((lenght = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, lenght);
-                    }
-                    fos.close();
-
-                    files.add(path);            // insert path into the array
-                    entry = zis.getNextEntry(); // move to next entry
+                // Store the info hold in the zip entry into the new file
+                fos = new FileOutputStream(file);
+                while ((lenght = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, lenght);
                 }
-                zis.closeEntry();   // extraction completed
-            
+                fos.close();
+
+                files.add(path);            // insert path into the array
+                entry = zis.getNextEntry(); // move to next entry
+            }
+            zis.closeEntry();   // extraction completed
+
         }
         return files;
     }
@@ -124,15 +122,21 @@ public class FileIO {
         if (!outputDirectory.exists()) {
             outputDirectory.mkdir();
         }
-
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
+
             ZipEntry entry = zis.getNextEntry();
 
             FileOutputStream fos;
             while (entry != null) {
+                String fileName = entry.getName();
+                if (entry.isDirectory()) {
+                    new File(outputDirectory.getName()+entry.getName()).mkdirs();
+                    entry = zis.getNextEntry();
+                    continue;
+                }
                 if (validateExtension(entry.getName())) {
                     // Create temporary file containing the info of the entry
-                    File file = new File(output + File.separator + entry.getName());
+                    File file = new File(output + "/" + fileName);
                     fos = new FileOutputStream(file);
                     // Store the info hold in the zip entry into the temporary file
                     while ((lenght = zis.read(buffer)) > 0) {

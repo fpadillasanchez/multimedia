@@ -129,14 +129,12 @@ public class Main {
             e.encode(videoname);
             t2 = System.nanoTime();
             // --------------
-            int repe = 0;
             double elapsedTime = (t2 - t1) * 000000.1;
             System.out.println("Encoder time: " + elapsedTime + " ms");
             ZipFile zf;
             ZipFile zf2;
             try {
                 zf = new ZipFile(input);
-                long suma = 0;
                 Enumeration ee = zf.entries();
                 while (ee.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
@@ -148,7 +146,6 @@ public class Main {
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            repe = 0;
             try {
                 zf2 = new ZipFile(output + File.separator + videoname + CodecConfig.video_format);
 
