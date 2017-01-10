@@ -29,6 +29,13 @@ public class FrameData implements Serializable {
     // Params relevant to motion detection
     private int[][] tilemap = null;
     private int[][][] movements = null;
+    /* About movements matrix:
+    *       - size w * h * 3, where (w, h) are the number of tiles in the x and y axis
+    *       - each (i,j) position in the matrix holds a 3D vector (a, b, c):
+    *           a = 1 if movement is NULL
+    *           b = x component of the movement
+    *           c = y component of the movement
+    */
 
     public FrameData(int id, BufferedImage image) {
         this.id = id;
@@ -54,7 +61,7 @@ public class FrameData implements Serializable {
 
     public void setMovements(int[][][] mov) {
         if (mov == null) {
-            movements = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y][2];
+            movements = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y][3];
         } else {
             this.movements = mov;
         }
@@ -149,6 +156,7 @@ public class FrameData implements Serializable {
             for (int j = 0; j < h; j++) {
                 out.writeInt(data.movements[i][j][0]);
                 out.writeInt(data.movements[i][j][1]);
+                out.writeInt(data.movements[i][j][2]);
             }
         }
 
@@ -177,6 +185,7 @@ public class FrameData implements Serializable {
             for (int j = 0; j < h; j++) {
                 movements[i][j][0] = in.readInt();
                 movements[i][j][1] = in.readInt();
+                movements[i][j][2] = in.readInt();
             }
         }
 

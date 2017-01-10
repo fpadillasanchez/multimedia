@@ -75,7 +75,7 @@ public class Decoder {
                 // Obtain movements associated to the tile
                 int mov[] = other.getMovements()[i][j];
                 // Displace tile in reference and move into the other frame
-                other.setImageFragment(reference.getImageFragment(i - mov[0], j - mov[1]), i, j);
+                other.setImageFragment(reference.getImageFragment(i + mov[0], j + mov[1]), i, j);
             }
         }  
         

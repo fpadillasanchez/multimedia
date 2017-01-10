@@ -88,28 +88,47 @@ public class MotionCompensator {
         int[][] other_tilemap = other_frame.getTileMap();
 
         int[][][] movements;                               // movements matrix
+        boolean[][] visited;                               // visited tiles
 
         int w = CodecConfig.n_tiles_x;                      // matrix size;
         int h = CodecConfig.n_tiles_y;
-        float tolerance = CodecConfig.quality * w * h;      // tolerance
+        float tolerance = CodecConfig.quality;      // tolerance
 
         /* Matrix holds movement vectors for each tile in the original image (this).
          * Such vectors point to destination position in the matrix and use current
          * position as a reference.
          */
-        movements = new int[w][h][2];
-        for (int i = 0; i < w; i++) {
+        
+        
+        movements = new int[w][h][3];
+        visited = new boolean[w][h];
+        
+        // Init visited matrix
+        for (int i=0; i<w; i++) {
+            for (int j=0; j<h; j++) {
+                visited[i][j] = false;
+            }
+        }
+        
+        for (int i=0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                // Don't bother to search for the tile in the other image if tile values are similar.
-                if (Math.abs(refer_tilemap[i][j] - other_tilemap[i][j]) < tolerance) {
-                    movements[i][j][0] = 0; // does not require movement
-                    movements[i][j][1] = 0;
+                if (!visited[i][j]) {
+                    movements[i][j] = searchTile(refer_tilemap, other_tilemap, i, j, tolerance); // position of ressembling tile  
+                    
+                    if (movements[i][j][0] == 0) {  // movement is not NULL
+                        int distance = movements[i][j][1] + movements[i][j][2];   // distance between tiles
+                    
+                        if (distance == 0) {    // (i, j) tiles look alike on both images
+                            deleteTile(other_frame, i, j);  // remove that fragment of the image
 
-                    // Delete tile if coincidence
-                    deleteTile(other_frame, i, j);
-                } else {
-                    movements[i][j] = searchTile(refer_tilemap, other_tilemap, i, j, tolerance);
-                }
+                        } else {
+                            deleteTile(other_frame, movements[i][j][1] + i, movements[i][j][2] + j);
+                            movements[i][j][0] = 1; 
+                            visited[movements[i][j][1] + i][movements[i][j][2] + j] = true;
+                        }
+                        visited[i][j] = true;
+                    }
+                }  
             }
         }
 
@@ -118,13 +137,14 @@ public class MotionCompensator {
 
     // Search for the (x,y) tile from reference into another tilemap. Return movement vector
     private static int[] searchTile(int[][] refer_tilemap, int[][] other_tilemap, int x, int y, float tol) {
-        int[] vector = {0, 0};
+        int[] vector = {1, 0, 0};    // not found
 
         for (int i = 0; i < CodecConfig.n_tiles_x; i++) {
             for (int j = 0; j < CodecConfig.n_tiles_y; j++) {
                 if (Math.abs(refer_tilemap[x][y] - other_tilemap[i][j]) < tol) {
-                    vector[0] = i - x;
-                    vector[1] = j - y;
+                    vector[0] = 0;      // ressembance found
+                    vector[1] = i - x;
+                    vector[2] = j - y;
                     return vector;      // return if coincidence found
                 }
             }
