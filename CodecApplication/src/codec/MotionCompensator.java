@@ -92,14 +92,12 @@ public class MotionCompensator {
 
         int w = CodecConfig.n_tiles_x;                      // matrix size;
         int h = CodecConfig.n_tiles_y;
-        float tolerance = CodecConfig.quality;      // tolerance
+        float tolerance = CodecConfig.quality * 10;      // tolerance
 
         /* Matrix holds movement vectors for each tile in the original image (this).
          * Such vectors point to destination position in the matrix and use current
          * position as a reference.
-         */
-        
-        
+         */    
         movements = new int[w][h][3];
         visited = new boolean[w][h];
         
@@ -110,6 +108,7 @@ public class MotionCompensator {
             }
         }
         
+        // Traverse through tiles
         for (int i=0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 if (!visited[i][j]) {
@@ -126,8 +125,8 @@ public class MotionCompensator {
                             movements[i][j][0] = 1; 
                             visited[movements[i][j][1] + i][movements[i][j][2] + j] = true;
                         }
-                        visited[i][j] = true;
                     }
+                    visited[i][j] = true;
                 }  
             }
         }
@@ -139,14 +138,21 @@ public class MotionCompensator {
     private static int[] searchTile(int[][] refer_tilemap, int[][] other_tilemap, int x, int y, float tol) {
         int[] vector = {1, 0, 0};    // not found
 
+        int counter = CodecConfig.seekRange;
         for (int i = 0; i < CodecConfig.n_tiles_x; i++) {
             for (int j = 0; j < CodecConfig.n_tiles_y; j++) {
+                if (counter == 0 && false) {
+                    break;  // stop if exceeding search range
+                }
+                
                 if (Math.abs(refer_tilemap[x][y] - other_tilemap[i][j]) < tol) {
                     vector[0] = 0;      // ressembance found
                     vector[1] = i - x;
                     vector[2] = j - y;
                     return vector;      // return if coincidence found
                 }
+                
+                counter--;
             }
         }
         return vector;

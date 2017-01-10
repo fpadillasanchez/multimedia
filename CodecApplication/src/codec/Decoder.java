@@ -65,19 +65,26 @@ public class Decoder {
         reference.setTileMap(refer_tilemap);
         other.setTileMap(other_tilemap);
         // ------------------------------------------------------------------------
+
+        // Tile size in pixels
+        int w = other.getImage().getWidth() / CodecConfig.n_tiles_x;
+        int h = other.getImage().getHeight() / CodecConfig.n_tiles_y;
         
-        int w = CodecConfig.n_tiles_x;
-        int h = CodecConfig.n_tiles_y;
-        
-        // Iterate through tiles
-        for (int i=0; i<w; i++) {
-            for (int j=0; j<h; j++) {
+        for (int i=0; i < CodecConfig.n_tiles_x; i++) {
+            for (int j=0; j < CodecConfig.n_tiles_y; j ++) {
                 // Obtain movements associated to the tile
                 int mov[] = other.getMovements()[i][j];
                 // Displace tile in reference and move into the other frame
-                other.setImageFragment(reference.getImageFragment(i + mov[0], j + mov[1]), i, j);
+                if(mov[0] == 0) {
+                    try {
+                        int[][][] fragment = reference.getImageFragment((i + mov[1]) * w, (j + mov[2]) * h);
+                        other.setImageFragment(fragment, i * w, j * h);
+                    } catch (Exception ex){
+                        // Out of range
+                    }      
+                }
             }
-        }  
+        }
         
         return other.getImage();
     }  
