@@ -94,11 +94,16 @@ public class FrameData implements Serializable {
         // Fill fragment with pixel values inside the tile
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                Color color = new Color(image.getRGB(i + x, j + y));
-
-                fragment[i - x][j - y][0] = color.getRed();
-                fragment[i - x][j - y][1] = color.getGreen();
-                fragment[i - x][j - y][2] = color.getBlue();
+                try {
+                    Color color = new Color(image.getRGB(i + x * w, j + y * h));
+                    
+                    fragment[i][j][0] = color.getRed();
+                    fragment[i][j][1] = color.getGreen();
+                    fragment[i][j][2] = color.getBlue();
+                    
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    // out of range
+                }
             }
         }
 
@@ -114,7 +119,7 @@ public class FrameData implements Serializable {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 Color color = new Color(fragment[i][j][0], fragment[i][j][1], fragment[i][j][2]);
-                image.setRGB(i + x, j + y, color.getRGB());
+                image.setRGB(i + x * w, j + y * h, color.getRGB());
             }
         }
     }
