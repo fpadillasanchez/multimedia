@@ -145,7 +145,7 @@ public class FileIO {
                     fos.close();
 
                     // Store a copy of the image temporary file using default format JPEG
-                    files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG.GIF.PNG.TIFF).getAbsolutePath());
+                    files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG).getAbsolutePath());
                     // Delete temporary file
                     file.delete();
                 }
