@@ -130,13 +130,13 @@ public class FileIO {
             while (entry != null) {
                 String fileName = entry.getName();
                 if (entry.isDirectory()) {
-                    new File(outputDirectory.getName()+entry.getName()).mkdirs();
+                    new File(outputDirectory.getName()+"/"+entry.getName()).mkdirs();
                     entry = zis.getNextEntry();
                     continue;
                 }
                 if (validateExtension(entry.getName())) {
                     // Create temporary file containing the info of the entry
-                    File file = new File(output + "/" + fileName);
+                    File file = new File(output + fileName);
                     fos = new FileOutputStream(file);
                     // Store the info hold in the zip entry into the temporary file
                     while ((lenght = zis.read(buffer)) > 0) {
@@ -145,7 +145,7 @@ public class FileIO {
                     fos.close();
 
                     // Store a copy of the image temporary file using default format JPEG
-                    files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG).getAbsolutePath());
+                    files.add(storeImage(file.getAbsolutePath(), SupportedFormats.JPEG.GIF.PNG.TIFF).getAbsolutePath());
                     // Delete temporary file
                     file.delete();
                 }
