@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -28,6 +30,11 @@ import javax.imageio.ImageIO;
  * Filtering is done here!
  */
 public class FileIO {
+
+    private static ArrayList<String> convert(List<String> files) {
+        ArrayList<String> newFiles = new ArrayList<String>(files);
+        return newFiles;   
+    }
 
     // Supported image formats. Used for unzipping duties
     public static enum SupportedFormats {
@@ -114,9 +121,9 @@ public class FileIO {
 
     // Extracts images from zip and returns an array of paths to those images.
     public static ArrayList<String> extractImages(String input, String output) throws FileNotFoundException, IOException {
-        ArrayList<String> files = new ArrayList<>();    // output files paths array
+        List<String> files = new ArrayList<>();    // output files paths array
         byte[] buffer = new byte[1024];
-        int lenght;
+        int length;
 
         File outputDirectory = new File(output);        // output must be a valid directory
         if (!outputDirectory.exists()) {
@@ -137,10 +144,11 @@ public class FileIO {
                 if (validateExtension(entry.getName())) {
                     // Create temporary file containing the info of the entry
                     File file = new File(output + fileName);
+                    
                     fos = new FileOutputStream(file);
                     // Store the info hold in the zip entry into the temporary file
-                    while ((lenght = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, lenght);
+                    while ((length = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, length);
                     }
                     fos.close();
 
@@ -154,7 +162,8 @@ public class FileIO {
 
             zis.closeEntry();
         }
-        return files;
+        Collections.sort(files);
+        return convert(files);
     }
 
     // Loads image if its format is supported.
