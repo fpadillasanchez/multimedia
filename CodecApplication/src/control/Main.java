@@ -20,8 +20,10 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/***
- * Main class. It reads the parameters from args 
+/**
+ * *
+ * Main class. It reads the parameters from args
+ *
  * @author Sergi Diaz Fernando Padilla
  */
 public class Main {
@@ -68,9 +70,9 @@ public class Main {
             if (parser.help) {
                 jCom.usage();
             } else if (parser.decode) {
-                decode(!parser.batch, parser.getFPS()); // do not show GUI if batch
+                decode(!parser.batch, parser.getFPS(), parser.getnTiles()); // do not show GUI if batch
             } else if (parser.encode) {
-                encode("my_video.zip");
+                encode("my_video.zip", parser.getnTiles());
             }
 
         } catch (ParameterException ex) {
@@ -83,17 +85,23 @@ public class Main {
 
     }
 
-    /***
+    /**
+     * *
      * Decodes ZIP and loades images into the videoplayer GUI.
+     *
      * @param visible
      * @param input
      * @param output
      * @param fps
-     * @throws IOException 
+     * @throws IOException
      */
-    private static void decode(boolean visible, int fps) throws IOException, ClassNotFoundException, Exception {
-        
-        Decoder.decode(CodecConfig.input, CodecConfig.output);  
+    private static void decode(boolean visible, int fps, int tiles) throws IOException, ClassNotFoundException, Exception {
+        if (tiles != 0) {
+            CodecConfig.n_tiles_x = tiles;
+            CodecConfig.n_tiles_y = tiles;
+        }
+
+        Decoder.decode(CodecConfig.input, CodecConfig.output);
         /*
         Aquesta primera linia ja fa tota la decodificacio. Guarda les imatges del video
         al output.
@@ -102,33 +110,37 @@ public class Main {
         del output i les reprodueixi.
         
         El "if visible" de sota es per a que no es mostri la GUI si per comanda es posa --bash (mode debug o algo aixi)
-        */
+         */
 
         if (visible) {
             ArrayList<String> files = new ArrayList<>();
-            
+
             /*
             Imagino que aixo petaria casi sempre, potser seria adequat fer que el decoder crei un directori
             al output on guardar les imatges, algo tipo \video_DATA
             
-            */
+             */
             File output_dir = new File(CodecConfig.output);
-            for (String path: output_dir.list()) {
+            for (String path : output_dir.list()) {
                 files.add(path);
             }
-            
+
             visualize(files, fps);
         }
 
     }
 
-    /***
+    /**
+     * *
      * ZIP compression
-     * @param videoname 
+     *
+     * @param videoname
      */
-    private static void encode(String videoname) {
+    private static void encode(String videoname, int tiles) {
         long pesoOriginal = 0;
         long pesoNuevo = 0;
+        CodecConfig.n_tiles_x = tiles;
+        CodecConfig.n_tiles_x = tiles;
 
         try {
             String input = CodecConfig.input;
@@ -183,13 +195,15 @@ public class Main {
         }
     }
 
-    /***
+    /**
+     * *
      * Manages video visualization
+     *
      * @param imageFiles
      * @param input
      * @param output
      * @param fps
-     * @throws IOException 
+     * @throws IOException
      */
     private static void visualize(ArrayList<String> imageFiles, int fps) throws IOException {
 
@@ -197,15 +211,17 @@ public class Main {
         VideoPlayerController.fps = fps;
         VideoPlayerController.imageFiles = imageFiles;
         VideoPlayerController vpc = new VideoPlayerController();
-        (new Thread(vpc)).start();              // video displayed on another thread
+        (new Thread(vpc)).start(); // video displayed on another thread
     }
 
-    /***
+    /**
+     * *
      * Gets all the images from a zip file and extracts them in a output folder
+     *
      * @param input
      * @param output
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
         return FileIO.extractImages(input, output);
