@@ -104,6 +104,14 @@ public class ArgParser {
         return fps;
     }
 
+    public Integer getSeekRange() {
+        return seekRange;
+    }
+
+    public Integer getGop() {
+        return gop;
+    }
+
     public Integer getBin() {
         return bin;
     }

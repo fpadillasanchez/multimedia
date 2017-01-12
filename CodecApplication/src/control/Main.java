@@ -70,9 +70,9 @@ public class Main {
             if (parser.help) {
                 jCom.usage();
             } else if (parser.decode) {
-                decode(!parser.batch, parser.getFPS(), parser.getnTiles()); // do not show GUI if batch
+                decode(!parser.batch, parser.getFPS(), parser.getnTiles(),parser.getSeekRange(),parser.getGop()); // do not show GUI if batch
             } else if (parser.encode) {
-                encode("my_video.zip", parser.getnTiles());
+                encode("my_video.zip", parser.getnTiles(),parser.getSeekRange(),parser.getGop());
             }
 
         } catch (ParameterException ex) {
@@ -95,10 +95,18 @@ public class Main {
      * @param fps
      * @throws IOException
      */
-    private static void decode(boolean visible, int fps, int tiles) throws IOException, ClassNotFoundException, Exception {
+    private static void decode(boolean visible, int fps, int tiles, int seekRange, int gop) throws IOException, ClassNotFoundException, Exception {
         if (tiles != 0) {
             CodecConfig.n_tiles_x = tiles;
             CodecConfig.n_tiles_y = tiles;
+        }
+        
+        if (seekRange != 0) {
+            CodecConfig.seekRange = seekRange;
+        }
+        
+        if(gop != 0){
+            CodecConfig.gop = gop;
         }
 
         Decoder.decode(CodecConfig.input, CodecConfig.output);
@@ -136,11 +144,24 @@ public class Main {
      *
      * @param videoname
      */
-    private static void encode(String videoname, int tiles) {
+    private static void encode(String videoname, int tiles, int seekRange, int gop) {
         long pesoOriginal = 0;
         long pesoNuevo = 0;
-        CodecConfig.n_tiles_x = tiles;
-        CodecConfig.n_tiles_x = tiles;
+        
+        if (tiles != 0) {
+            CodecConfig.n_tiles_x = tiles;
+            CodecConfig.n_tiles_y = tiles;
+        }
+        
+        if (seekRange != 0) {
+            CodecConfig.seekRange = seekRange;
+        }
+        
+        if(gop != 0){
+            CodecConfig.gop = gop;
+        }
+        
+        
 
         try {
             String input = CodecConfig.input;
