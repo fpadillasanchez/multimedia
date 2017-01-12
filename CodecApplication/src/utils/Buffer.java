@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package utils;
 
 import io.FileIO;
@@ -19,7 +14,11 @@ public class Buffer extends Queue {
     protected int maxSize = 10; // maximum number of images the buffer can hold
     protected Queue files;      // image paths to be loaded into the buffer
     
-    // Create buffer
+    /***
+     * Create buffer {mazSize, files}
+     * @param files
+     * @param maxSize 
+     */ 
     public Buffer(ArrayList<String> files, int maxSize) {
         this.maxSize = maxSize;
         this.files = new Queue();

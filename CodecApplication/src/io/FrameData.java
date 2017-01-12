@@ -17,10 +17,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javax.imageio.ImageIO;
 
-/**
- * *
- *
- * @author Sergi Diaz
+/***
+ * FrameData class. It contains every image compressed, its id and its color rgb
+ * @author Sergi Diaz Fernando Padilla
  */
 public class FrameData implements Serializable {
 
@@ -30,7 +29,7 @@ public class FrameData implements Serializable {
 
     /**
      * *
-     * Params relevant to motion detection
+     * Relevant setting to motion detection
      */
     private int[][] tilemap = null;
     private int[][][] movements = null;
@@ -42,9 +41,8 @@ public class FrameData implements Serializable {
     *           b = x component of the movement
     *           c = y component of the movement
      */
-    /**
-     * *
-     *
+    /***
+     * Constructor 
      * @param id
      * @param image
      */
@@ -226,10 +224,9 @@ public class FrameData implements Serializable {
         return (mov[0] + mov[1] != 0);
     }
 
-    /**
-     * *
-     * Calculates the average RGB value of the image
-     *
+    /***
+     * Compute color get for each pixel its color and the returns its RGB average 
+     * for each channel
      * @return
      */
     public int computeColor() {
@@ -291,10 +288,8 @@ public class FrameData implements Serializable {
         fileOut.close();
     }
 
-    /**
-     * *
-     * Retrieve stored frame data
-     *
+    /***
+     * Retrieve stored frame data 
      * @param path
      * @return
      * @throws FileNotFoundException

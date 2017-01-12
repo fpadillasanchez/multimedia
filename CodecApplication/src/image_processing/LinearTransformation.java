@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 /***
  * 
- * @author 
+ * @author Sergi Diaz
  */
 public abstract class LinearTransformation {
     protected float[][] mask;
@@ -19,7 +19,6 @@ public abstract class LinearTransformation {
     // Apply the transformation on the image and returns the image.
     // TODO: Optimization    
     public BufferedImage apply() {
- 
         for (int y = 1; y + 1 < image.getHeight(); y++) {
             for (int x = 1; x + 1 < image.getWidth(); x++) {
                 Color tempColor = getFilteredValue(y, x);

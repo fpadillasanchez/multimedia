@@ -15,18 +15,16 @@ import java.awt.image.BufferedImage;
  */
 public class NegativeFilter extends SimpleFilter {
 
-    /**
-     * *
-     *
+    /***
+     * 
      * @param image
      */
     public NegativeFilter(BufferedImage image) {
         super(image);
     }
 
-    /**
-     * *
-     *
+    /***
+     * Method that inverts each pixel's RGB color
      * @param image
      * @return
      */
@@ -44,7 +42,11 @@ public class NegativeFilter extends SimpleFilter {
         }
         return image;
     }
-
+    /***
+     * Method that changes the color of the image
+     * @param color
+     * @return 
+     */
     @Override
     protected Color transform(Color color) {
         int r = 255 - color.getRed();

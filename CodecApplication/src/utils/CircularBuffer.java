@@ -22,7 +22,10 @@ public class CircularBuffer extends Buffer {
     public CircularBuffer(ArrayList<String> files, int maxSize) {
         super(files, maxSize);
     }
-    
+    /***
+     * Method loads an image into the linked list
+     * @throws IOException 
+     */
     @Override
     protected void loadImage() throws IOException {
         this.push(FileIO.readImage((String) files.popCircular()));

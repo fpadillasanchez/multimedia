@@ -20,7 +20,11 @@ public class MotionBlurFilter extends LinearTransformation {
         this.image = image;
         setMask();
     }
-    
+    /***
+     * Clas constructor. Sets the image by the path
+     * @param image
+     * @throws IOException 
+     */
     public MotionBlurFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         setMask();

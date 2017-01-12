@@ -15,13 +15,16 @@ import javax.imageio.ImageIO;
  * @author Sergi Diaz
  */
 public class SharpenFilter extends LinearTransformation {
-    
+    /***
+     * Class constructor
+     * @param image 
+     */
     public SharpenFilter(BufferedImage image) {
         this.image = image;
         setMask();
     }
     /***
-     * 
+     * Class constructor
      * @param image
      * @throws IOException 
      */

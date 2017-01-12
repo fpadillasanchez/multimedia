@@ -11,16 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- * *
+/***
+ * Laplacian Filter class. Extends funtionalities avaialble in LinearTrasnformation
  *
- * @author
+ * @author Sergi Diaz
  */
 public class LaplacianFilter extends LinearTransformation {
 
-    /**
-     * *
-     *
+    /***
+     * Class constructor for an image 
      * @param image
      */
     public LaplacianFilter(BufferedImage image) {
@@ -29,9 +28,8 @@ public class LaplacianFilter extends LinearTransformation {
         grayScale(); // <- comment this line for preventing grayscaling
     }
 
-    /**
-     * *
-     *
+    /***
+     * Constructor when given a path to an image
      * @param image
      * @throws IOException
      */
@@ -41,9 +39,8 @@ public class LaplacianFilter extends LinearTransformation {
         grayScale(); // <- comment this line for preventing grayscaling
     }
 
-    /**
-     * *
-     *
+    /***
+     * Sets the laplacian mask
      */
     @Override
     protected void setMask() {
@@ -55,8 +52,8 @@ public class LaplacianFilter extends LinearTransformation {
         mask = new float[][]{{-1f, -1f, -1}, {-1f, 8f, -1f}, {-1f, -1f, -1f}};//laplacian mask
     }
 
-    /**
-     * *
+    /***
+     * Method that applies a gray scale to an image
      * Transforms current image from RGB to grayscale
      */
     private void grayScale() {

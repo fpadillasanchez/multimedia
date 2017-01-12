@@ -47,7 +47,7 @@ public abstract class LinkedList {
         }
 
         /**
-         * *
+         * Set method that points to the previous item
          *
          * @param prev
          */
@@ -55,17 +55,16 @@ public abstract class LinkedList {
             this.prev = prev;
         }
 
-        /**
-         * *
-         *
-         * @return
+        /***
+         * Get method that returns the next item
+         * @return 
          */
         public Item getNext() {
             return next;
         }
 
         /***
-         * 
+         * Get method that returns the previous item
          * @return 
          */
         public Item getPrev() {
@@ -74,7 +73,7 @@ public abstract class LinkedList {
     }
 
     /***
-     * 
+     * Initializes the linked list
      */
     public LinkedList() {
         first = null;
@@ -82,7 +81,7 @@ public abstract class LinkedList {
     }
 
     /***
-     * 
+     * Method returns the linked list's size
      * @return 
      */
     
@@ -91,7 +90,7 @@ public abstract class LinkedList {
     }
 
     /***
-     * 
+     * Methdos tells wether the linked list is empty or not
      * @return 
      */
     public boolean isEmpty() {
@@ -99,7 +98,7 @@ public abstract class LinkedList {
     }
 
     /***
-     * 
+     * Method that adds an object into the linked list
      * @param object 
      */
     public void push(Object object) {
@@ -117,7 +116,7 @@ public abstract class LinkedList {
     }
 
     /***
-     * 
+     * Method that removes every item in linkelist
      */
     public void removeAll() {
         first = null;

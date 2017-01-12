@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 /***
  * Class used for loading images from files. Includes a format validator. At
  * this moment, only JPEG and PNG images are allowed.
- * @author gondu
+ * @author Sergi Diaz Fernando Padilla
  */
 public class FileIO {
     /***

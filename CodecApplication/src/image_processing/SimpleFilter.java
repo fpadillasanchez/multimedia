@@ -18,16 +18,26 @@ public abstract class SimpleFilter {
     
     protected BufferedImage image; // image to be filtered
     
-    // Build filter by using an already buffered image as argument
+    /***
+     * Build filter by using an already buffered image as argument
+     * @param image 
+     */ 
     public SimpleFilter(BufferedImage image) {
         this.image = image;
     }
     
-    // Load image from file
+    /***
+     * Load image from file
+     * @param file
+     * @throws IOException 
+     */
     public SimpleFilter(String file) throws IOException {
         image = FileIO.readImage(file);
     }
-    
+    /***
+     * Method that loops over the entire image to apply a transformation
+     * @return 
+     */
     public BufferedImage apply() {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -43,8 +53,12 @@ public abstract class SimpleFilter {
         return image;
     } 
     
-    // Abstract method computes new pixel value. Each simple filter uses its own 
-    // algorithm.
+    /***
+     * Abstract method computes new pixel value. Each simple filter uses its own 
+     * algorithm.
+     * @param color
+     * @return 
+     */ 
     protected abstract Color transform(Color color);
 
 }
