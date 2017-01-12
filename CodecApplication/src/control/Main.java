@@ -7,15 +7,11 @@ package control;
 
 import codec.Decoder;
 import codec.Encoder;
-import codec.MotionDetector;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
 import io.FileIO;
-import io.FrameData;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import javax.imageio.ImageIO;
 
 /***
  * Main class. It reads the parameters from args 
@@ -73,7 +68,7 @@ public class Main {
             if (parser.help) {
                 jCom.usage();
             } else if (parser.decode) {
-                decode(!parser.batch, parser.getInput(), parser.getOutput(), parser.getFPS()); // do not show GUI if batch
+                decode(!parser.batch, parser.getFPS()); // do not show GUI if batch
             } else if (parser.encode) {
                 encode("my_video.zip");
             }
@@ -81,31 +76,11 @@ public class Main {
         } catch (ParameterException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Try --help for help.");
         }
 
-        /*
-        //CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\Imagenes.zip";
-        //CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
-        CodecConfig.input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip\\my_video.zip";
-        CodecConfig.output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\unzip";
-        //Encoder encoder = new Encoder();
-
-
-        try {
-        Decoder.decode(CodecConfig.input, CodecConfig.output);
-        //encoder.load();
-        //encoder.encode("my_video");
-        } catch (IOException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         */
- /*
-        try {
-            DEBUG();
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         */
     }
 
     /***
@@ -116,10 +91,33 @@ public class Main {
      * @param fps
      * @throws IOException 
      */
-    private static void decode(boolean visible, String input, String output, int fps) throws IOException {
+    private static void decode(boolean visible, int fps) throws IOException, ClassNotFoundException, Exception {
+        
+        Decoder.decode(CodecConfig.input, CodecConfig.output);  
+        /*
+        Aquesta primera linia ja fa tota la decodificacio. Guarda les imatges del video
+        al output.
+        
+        No se molt be com funciona el VideoPlayer, aixi que mira de fer que agafi les imatges
+        del output i les reprodueixi.
+        
+        El "if visible" de sota es per a que no es mostri la GUI si per comanda es posa --bash (mode debug o algo aixi)
+        */
 
         if (visible) {
-            visualize(getImageFiles(input, output), input, output, fps);
+            ArrayList<String> files = new ArrayList<>();
+            
+            /*
+            Imagino que aixo petaria casi sempre, potser seria adequat fer que el decoder crei un directori
+            al output on guardar les imatges, algo tipo \video_DATA
+            
+            */
+            File output_dir = new File(CodecConfig.output);
+            for (String path: output_dir.list()) {
+                files.add(path);
+            }
+            
+            visualize(files, fps);
         }
 
     }
@@ -139,7 +137,7 @@ public class Main {
             long t1, t2;    // used for measuring encoding nelapsed time
             ArrayList<String> inputFiles = getImageFiles(input, output);
 
-            visualize(inputFiles, input, output, 30);
+            visualize(inputFiles, 30);
 
             // -- ENCODING --
             t1 = System.nanoTime();
@@ -193,7 +191,7 @@ public class Main {
      * @param fps
      * @throws IOException 
      */
-    private static void visualize(ArrayList<String> imageFiles, String input, String output, int fps) throws IOException {
+    private static void visualize(ArrayList<String> imageFiles, int fps) throws IOException {
 
         // Set videoplayer parameters
         VideoPlayerController.fps = fps;
@@ -211,54 +209,6 @@ public class Main {
      */
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
         return FileIO.extractImages(input, output);
-    }
-
-    /***
-     * Temporal method
-     * @throws IOException 
-     */
-    private static void DEBUG() throws IOException {
-
-        try {
-            Decoder.decode("C:\\Users\\SDP\\Desktop\\my_video.zip", "C:\\Users\\SDP\\Desktop\\NuevaCarpeta");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        CodecConfig.n_tiles_x = 100;
-        CodecConfig.n_tiles_y = 100;
-
-        String in_refer = "C:\\Users\\SDP\\Desktop\\test_0.png";
-        String in_other = "C:\\Users\\SDP\\Desktop\\test_1.png";
-
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        ArrayList<FrameData> frames;
-
-        BufferedImage img_refer = ImageIO.read(new File(in_refer));
-        BufferedImage img_other = ImageIO.read(new File(in_other));
-
-        //int w = Math.min(Math.max(1, (img_refer.getWidth() / CodecConfig.n_tiles_x)), CodecConfig.n_tiles_x);
-        //int h = Math.min(Math.max(1, (img_refer.getHeight() / CodecConfig.n_tiles_y)), CodecConfig.n_tiles_y);
-        FrameData refer;
-        FrameData other;
-
-        images.add(img_refer);
-        images.add(img_other);
-
-        frames = MotionDetector.motionDetection(images, 0);
-
-        refer = frames.get(0);
-        other = frames.get(1);
-
-        FileIO.writeImage(refer.getImage(), "C:\\Users\\SDP\\Desktop\\test_0_refer.png");
-        FileIO.writeImage(other.getImage(), "C:\\Users\\SDP\\Desktop\\test_0_other.png");
-
-        BufferedImage retrieved = Decoder.retrieveImage(refer, other);
-        FileIO.writeImage(retrieved, "C:\\Users\\SDP\\Desktop\\retrieved.png");
     }
 
 }
