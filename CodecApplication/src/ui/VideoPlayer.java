@@ -26,10 +26,10 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private final String OUTPUT_FOLDER;
     private final String INPUT_ZIP;
-
     private ArrayList<BufferedImage> images = new ArrayList<>();
     TextAreaClass console;
     int fps = 30; // default fps
+    int id = 0;
     FrameTimer tm;
     Timer t;
     boolean isPlaying = false;
@@ -51,6 +51,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         console = new TextAreaClass(this.jTextArea1);
         PrintStream consolePoint = new PrintStream(console);
         System.setOut(consolePoint);
+        
     }
 
     /**
@@ -235,7 +236,6 @@ public class VideoPlayer extends javax.swing.JFrame {
             this.t = new Timer();
             tm = new FrameTimer(this);
             this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
-            System.out.println(String.valueOf(tempFPS));
 
         } else {
             System.out.println("Video already playing.");
@@ -258,7 +258,6 @@ public class VideoPlayer extends javax.swing.JFrame {
      */
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         this.fps = this.fps - 5;
-        System.out.println("New FPS:"+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
@@ -269,7 +268,6 @@ public class VideoPlayer extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         this.fps = this.fps + 1;
-        System.out.println("New FPS: "+String.valueOf(this.fps));
         int tempFPS = (int) (1000.0f / Math.abs(this.fps));
         this.t.cancel();
         this.tm = new FrameTimer(this);
@@ -299,9 +297,11 @@ public class VideoPlayer extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void next() throws IOException {
-
+        
         ImageIcon icon = new ImageIcon(imgBuffer.getImage());
         jLabelImagesSequences.setIcon(icon);
+        System.out.format("Frame: %15s FPS: %15s\n", id,this.fps);
+        id++;
     }
 
     /**
