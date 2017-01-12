@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import utils.Queue;
 
 /**
  *
@@ -20,13 +21,11 @@ import java.io.IOException;
 public class Decoder {
 
     // Perform the decoding of a video directed by input. Place the images at output directory.
-    public static void decode(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException {
+    public static void decode(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
         // Abort if input is not a video generated using this codec
-        /*
-        if (!FileIO.stripExtension(input).equals(CodecConfig.video_format)) {
-            // TODO: throw custom codec exception
-            return;
-        }*/
+        if (!FileIO.getExtension(input).equals(CodecConfig.video_format)) {
+            throw new Exception("input file format not supported!");
+        }
 
         File temp_dir;  // directory used for storing temporary files
 
@@ -35,7 +34,9 @@ public class Decoder {
 
         FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
 
+        Queue paths = new Queue();
         for (File file : temp_dir.listFiles()) {
+            /*
             // Read frame data from the extracted temporary file
             FrameData frame = FrameData.load(file.getAbsolutePath());
             frame.setTileMap(MotionDetector.tesselate(frame.getImage()));   // compute tilemap
@@ -45,7 +46,39 @@ public class Decoder {
             FileIO.writeImage(retrieveImage(frame), image_path);
 
             file.delete();  // delete temporary file
+            */
+            
+            paths.push(file.getAbsolutePath()); // paths to temporary data files
         }
+        
+        while (!paths.isEmpty()) {
+            String referencePath = (String) paths.pop();
+            
+            // Get reference frame
+            FrameData refer = FrameData.load(referencePath);
+            refer.setTileMap(MotionDetector.tesselate(refer.getImage()));   // compute tilemap
+                 
+            // Compute set of frames, which takes previous frame as a reference
+            for (int j=0; j<CodecConfig.gop; j++) {
+                String path = (String) paths.pop();
+                
+                FrameData other = FrameData.load(path);
+                other.setTileMap(MotionDetector.tesselate(other.getImage()));   // compute tilemap       
+                
+                // Retrieve image in current frame
+                BufferedImage retrieved = retrieveImage(refer, other);
+                // Store image 
+                String image_path = output + File.separator + Integer.toString(other.getId());
+                FileIO.writeImage(retrieved, image_path);
+                
+                // Delete temporary file
+                (new File(path)).delete();
+            }
+            
+            // Delete reference temp file
+            (new File(referencePath)).delete();    
+        }
+        
 
         temp_dir.delete();  // delete temporary directory
     }

@@ -206,6 +206,7 @@ public class FileIO {
         return outputFile;
     }
 
+    // Return input string without extension, that being a path to a file
     public static String stripExtension(String file) {
         if (file == null) {
             return null;
@@ -215,6 +216,18 @@ public class FileIO {
             return file;
         }
         return file.substring(0, pos);
+    }
+    
+    // Return extendion from input string, that being the path to a file
+    public static String getExtension(String file) {
+        String ext = "";
+        
+        int pos = file.lastIndexOf(".");
+        if (pos == -1) {
+            return ext;
+        }
+        return file.substring(pos);
+        
     }
 
 }

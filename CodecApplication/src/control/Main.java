@@ -13,7 +13,6 @@ import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
 import io.FileIO;
 import io.FrameData;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -198,96 +197,16 @@ public class Main {
     }
     
     private static void DEBUG() throws IOException {
-        /*
         
-        CodecConfig.n_tiles_x = 4;
-        CodecConfig.n_tiles_y = 4;
-        
-        String in_refer = "C:\\Users\\SDP\\Desktop\\test_0.png";
-        String in_other = "C:\\Users\\SDP\\Desktop\\test_1.png";
-        
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        ArrayList<FrameData> frames;
-        
-        BufferedImage img_refer = ImageIO.read(new File(in_refer));
-        BufferedImage img_other = ImageIO.read(new File(in_other));
-        
-        images.add(img_refer);
-        images.add(img_other);
-        
-        frames = MotionDetector.motionDetection(images, 0);
-        
-        FrameData refer = frames.get(0);
-        FrameData other = frames.get(1);
-        
-        refer.setImage(FilterManager.average(refer.getImage(), 3));
-        other.setImage(FilterManager.average(other.getImage(), 3));
-        
-        FileIO.writeImage(refer.getImage(), "C:\\Users\\SDP\\Desktop\\test_refer.jpg");
-        FileIO.writeImage(other.getImage(), "C:\\Users\\SDP\\Desktop\\test_other.jpg");
-        
-        FileIO.writeImage(Decoder.retrieveImage(refer, other), "C:\\Users\\SDP\\Desktop\\test_retrieved.jpg");
-        
-        
-        int mov[][][] = other.getMovements();
-        for (int i=0; i<mov.length; i++) {
-            for (int j=0; j<mov[0].length; j++) {
-                System.out.println(i + ", " + j + " --> " + mov[i][j][0] + "; " + mov[i][j][1] + ", " + mov[i][j][2]);
-            }
-        }
-        */
-        
-        
-        /*
-        CodecConfig.n_tiles_x = 4;
-        CodecConfig.n_tiles_y = 4;
-        
-        BufferedImage image = FileIO.readImage("C:\\Users\\SDP\\Desktop\\test_0.png");
-        
-        int[][] tessel = MotionDetector.tesselate(image);
-        
-        // Tile size in pixels
-        int w = Math.min(Math.max(1, (image.getWidth() / CodecConfig.n_tiles_x)), CodecConfig.n_tiles_x);
-        int h = Math.min(Math.max(1, (image.getHeight() / CodecConfig.n_tiles_y)), CodecConfig.n_tiles_y);
-        
-        for (int i=0; i<CodecConfig.n_tiles_x; i++) {
-            for (int j=0; j<CodecConfig.n_tiles_y; j++) {
-
-                for (int x=0; x<w; x++) {
-                    for (int y=0; y<w; y++) {
-                        try {
-                            image.setRGB(x + i * w, y + j * h, tessel[i][j]);
-                            
-                        } catch(Exception ex) {
-                            System.out.println("Exception");
-                        }
-                    }
-                }
-            }
-        }
-        
-        FileIO.writeImage(image, "C:\\Users\\SDP\\Desktop\\tessel");
-        */
-        
-        /*
-        CodecConfig.n_tiles_x = 4;
-        CodecConfig.n_tiles_y = 4;
-        
-        String in_refer = "C:\\Users\\SDP\\Desktop\\test_0.png";
-        String in_other = "C:\\Users\\SDP\\Desktop\\test_1.png";
-        
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        ArrayList<FrameData> frames;
-        
-        BufferedImage img_refer = ImageIO.read(new File(in_refer));
-        BufferedImage img_other = ImageIO.read(new File(in_other));
-        
-        images.add(img_refer);
-        images.add(img_other);
-        
-        frames = MotionDetector.motionDetection(images, 0);
-        */
-        
+        try {
+            Decoder.decode("C:\\Users\\SDP\\Desktop\\my_video.zip", "C:\\Users\\SDP\\Desktop\\NuevaCarpeta");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }    
         
         CodecConfig.n_tiles_x = 100;
         CodecConfig.n_tiles_y = 100;
@@ -300,12 +219,9 @@ public class Main {
         
         BufferedImage img_refer = ImageIO.read(new File(in_refer));
         BufferedImage img_other = ImageIO.read(new File(in_other));
-        
-        int[][] tilemap_refer = MotionDetector.tesselate(img_refer);
-        int[][] tilemap_other = MotionDetector.tesselate(img_other);     
 
-        int w = Math.min(Math.max(1, (img_refer.getWidth() / CodecConfig.n_tiles_x)), CodecConfig.n_tiles_x);
-        int h = Math.min(Math.max(1, (img_refer.getHeight() / CodecConfig.n_tiles_y)), CodecConfig.n_tiles_y);
+        //int w = Math.min(Math.max(1, (img_refer.getWidth() / CodecConfig.n_tiles_x)), CodecConfig.n_tiles_x);
+        //int h = Math.min(Math.max(1, (img_refer.getHeight() / CodecConfig.n_tiles_y)), CodecConfig.n_tiles_y);
         
         FrameData refer;
         FrameData other;
