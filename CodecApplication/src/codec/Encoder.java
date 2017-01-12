@@ -54,7 +54,7 @@ public class Encoder {
             }
 
             // Perform motion detection-compensation
-            frames = MotionCompensator.motionDetection(images, counter);
+            frames = MotionDetector.motionDetection(images, counter);
 
             for (FrameData frame : frames) {    // Store frames in temp directory
                 // Apply averaging filter to the frame image before storing

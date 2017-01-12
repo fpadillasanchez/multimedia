@@ -7,7 +7,6 @@ package control;
 
 import codec.Decoder;
 import codec.Encoder;
-import codec.MotionCompensator;
 import codec.MotionDetector;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -104,7 +103,8 @@ public class Main {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         */
-           
+         
+        
         /*
         try {
             DEBUG();
@@ -112,6 +112,7 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         */
+        
     }
 
     // Decodes ZIP and loades images into the videoplayer GUI.
@@ -291,8 +292,8 @@ public class Main {
         CodecConfig.n_tiles_x = 100;
         CodecConfig.n_tiles_y = 100;
         
-        String in_refer = "C:\\Users\\SDP\\Desktop\\Cubo00.png";
-        String in_other = "C:\\Users\\SDP\\Desktop\\Cubo01.png";
+        String in_refer = "C:\\Users\\SDP\\Desktop\\test_0.png";
+        String in_other = "C:\\Users\\SDP\\Desktop\\test_1.png";
         
         ArrayList<BufferedImage> images = new ArrayList<>();
         ArrayList<FrameData> frames;

@@ -8,7 +8,6 @@ package codec;
 import control.CodecConfig;
 import io.FileIO;
 import io.FrameData;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +19,7 @@ import java.io.IOException;
  */
 public class Decoder {
 
+    // Perform the decoding of a video directed by input. Place the images at output directory.
     public static void decode(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException {
         // Abort if input is not a video generated using this codec
         /*
@@ -38,6 +38,7 @@ public class Decoder {
         for (File file : temp_dir.listFiles()) {
             // Read frame data from the extracted temporary file
             FrameData frame = FrameData.load(file.getAbsolutePath());
+            frame.setTileMap(MotionDetector.tesselate(frame.getImage()));   // compute tilemap
 
             // TODO: extend decoding 
             String image_path = output + File.separator + Integer.toString(frame.getId());
@@ -54,77 +55,45 @@ public class Decoder {
         return data.getImage();
     }
 
+    // Retrieve an image using image placed at other as the subimage, image placed in reference as the reference
+    // and the movements matrix placed in other.
     public static BufferedImage retrieveImage(FrameData reference, FrameData other) {
-
-        // TODO: Move this segment outside to avoid tiling reference multiple times
-        // Process frame tilemaps
-        int refer_tilemap[][];      // reference tilemap
-        int other_tilemap[][];      // other frame tilemap
-
-        refer_tilemap = MotionCompensator.tesselate(reference.getImage());
-        other_tilemap = MotionCompensator.tesselate(other.getImage());
-        reference.setTileMap(refer_tilemap);
-        other.setTileMap(other_tilemap);
-        // ------------------------------------------------------------------------
-
-        // Tile size in pixels
-        /*
-        int w = other.getImage().getWidth() / CodecConfig.n_tiles_x;
-        int h = other.getImage().getHeight() / CodecConfig.n_tiles_y;
-
-        
-        for (int i = 0; i < CodecConfig.n_tiles_x; i++) {
-            for (int j = 0; j < CodecConfig.n_tiles_y; j++) {
-                // Obtain movements associated to the tile
-                int mov[] = other.getMovements()[i][j];
-                // Displace tile in reference and move into the other frame
-                
-                if (mov[0] == 0 || true) {
-                    
-                    for (int x = (i * w); x < ((i + 1) * w); x++) {
-                        for (int y = (j * h); y < ((j + 1) * h); y++) {
-                            try {
-                                int color = reference.getImage().getRGB(x, y);
-                                other.getImage().setRGB(x, y, color);
-                            } catch (Exception ex) {
-                                // Out of range
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
+        // Image size in pixels
         int img_w = other.getImage().getWidth();
         int img_h = other.getImage().getHeight();
+        
+        // Tile size in pixels
         int tile_w = img_w / CodecConfig.n_tiles_x;
         int tile_h = img_h / CodecConfig.n_tiles_y;
         
+        // Traverse through all the pixels in the image of other frame
         for (int i=0; i < img_w; i++) {
             for (int j=0; j < img_h; j++) {
-                /*
                 try {
-                    System.out.println("(i,j)= (" + i + ", " + j + "), " + "mov= (" 
-                        + other.getMovements()[i / tile_w][j / tile_h][0] + ", " 
-                        + other.getMovements()[i / tile_w][j / tile_h][1] + ")");
+                    // Access to the movements matrix of other frame
+                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];   
+                    /*
+                    First component of movement vector specifies if the (i,j) pixel
+                    is to be taken from reference. If component is 1, pixel in other 
+                    will maintain its original value. If component is 0, pixel will
+                    be set to match the value of a pixel in reference, taken using
+                    the other components in movement as a motion vector from i, j to 
+                    the place of the pixel in reference.         
+                    */
+                    if (mov[0] == 1){
+                        continue;   // pixel maintains its value
+                    }
+                    
+                    int color = reference.getImage().getRGB(i + mov[1], j + mov[2]); 
+                    other.getImage().setRGB(i, j, color);  
                     
                 }catch (ArrayIndexOutOfBoundsException ex) {
-                    //System.out.println("exception: " + (i / tile_w) + ", " + (j / tile_h));
-                } */
-                try {
-                    int color = reference.getImage().getRGB(i, j);
-                    
-                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];
-                    
-                    other.getImage().setRGB(i+mov[0], j+mov[1], color);
-                    
-                }catch (ArrayIndexOutOfBoundsException ex) {
-                    
+                    // Out of bounds
                 }
             }
         }
-
-        return other.getImage();
+     
+        return other.getImage();    // return the retrieved image
     }
 
 }
