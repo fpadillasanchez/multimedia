@@ -6,17 +6,14 @@
 package codec;
 
 import control.CodecConfig;
-import io.FileIO;
 import io.FrameData;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/***
- * 
+/**
+ * *
+ *
  * @author Sergi Diaz
  */
 public class MotionDetector {
@@ -44,10 +41,12 @@ public class MotionDetector {
         return frames;
     }
 
-    /***
+    /**
+     * *
      * Tesselate given image. Return tesselation matrix
+     *
      * @param image
-     * @return 
+     * @return
      */
     public static int[][] tesselate(BufferedImage image) {
         int[][] tilemap;                // tile matrix, aka tilemap
@@ -66,12 +65,14 @@ public class MotionDetector {
         return tilemap; // return the tilemap
     }
 
-    /***
+    /**
+     * *
      * Sets value of (x,y) tile as the average color value in the tile.
+     *
      * @param image
      * @param x
      * @param y
-     * @return 
+     * @return
      */
     private static int evaluate(BufferedImage image, int x, int y) {
         int r = 0;  // red component of color
@@ -96,18 +97,20 @@ public class MotionDetector {
         r /= size;
         g /= size;
         b /= size;
-        
+
         return (new Color(r, g, b).getRGB());   // return RGB
     }
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param refer_frame
      * @param other_frame
-     * @return 
+     * @return
      */
-    public static int[][][] getMovements(FrameData refer_frame, FrameData other_frame) {        
+    public static int[][][] getMovements(FrameData refer_frame, FrameData other_frame) {
         int[][] refer_tilemap = tesselate(refer_frame.getImage());   // tilemaps
-        int[][] other_tilemap = tesselate(other_frame.getImage());        
+        int[][] other_tilemap = tesselate(other_frame.getImage());
 
         int[][][] movements;                               // movements matrix
         boolean[][] visited;                               // visited tiles
@@ -135,40 +138,42 @@ public class MotionDetector {
                 if (visited[i][j]) {
                     continue;
                 }
-                
+
                 if (Math.abs(refer_tilemap[i][j] - other_tilemap[i][j]) < tolerance) {
                     // Delete tile if there is coincidence
                     deleteTile(other_frame, i, j);
                     movements[i][j][0] = 0;
-                    movements[i][j][1] = 0; 
+                    movements[i][j][1] = 0;
                     movements[i][j][2] = 0;
                 } else {
                     movements[i][j] = searchTile(refer_tilemap, other_tilemap, i, j, tolerance);
-                    
+
                     // Tile can be found in the reference
                     if (movements[i][j][0] == 0) {
                         // Delete tile in other which is placed at the destination of the movement
                         deleteTile(other_frame, i + movements[i][j][1], j + movements[i][j][2]);
                     }
                 }
-                
+
                 visited[i][j] = true;
             }
         }
-        
 
         return movements;
     }
 
-    /***
-     * Search for the (x,y) tile from reference into another tilemap. Return movement vector
+    /**
+     * *
+     * Search for the (x,y) tile from reference into another tilemap. Return
+     * movement vector
+     *
      * @param refer_tilemap
      * @param other_tilemap
      * @param x
      * @param y
      * @param tol
-     * @return 
-     */ 
+     * @return
+     */
     private static int[] searchTile(int[][] refer_tilemap, int[][] other_tilemap, int x, int y, float tol) {
         int[] vector = {1, 0, 0};    // not found
 
@@ -192,19 +197,21 @@ public class MotionDetector {
         return vector;
     }
 
-    /***
+    /**
+     * *
      * Call this function for deleting both the tile and the set of pixels that
      * belong to that tile
+     *
      * @param frame
      * @param x
-     * @param y 
+     * @param y
      */
     private static void deleteTile(FrameData frame, int x, int y) {
         BufferedImage image = frame.getImage();
 
         // Tile size in pixels
         int tileWidth = Math.max(1, (int) Math.ceil((float) image.getWidth() / CodecConfig.n_tiles_x));
-        int tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / CodecConfig.n_tiles_y));  
+        int tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / CodecConfig.n_tiles_y));
 
         for (int i = 0; i < tileWidth; i++) {
             for (int j = 0; j < tileHeight; j++) {

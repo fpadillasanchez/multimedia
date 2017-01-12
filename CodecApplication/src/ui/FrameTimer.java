@@ -27,7 +27,6 @@ public class FrameTimer extends TimerTask {
         // si fps mayor que 0, secuencia de imágenes positivo
         if (vp.fps > 0) {
             try {
-                
                 vp.next();
                 // si fps menor que 0, secuencia de imágenes negativo
             } catch (IOException ex) {

@@ -13,20 +13,17 @@ import ui.VideoPlayer;
 
 /***
  * 
- * @author gondu
+ * @author Fernando Padilla
  */
 public class VideoPlayerController extends Thread {
 
     public static int fps;
     public static ArrayList<String> imageFiles;
-
     VideoPlayer vp;
 
     @Override
     public void run() {
         vp.setVisible(true);                    // show GUI
-        
-
     }
 
     /***

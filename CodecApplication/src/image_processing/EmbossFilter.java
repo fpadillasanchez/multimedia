@@ -28,8 +28,8 @@ public class EmbossFilter extends LinearTransformation {
     
     @Override
     protected void setMask() {
-        float[][] emboss = {{-1, -1, 0}, {-1, 0, 1}, {0, 1, 1}};
-        mask = emboss;
+        
+        mask = new float[][]{{-1, -1, 0}, {-1, 0, 1}, {0, 1, 1}}; //emboss mask
     }
     
 }

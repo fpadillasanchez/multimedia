@@ -7,7 +7,7 @@ package utils;
 
 /***
  * Stack implemented as a FIFO linked list.
- * @author Sergi Diaz
+ * @author Sergi Diaz Fernando Padilla
  */
 public class Stack extends LinkedList {    
 
@@ -17,7 +17,7 @@ public class Stack extends LinkedList {
     }
     
     /***
-     * 
+     * Pop return the last item added
      * @return 
      */
     @Override

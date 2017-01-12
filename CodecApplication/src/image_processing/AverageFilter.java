@@ -25,8 +25,8 @@ public class AverageFilter extends LinearTransformation {
      */
     public AverageFilter(BufferedImage image, int maskSize) {
         this.maskSize = maskSize;
-        
         this.image = image;
+        
         setMask();
     }
     
@@ -50,6 +50,7 @@ public class AverageFilter extends LinearTransformation {
     public AverageFilter(BufferedImage image) {
         this.image = image;
         this.maskSize = 3;
+        
         setMask();
     }
     
@@ -61,6 +62,7 @@ public class AverageFilter extends LinearTransformation {
     public AverageFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         this.maskSize = 3;
+        
         setMask();
     }
 

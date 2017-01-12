@@ -14,7 +14,11 @@ import java.util.ArrayList;
  * @author gondu
  */
 public class CircularBuffer extends Buffer {
-    
+    /***
+     * 
+     * @param files
+     * @param maxSize 
+     */
     public CircularBuffer(ArrayList<String> files, int maxSize) {
         super(files, maxSize);
     }

@@ -168,7 +168,6 @@ public class Main {
             }
             try {
                 zf2 = new ZipFile(output + File.separator + videoname + CodecConfig.video_format);
-
                 Enumeration ee = zf2.entries();
                 while (ee.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
@@ -194,7 +193,7 @@ public class Main {
      * @param output
      * @param fps
      * @throws IOException 
-     */ 
+     */
     private static void visualize(ArrayList<String> imageFiles, String input, String output, int fps) throws IOException {
 
         // Set videoplayer parameters
@@ -203,6 +202,7 @@ public class Main {
         VideoPlayerController vpc = new VideoPlayerController();
         (new Thread(vpc)).start();              // video displayed on another thread
     }
+
     /***
      * 
      * @param input
@@ -213,6 +213,7 @@ public class Main {
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
         return FileIO.extractImages(input, output);
     }
+
     /***
      * 
      * @throws IOException 

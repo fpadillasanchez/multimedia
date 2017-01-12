@@ -51,7 +51,12 @@ public class FilterManager {
                 return image;
         }
     }
-    
+    /***
+     * 
+     * @param f
+     * @param image
+     * @return 
+     */
     public static BufferedImage filtrate(SupportedFilters f, BufferedImage image) {
         switch(f) {
             case Negative:
@@ -72,17 +77,30 @@ public class FilterManager {
                 return image;
         }
     }
-    
+    /***
+     * 
+     * @param f
+     * @param size
+     * @param thr 
+     */
     public static void setFilter(SupportedFilters f, int size, int thr) {
         filter = f;
         maskSize = size;
         threshold = thr;
     }
-    
+    /***
+     * 
+     * @param f 
+     */
     public static void setFilter(SupportedFilters f) {
         filter = f;
     }
-    
+    /***
+     * 
+     * @param image
+     * @param maskSize
+     * @return 
+     */
     public static BufferedImage average(BufferedImage image, int maskSize) {
         return (new AverageFilter(image, maskSize)).apply();
     }

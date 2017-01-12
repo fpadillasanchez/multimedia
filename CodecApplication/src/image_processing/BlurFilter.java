@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 /***
  * 
- * @author gondu
+ * @author 
  */
 public class BlurFilter extends LinearTransformation {
     
@@ -28,7 +28,6 @@ public class BlurFilter extends LinearTransformation {
     
     @Override
     protected void setMask() {
-        float[][] blur = {{0, 0.2f, 0}, {0.2f, 0.2f, 0.2f}, {0, 0.2f, 0}};
-        mask = blur;
+        mask = new float [][]{{0, 0.2f, 0}, {0.2f, 0.2f, 0.2f}, {0, 0.2f, 0}};
     }
 }

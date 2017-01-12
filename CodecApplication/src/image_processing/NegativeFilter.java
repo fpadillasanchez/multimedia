@@ -8,25 +8,30 @@ package image_processing;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-/***
- * 
+/**
+ * *
+ *
  * @author gondu
  */
-public class NegativeFilter extends SimpleFilter{
-    /***
-     * 
-     * @param image 
+public class NegativeFilter extends SimpleFilter {
+
+    /**
+     * *
+     *
+     * @param image
      */
     public NegativeFilter(BufferedImage image) {
         super(image);
     }
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param image
-     * @return 
+     * @return
      */
     public BufferedImage invertImage(BufferedImage image) {
-       
+
         for (int x = 0; x < image.getWidth(); x++) {
             for (int y = 0; y < image.getHeight(); y++) {
                 int rgba = image.getRGB(x, y);
@@ -39,12 +44,13 @@ public class NegativeFilter extends SimpleFilter{
         }
         return image;
     }
+
     @Override
     protected Color transform(Color color) {
         int r = 255 - color.getRed();
         int g = 255 - color.getGreen();
         int b = 255 - color.getBlue();
-        
+
         return new Color(r, g, b);
     }
 }

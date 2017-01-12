@@ -14,7 +14,10 @@ public class Queue extends LinkedList {
     public Queue() {
         super();
     }
-
+    /***
+     * Return the first item of the queue and then it shorthens the queue by one
+     * @return 
+     */
     @Override
     public Object pop() {
         if (size == 0)

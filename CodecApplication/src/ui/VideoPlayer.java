@@ -27,15 +27,18 @@ public class VideoPlayer extends javax.swing.JFrame {
     private final String INPUT_ZIP;
     private ArrayList<BufferedImage> images = new ArrayList<>();
     TextAreaClass console;
-    int fps = 30; // default fps
-    int id = 0;
-    FrameTimer tm;
-    Timer t;
-    boolean isPlaying = false;
-    boolean isPaused = false;
     BufferedImage img;
     CircularBuffer imgBuffer;
     NegativeFilter negFilter;
+    FrameTimer tm;
+    Timer t;
+    
+    int fps = 30; // default fps
+    int id = 0;
+    
+    boolean isPlaying = false;
+    boolean isPaused = false;
+    
 
     /**
      * Creates new form VideoPlayer
@@ -238,7 +241,6 @@ public class VideoPlayer extends javax.swing.JFrame {
 
         } else {
             System.out.println("Video already playing.");
-
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -273,7 +275,6 @@ public class VideoPlayer extends javax.swing.JFrame {
         this.t = new Timer();
         tm = new FrameTimer(this);
         this.t.scheduleAtFixedRate(this.tm, 0, tempFPS);
-
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextArea1InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextArea1InputMethodTextChanged
@@ -317,27 +318,27 @@ public class VideoPlayer extends javax.swing.JFrame {
         imgBuffer.load();
     }
 
-    /**
-     * *
-     * Set frames per second.
-     *
-     * @param fps
+    /***
+     * 
+     * @param fps 
      */
     public void setFPS(int fps) {
         this.fps = fps;
     }
 
-    /**
-     * *
-     * Loads images from the input zip path into the buffer. Public access.
-     *
+    /***
+     * 
      * @throws FileNotFoundException
-     * @throws IOException
+     * @throws IOException 
      */
     public void loadBuffer() throws FileNotFoundException, IOException {
         loadBuffer(new File(INPUT_ZIP));
     }
-    
+    /***
+     * 
+     * @param files
+     * @throws IOException 
+     */
     public void LoadBuffer(ArrayList<String> files) throws IOException {
         imgBuffer = new CircularBuffer(files, 10);
         imgBuffer.load();

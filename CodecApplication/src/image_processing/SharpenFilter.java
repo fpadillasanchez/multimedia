@@ -32,8 +32,7 @@ public class SharpenFilter extends LinearTransformation {
     
     @Override
     protected void setMask() {
-        float[][] sharpen = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};
-        mask = sharpen;
+        mask = new float[][]{{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};
     }
     
 }

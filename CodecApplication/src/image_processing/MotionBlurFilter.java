@@ -28,7 +28,6 @@ public class MotionBlurFilter extends LinearTransformation {
     
     @Override
     protected void setMask() {
-        float[][] blur = {{1/9, 0, 0}, {0, 1/9, 0}, {0, 0, 1/9}};
-        mask = blur;
+        mask = new float[][]{{1/9, 0, 0}, {0, 1/9, 0}, {0, 0, 1/9}};
     }
 }
