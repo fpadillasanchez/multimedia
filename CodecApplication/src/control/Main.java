@@ -158,8 +158,8 @@ public class Main {
             e.encode(videoname);
             t2 = System.nanoTime();
             // --------------
-            double elapsedTime = (t2 - t1) * 000000.1;
-            System.out.println("Encoder time: " + elapsedTime + " ms");
+            double elapsedTime = (t2 - t1) / 1000000000.0;
+            System.out.println("Encoder time: " + elapsedTime + " sec");
             ZipFile zf;
             ZipFile zf2;
             try {
