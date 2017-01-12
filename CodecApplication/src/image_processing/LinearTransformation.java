@@ -8,11 +8,9 @@ package image_processing;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
  * 
- * Abstract class for linear transformations.
+ * @author 
  */
 public abstract class LinearTransformation {
     protected float[][] mask;
@@ -31,7 +29,12 @@ public abstract class LinearTransformation {
         return image;
     }
     
-    // Return pixel color after filtering, input pixel defined by (x,y) coordinates.
+    /***
+     * Return pixel color after filtering, input pixel defined by (x,y) coordinates.
+     * @param y
+     * @param x
+     * @return 
+     */
     protected Color getFilteredValue(int y, int x) {
         int radius = mask.length / 2;
         

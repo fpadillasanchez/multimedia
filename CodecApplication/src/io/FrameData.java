@@ -17,9 +17,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class FrameData implements Serializable {
 
@@ -27,7 +27,9 @@ public class FrameData implements Serializable {
     private BufferedImage image;    // image
     private int rgb;              // average value calculated from the whole set of pixels
 
-    // Params relevant to motion detection
+    /***
+     * Params relevant to motion detection
+     */
     private int[][] tilemap = null;
     private int[][][] movements = null;
     /* About movements matrix:
@@ -37,14 +39,24 @@ public class FrameData implements Serializable {
     *           b = x component of the movement
     *           c = y component of the movement
     */
-
+    /***
+     * 
+     * @param id
+     * @param image 
+     */
     public FrameData(int id, BufferedImage image) {
         this.id = id;
         this.image = image;
         
         rgb = computeColor(); // average color in the image
     }
-
+    /***
+     * 
+     * @param id
+     * @param image
+     * @param tilemap
+     * @param movements 
+     */
     public FrameData(int id, BufferedImage image, int[][] tilemap, int[][][] movements) {
         this.id = id;
         this.image = image;
@@ -54,7 +66,10 @@ public class FrameData implements Serializable {
         rgb = computeColor(); // average color in the image
     }
 
-    // Setter
+    /***
+     * 
+     * @param tilemap 
+     */
     public void setTileMap(int[][] tilemap) {
         if (tilemap == null) {
             this.tilemap = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y];
@@ -63,7 +78,10 @@ public class FrameData implements Serializable {
         }
 
     }
-
+    /***
+     * 
+     * @param mov 
+     */
     public void setMovements(int[][][] mov) {
         if (mov == null) {
             movements = new int[CodecConfig.n_tiles_x][CodecConfig.n_tiles_y][3];
@@ -71,33 +89,56 @@ public class FrameData implements Serializable {
             this.movements = mov;
         }
     }
-
+    /***
+     * 
+     * @param image 
+     */
     public void setImage(BufferedImage image) {
         this.image = image;
     }
 
-    // Getters
+    /***
+     * 
+     * @return 
+     */
     public int[][] getTileMap() {
         return tilemap;
     }
-
+    /***
+     * 
+     * @return 
+     */
     public int[][][] getMovements() {
         return movements;
     }
-
+    /***
+     * 
+     * @return 
+     */
     public BufferedImage getImage() {
         return image;
     }
-
+    /***
+     * 
+     * @return 
+     */
     public int getId() {
         return id;
     }
-    
+    /***
+     * 
+     * @return 
+     */    
     public int getRGB() {
         return rgb;
     }
 
-    // Given the position (x, y) of the tilemap, returns a matrix with the values of the pixels inside the tile
+    /***
+     * Given the position (x, y) of the tilemap, returns a matrix with the values of the pixels inside the tile
+     * @param x
+     * @param y
+     * @return 
+     */
     public int[][][] getImageFragment(int x, int y) {
         int w = image.getWidth() / CodecConfig.n_tiles_x;   // segment width in pixels
         int h = image.getHeight() / CodecConfig.n_tiles_y;  // segment height in pixels
@@ -126,7 +167,12 @@ public class FrameData implements Serializable {
         return fragment;
     }
 
-    // Given a matrix containing pixel values, uses that values to color a fraction of the image
+    /***
+     * Given a matrix containing pixel values, uses that values to color a fraction of the image
+     * @param fragment
+     * @param x
+     * @param y 
+     */
     public void setImageFragment(int[][][] fragment, int x, int y) {
         int w = fragment.length;        // fragment width in pixels
         int h = fragment[0].length;     // fragment height in pixels
@@ -140,14 +186,22 @@ public class FrameData implements Serializable {
         }
     }
 
-    // Return true if frame has movement associated with tile (x, y)
+    /***
+     * Return true if frame has movement associated with tile (x, y)
+     * @param x
+     * @param y
+     * @return 
+     */ 
     public boolean hasMovement(int x, int y) {
         int mov[] = movements[x][y];
 
         return (mov[0] + mov[1] != 0);
     }
     
-    // Calculates the average RGB value of the image
+    /***
+     * Calculates the average RGB value of the image
+     * @return 
+     */ 
     public int computeColor() {
         int r = 0;  // average red component
         int g = 0;  // average green 
@@ -172,7 +226,13 @@ public class FrameData implements Serializable {
     }
     
 
-    // Store given frame data
+    /***
+     * Store given frame data
+     * @param data
+     * @param path
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */ 
     public static void store(FrameData data, String path) throws FileNotFoundException, IOException {
         FileOutputStream fileOut = new FileOutputStream(path);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -200,7 +260,14 @@ public class FrameData implements Serializable {
         fileOut.close();
     }
 
-    // Retrieve stored frame data
+    /***
+     * Retrieve stored frame data
+     * @param path
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */ 
     public static FrameData load(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         BufferedImage img;
         int id, movements[][][];

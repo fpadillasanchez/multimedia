@@ -5,11 +5,9 @@
  */
 package utils;
 
-/**
- *
- * @author SDP
- * 
+/***
  * Linked list. Extraction policy specified by its subclasses.
+ * @author Sergi Diaz
  */
 public abstract class LinkedList {
     
@@ -25,21 +23,32 @@ public abstract class LinkedList {
         }
         
         // Setters:
-        
+        /***
+         * 
+         * @param next 
+         */    
         public void setNext(Item next) {
             this.next = next;
         }
-        
+        /***
+         * 
+         * @param prev 
+         */
         public void setPrev(Item prev) {
             this.prev = prev;
         }
         
-        // Getters: 
-        
+        /***
+         * 
+         * @return 
+         */
         public Item getNext() {
             return next;
         }
-        
+        /***
+         * 
+         * @return 
+         */
         public Item getPrev() {
             return prev;
         }
@@ -49,23 +58,34 @@ public abstract class LinkedList {
     protected Item last;   // last item in the list 
     protected int size;    // number of items in the list
     
-    // Create stack
+    /***
+     * Create stack
+     */
     public LinkedList() {
         first = null;
         size = 0;
     }
     
-    // Returns number of items in the stack
+    /***
+     * Returns number of items in the stack
+     * @return 
+     */ 
     public int size() {
         return size;
     }
     
-    // Returns true if there are no items in the list
+    /***
+     * Returns true if there are no items in the list
+     * @return 
+     */
     public boolean isEmpty() {
         return size == 0;
     }
     
-    // Push new object into the list
+    /***
+     * Push new object into the list
+     * @param object 
+     */
     public void push(Object object) {
         Item item = new Item(object);
         
@@ -80,14 +100,19 @@ public abstract class LinkedList {
         size++;             // increment size counter
     }
     
-    // Removes all items from the list
+    /***
+     * Removes all items from the list
+     */ 
     public void removeAll() {
         first = null;
         last = null;
         size = 0;
     }
     
-    // Pop item from the list
+    /***
+     * Pop item from the list
+     * @return 
+     */
     public abstract Object pop();
       
 }

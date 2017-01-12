@@ -5,11 +5,9 @@
  */
 package utils;
 
-/**
- *
- * @author SDP
- * 
+/***
  * Queue implemented as a FILO linked list.
+ * @author gondu
  */
 public class Queue extends LinkedList {
     
@@ -29,7 +27,10 @@ public class Queue extends LinkedList {
         return obj;
     }
     
-    // Extracts the first item in the queue, enqueues the item at the end of the list and returns the object kept in that item
+    /***
+     * Extracts the first item in the queue, enqueues the item at the end of the list and returns the object kept in that item
+     * @return 
+     */
     public Object popCircular() {
         Object obj = pop(); // pop first item in the list
         

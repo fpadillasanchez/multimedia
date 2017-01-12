@@ -10,11 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
  * 
- * TODO: Consider to integrate this feature inside its superclass.
+ * @author gondu
  */
 public class EmbossFilter extends LinearTransformation {
     

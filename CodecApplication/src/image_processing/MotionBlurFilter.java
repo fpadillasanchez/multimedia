@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class MotionBlurFilter extends LinearTransformation {
     

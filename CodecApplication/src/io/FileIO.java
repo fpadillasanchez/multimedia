@@ -20,23 +20,25 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Fernando Padilla, Sergi Diaz
- *
+/***
  * Class used for loading images from files. Includes a format validator. At
  * this moment, only JPEG and PNG images are allowed.
- *
- * Filtering is done here!
+ * @author gondu
  */
 public class FileIO {
-
+    /***
+     * 
+     * @param files
+     * @return 
+     */
     private static ArrayList<String> convert(List<String> files) {
         ArrayList<String> newFiles = new ArrayList<String>(files);
         return newFiles;   
     }
 
-    // Supported image formats. Used for unzipping duties
+    /***
+     * Supported image formats. Used for unzipping duties
+     */
     public static enum SupportedFormats {
         JPEG("jpg"), PNG("png"), GIF("gif"), TIFF("tiff");
 
@@ -47,7 +49,12 @@ public class FileIO {
         }
     };
 
-    // Compress all files inside input directory into an output zip video
+    /***
+     * Compress all files inside input directory into an output zip video
+     * @param input
+     * @param output
+     * @throws IOException 
+     */ 
     public static void compress(String input, String output) throws IOException {
         File folder;                    // input must be a valid directory
         File zipfile;                   // output zip file
@@ -81,7 +88,14 @@ public class FileIO {
         out.close();
     }
 
-    // Decompress entries from a zip video into an output directory
+    /***
+     * Decompress entries from a zip video into an output directory
+     * @param input
+     * @param output
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public static ArrayList<String> decompress(String input, String output) throws FileNotFoundException, IOException {
         ArrayList<String> files = new ArrayList<>();    // output files paths array
         byte[] buffer = new byte[1024];
@@ -119,7 +133,14 @@ public class FileIO {
         return files;
     }
 
-    // Extracts images from zip and returns an array of paths to those images.
+    /***
+     * Extracts images from zip and returns an array of paths to those images.
+     * @param input
+     * @param output
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public static ArrayList<String> extractImages(String input, String output) throws FileNotFoundException, IOException {
         List<String> files = new ArrayList<>();    // output files paths array
         byte[] buffer = new byte[1024];
@@ -166,7 +187,12 @@ public class FileIO {
         return convert(files);
     }
 
-    // Loads image if its format is supported.
+    /***
+     * Loads image if its format is supported.
+     * @param file
+     * @return
+     * @throws IOException 
+     */
     public static BufferedImage readImage(String file) throws IOException {
         if (!validateExtension(file)) {
             return null;
@@ -174,13 +200,22 @@ public class FileIO {
         return ImageIO.read(new File(file));
     }
 
-    // Stores given buffered image into a new file. Stored as a JPEG image.
+    /***
+     * Stores given buffered image into a new file. Stored as a JPEG image.
+     * @param image
+     * @param output
+     * @throws IOException 
+     */
     public static void writeImage(BufferedImage image, String output) throws IOException {
         String format = SupportedFormats.JPEG.toString();
         ImageIO.write(image, format, new File(output + "." + format));
     }
 
-    // Format validator.
+    /***
+     * Format validator.
+     * @param fileName
+     * @return 
+     */
     private static boolean validateExtension(String fileName) {
         int dot = fileName.lastIndexOf(".");
         if (dot == -1 || dot == fileName.length()) {
@@ -196,8 +231,14 @@ public class FileIO {
 
     }
 
-    // Takes the image directed by a given path and stores a copy in the same
-    // directory using given supported format.
+    /***
+     * Takes the image directed by a given path and stores a copy in the same
+     * directory using given supported format.
+     * @param file
+     * @param format
+     * @return
+     * @throws IOException 
+     */ 
     private static File storeImage(String file, SupportedFormats format) throws IOException {
         File outputFile = new File(stripExtension(file) + "." + format.value);
 
@@ -206,7 +247,12 @@ public class FileIO {
         return outputFile;
     }
 
-    // Return input string without extension, that being a path to a file
+    /***
+     * Return input string without extension, that being a path to a file
+     * @param file
+     * @return 
+     */
+    
     public static String stripExtension(String file) {
         if (file == null) {
             return null;
@@ -218,7 +264,11 @@ public class FileIO {
         return file.substring(0, pos);
     }
     
-    // Return extendion from input string, that being the path to a file
+    /***
+     * Return extendion from input string, that being the path to a file
+     * @param file
+     * @return 
+     */
     public static String getExtension(String file) {
         String ext = "";
         

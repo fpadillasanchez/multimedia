@@ -14,9 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import utils.Queue;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class Decoder {
 
@@ -83,13 +83,24 @@ public class Decoder {
         temp_dir.delete();  // delete temporary directory
     }
 
-    // TODO: Retrieve images using movements and tiling matrixes
+    /***
+     * Retrieve images using movements and tiling matrixes
+     * @param data
+     * @return 
+     */
+        
     public static BufferedImage retrieveImage(FrameData data) {
         return data.getImage();
     }
 
-    // Retrieve an image using image placed at other as the subimage, image placed in reference as the reference
-    // and the movements matrix placed in other.
+
+    /***
+     * Retrieve an image using image placed at other as the subimage, image placed in reference as the reference
+     * and the movements matrix placed in other.
+     * @param reference
+     * @param other
+     * @return 
+     */
     public static BufferedImage retrieveImage(FrameData reference, FrameData other) {
         // Image size in pixels
         int img_w = other.getImage().getWidth();

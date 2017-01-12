@@ -11,24 +11,33 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author 
  */
 public class LaplacianFilter extends LinearTransformation {
-    
+    /***
+     * 
+     * @param image 
+     */    
     public LaplacianFilter(BufferedImage image) {
         this.image = image;
         setMask();
         grayScale(); // <- comment this line for preventing grayscaling
     }
-    
+    /***
+     * 
+     * @param image
+     * @throws IOException 
+     */    
     public LaplacianFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         setMask();
         grayScale(); // <- comment this line for preventing grayscaling
     }
-
+    /***
+     * 
+     */
     @Override
     protected void setMask() {
         /** Uses following Laplace mask:
@@ -41,7 +50,9 @@ public class LaplacianFilter extends LinearTransformation {
         mask = laplacian;
     }
     
-    // Transforms current image from RGB to grayscale
+    /***
+     * Transforms current image from RGB to grayscale
+     */
     private void grayScale() {
         for (int i=0; i<image.getWidth(); i++) {
             for (int j=0; j<image.getHeight(); j++) {

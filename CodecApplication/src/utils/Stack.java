@@ -5,11 +5,9 @@
  */
 package utils;
 
-/**
- *
- * @author SDP
- * 
+/***
  * Stack implemented as a FIFO linked list.
+ * @author Sergi Diaz
  */
 public class Stack extends LinkedList {    
 
@@ -18,7 +16,10 @@ public class Stack extends LinkedList {
         super();
     }
     
-    // Pop last item pushed into the stack
+    /***
+     * 
+     * @return 
+     */
     @Override
     public Object pop() {
         if (size == 0) 

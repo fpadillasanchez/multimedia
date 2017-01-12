@@ -5,11 +5,9 @@
  */
 package control;
 
-/**
- *
- * @author SDP
- *
+/***
  * Codec configuration, OS independent
+ * @author Sergi Diaz
  */
 public class CodecConfig {
 

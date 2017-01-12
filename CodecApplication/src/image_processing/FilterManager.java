@@ -7,11 +7,9 @@ package image_processing;
 
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
  * 
- * This class provides the appropriate filter to outsiders.
+ * @author gondu
  */
 public class FilterManager {
     public enum SupportedFilters {
@@ -23,7 +21,11 @@ public class FilterManager {
     private static int maskSize;
     // Binary
     private static int threshold;
-    
+    /***
+     * 
+     * @param image
+     * @return 
+     */
     public static BufferedImage filtrate(BufferedImage image) {
         /*
         Return the image after being filtered using the desired transformation.

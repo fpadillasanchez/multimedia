@@ -7,9 +7,9 @@ package control;
 
 import com.beust.jcommander.Parameter;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
+ * 
+ * @author Sergi Diaz Fernando Padilla
  */
 public class ArgParser {    
     // Compulsory arguments
@@ -127,8 +127,9 @@ public class ArgParser {
     public Integer getAverage() {
         return average;
     }
-    
-    // Store current configuration
+    /***
+     * Store current configuration
+     */
     public void setConfig() {      
         CodecConfig.input = input;
         CodecConfig.output = output;

@@ -9,11 +9,9 @@ import io.FileIO;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- *
- * @author SDP
- * 
+/***
  * Items pushed out of a circular buffer are queued again so that the buffer never empties.
+ * @author gondu
  */
 public class CircularBuffer extends Buffer {
     

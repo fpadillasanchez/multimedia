@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class MotionDetector {
 
@@ -44,7 +44,11 @@ public class MotionDetector {
         return frames;
     }
 
-    // Tesselate given image. Return tesselation matrix
+    /***
+     * Tesselate given image. Return tesselation matrix
+     * @param image
+     * @return 
+     */
     public static int[][] tesselate(BufferedImage image) {
         int[][] tilemap;                // tile matrix, aka tilemap
         int x = CodecConfig.n_tiles_x;  // matrix size
@@ -62,7 +66,13 @@ public class MotionDetector {
         return tilemap; // return the tilemap
     }
 
-    // Sets value of (x,y) tile as the average color value in the tile.
+    /***
+     * Sets value of (x,y) tile as the average color value in the tile.
+     * @param image
+     * @param x
+     * @param y
+     * @return 
+     */
     private static int evaluate(BufferedImage image, int x, int y) {
         int r = 0;  // red component of color
         int g = 0;  // green component
@@ -89,7 +99,12 @@ public class MotionDetector {
         
         return (new Color(r, g, b).getRGB());   // return RGB
     }
-
+    /***
+     * 
+     * @param refer_frame
+     * @param other_frame
+     * @return 
+     */
     public static int[][][] getMovements(FrameData refer_frame, FrameData other_frame) {        
         int[][] refer_tilemap = tesselate(refer_frame.getImage());   // tilemaps
         int[][] other_tilemap = tesselate(other_frame.getImage());        
@@ -145,7 +160,15 @@ public class MotionDetector {
         return movements;
     }
 
-    // Search for the (x,y) tile from reference into another tilemap. Return movement vector
+    /***
+     * Search for the (x,y) tile from reference into another tilemap. Return movement vector
+     * @param refer_tilemap
+     * @param other_tilemap
+     * @param x
+     * @param y
+     * @param tol
+     * @return 
+     */ 
     private static int[] searchTile(int[][] refer_tilemap, int[][] other_tilemap, int x, int y, float tol) {
         int[] vector = {1, 0, 0};    // not found
 
@@ -169,8 +192,13 @@ public class MotionDetector {
         return vector;
     }
 
-    // Call this function for deleting both the tile and the set of pixels that
-    // belong to that tile
+    /***
+     * Call this function for deleting both the tile and the set of pixels that
+     * belong to that tile
+     * @param frame
+     * @param x
+     * @param y 
+     */
     private static void deleteTile(FrameData frame, int x, int y) {
         BufferedImage image = frame.getImage();
 

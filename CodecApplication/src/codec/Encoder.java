@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import utils.Buffer;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class Encoder {
 
@@ -25,7 +25,11 @@ public class Encoder {
 
     public Encoder() {
     }
-
+    /***
+     * 
+     * @param videoname
+     * @throws IOException 
+     */
     public void encode(String videoname) throws IOException {
         String output;          // path to encoded video
 
@@ -74,7 +78,10 @@ public class Encoder {
 
         (new File(temp_dir)).delete();  // delete temporary directory
     }
-
+    /***
+     * 
+     * @throws IOException 
+     */
     public void load() throws IOException {
         ArrayList<String> input_paths;  // paths to input images
         input_paths = FileIO.extractImages(CodecConfig.input, CodecConfig.output);  // extract images

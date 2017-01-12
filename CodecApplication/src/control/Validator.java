@@ -9,11 +9,9 @@ import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.ParameterException;
 import java.io.File;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
- * 
+/***
  * Custom parameter validator.
+ * @author gondu
  */
 public class Validator implements IParameterValidator{
 

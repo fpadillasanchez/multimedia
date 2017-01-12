@@ -8,12 +8,15 @@ package image_processing;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author Sergi Diaz
+/***
+ * 
+ * @author gondu
  */
 public class NegativeFilter extends SimpleFilter{
-
+    /***
+     * 
+     * @param image 
+     */
     public NegativeFilter(BufferedImage image) {
         super(image);
     }

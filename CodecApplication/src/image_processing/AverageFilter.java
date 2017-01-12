@@ -10,17 +10,19 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
  * 
- * TODO: Consider to integrate this feature inside its superclass.
+ * @author gondu
  */
 public class AverageFilter extends LinearTransformation {   
     
     private int maskSize;
     
-    // Basic builder. Both buffered image and mask size required.
+    /***
+     * Basic builder. Both buffered image and mask size required.
+     * @param image
+     * @param maskSize 
+     */
     public AverageFilter(BufferedImage image, int maskSize) {
         this.maskSize = maskSize;
         
@@ -28,7 +30,12 @@ public class AverageFilter extends LinearTransformation {
         setMask();
     }
     
-    // Load image from file. Mask size still required.
+    /***
+     * Load image from file. Mask size still required.
+     * @param image
+     * @param maskSize
+     * @throws IOException 
+     */ 
     public AverageFilter(String image, int maskSize) throws IOException {
         this.image = ImageIO.read(new File(image));
         this.maskSize = maskSize;
@@ -36,21 +43,31 @@ public class AverageFilter extends LinearTransformation {
         setMask();
     }
     
-    // Non-loader builder with default mask size 3.
+    /***
+     * Non-loader builder with default mask size 3.
+     * @param image 
+     */ 
     public AverageFilter(BufferedImage image) {
         this.image = image;
         this.maskSize = 3;
         setMask();
     }
     
-    // Loader builder with default mask size 3.
+    /***
+     * Loader builder with default mask size 3.
+     * @param image
+     * @throws IOException 
+     */ 
     public AverageFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         this.maskSize = 3;
         setMask();
     }
 
-    // Compute averaging mask.
+    /***
+     * Compute averaging mask.
+     */
+    
     @Override
     protected void setMask() {
         mask = new float[maskSize][maskSize];

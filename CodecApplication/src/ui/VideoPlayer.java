@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.util.Timer;
 
-
-/**
- *
- * @author Fernando Padilla, Sergi Díaz
+/***
+ * 
+ * @author gondu
  */
 public class VideoPlayer extends javax.swing.JFrame {
 

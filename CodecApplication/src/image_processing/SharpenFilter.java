@@ -10,11 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Sergi Diaz, Fernando Padilla
+/***
  * 
- * TODO: Consider to integrate this feature inside its superclass.
+ * @author Sergi Diaz
  */
 public class SharpenFilter extends LinearTransformation {
     
@@ -22,7 +20,11 @@ public class SharpenFilter extends LinearTransformation {
         this.image = image;
         setMask();
     }
-    
+    /***
+     * 
+     * @param image
+     * @throws IOException 
+     */
     public SharpenFilter(String image) throws IOException {
         this.image = ImageIO.read(new File(image));
         setMask();

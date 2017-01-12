@@ -10,9 +10,9 @@ import java.io.OutputStream;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-/**
- *
- * @author Fernando Padilla
+/***
+ * 
+ * @author gondu
  */
 public class TextAreaClass extends OutputStream {
     private final JTextArea textArea;

@@ -9,9 +9,9 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author Sergi Diaz
  */
 public class BinarizationFilter extends SimpleFilter {
     
@@ -55,7 +55,13 @@ public class BinarizationFilter extends SimpleFilter {
         // Return new value
         return new Color(gray, gray, gray);
     }
-    
+    /***
+     * 
+     * @param R
+     * @param G
+     * @param B
+     * @return 
+     */    
     private int average(int R, int G, int B) {
         return (R + G + B) / 3;
     }   

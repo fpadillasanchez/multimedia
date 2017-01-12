@@ -11,9 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import ui.VideoPlayer;
 
-/**
- *
- * @author SDP
+/***
+ * 
+ * @author gondu
  */
 public class VideoPlayerController extends Thread {
 
@@ -29,7 +29,9 @@ public class VideoPlayerController extends Thread {
 
     }
 
-    // Builder
+    /***
+     * Builder
+     */ 
     public VideoPlayerController() {
         vp = new VideoPlayer(CodecConfig.input, CodecConfig.output);    // init videoplayer
 
@@ -41,7 +43,10 @@ public class VideoPlayerController extends Thread {
             Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /***
+     * 
+     * @param args 
+     */
     public static void main(String args[]) {
         (new VideoPlayerController()).start();
     }
