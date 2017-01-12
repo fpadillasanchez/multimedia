@@ -68,9 +68,11 @@ public class Decoder {
         // ------------------------------------------------------------------------
 
         // Tile size in pixels
+        /*
         int w = other.getImage().getWidth() / CodecConfig.n_tiles_x;
         int h = other.getImage().getHeight() / CodecConfig.n_tiles_y;
 
+        
         for (int i = 0; i < CodecConfig.n_tiles_x; i++) {
             for (int j = 0; j < CodecConfig.n_tiles_y; j++) {
                 // Obtain movements associated to the tile
@@ -81,19 +83,43 @@ public class Decoder {
                     
                     for (int x = (i * w); x < ((i + 1) * w); x++) {
                         for (int y = (j * h); y < ((j + 1) * h); y++) {
-                            
-                            
                             try {
-                                
                                 int color = reference.getImage().getRGB(x, y);
-                                other.getImage().setRGB(x + mov[i], y + mov[j], color);
-
-                                //System.out.println(x +", " + y);
+                                other.getImage().setRGB(x, y, color);
                             } catch (Exception ex) {
                                 // Out of range
                             }
                         }
                     }
+                }
+            }
+        }
+        */
+        int img_w = other.getImage().getWidth();
+        int img_h = other.getImage().getHeight();
+        int tile_w = img_w / CodecConfig.n_tiles_x;
+        int tile_h = img_h / CodecConfig.n_tiles_y;
+        
+        for (int i=0; i < img_w; i++) {
+            for (int j=0; j < img_h; j++) {
+                /*
+                try {
+                    System.out.println("(i,j)= (" + i + ", " + j + "), " + "mov= (" 
+                        + other.getMovements()[i / tile_w][j / tile_h][0] + ", " 
+                        + other.getMovements()[i / tile_w][j / tile_h][1] + ")");
+                    
+                }catch (ArrayIndexOutOfBoundsException ex) {
+                    //System.out.println("exception: " + (i / tile_w) + ", " + (j / tile_h));
+                } */
+                try {
+                    int color = reference.getImage().getRGB(i, j);
+                    
+                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];
+                    
+                    other.getImage().setRGB(i+mov[0], j+mov[1], color);
+                    
+                }catch (ArrayIndexOutOfBoundsException ex) {
+                    
                 }
             }
         }
