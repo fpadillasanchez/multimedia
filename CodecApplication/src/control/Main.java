@@ -25,9 +25,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 
-/**
- * *
- *
+/***
+ * Main class. It reads the parameters from args 
  * @author Sergi Diaz Fernando Padilla
  */
 public class Main {
@@ -204,7 +203,7 @@ public class Main {
     }
 
     /***
-     * 
+     * Gets all the images from a zip file and extracts them in a output folder
      * @param input
      * @param output
      * @return
@@ -215,7 +214,7 @@ public class Main {
     }
 
     /***
-     * 
+     * Temporal method
      * @throws IOException 
      */
     private static void DEBUG() throws IOException {

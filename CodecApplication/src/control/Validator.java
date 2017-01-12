@@ -13,7 +13,7 @@ import java.io.File;
  * *
  * Custom parameter validator.
  *
- * @author gondu
+ * @author Sergi Diaz Fernando Padilla
  */
 public class Validator implements IParameterValidator {
 
@@ -24,8 +24,6 @@ public class Validator implements IParameterValidator {
             switch (name) {
                 case "--input":
                 case "-i":
-                    //case "--output":
-                    //case "-o":
                     fileValidation(name, value);
                     break;
                 case "--fps":

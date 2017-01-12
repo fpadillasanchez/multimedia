@@ -13,7 +13,7 @@ import ui.VideoPlayer;
 
 /***
  * 
- * @author Fernando Padilla
+ * @author Fernando Padilla Sergi Diaz
  */
 public class VideoPlayerController extends Thread {
 
@@ -41,7 +41,7 @@ public class VideoPlayerController extends Thread {
         }
     }
     /***
-     * 
+     * Method main that starts the thread
      * @param args 
      */
     public static void main(String args[]) {

@@ -8,8 +8,8 @@ package image_processing;
 import java.awt.image.BufferedImage;
 
 /***
- * 
- * @author gondu
+ * Class manages the logic involve when applicating
+ * @author 
  */
 public class FilterManager {
     public enum SupportedFilters {
@@ -21,8 +21,10 @@ public class FilterManager {
     private static int maskSize;
     // Binary
     private static int threshold;
+    
     /***
-     * 
+     * Its functionality is based upon a switch which will apply a filter
+     * by user demand
      * @param image
      * @return 
      */
@@ -52,7 +54,7 @@ public class FilterManager {
         }
     }
     /***
-     * 
+     * Method that calls each method when chosen
      * @param f
      * @param image
      * @return 
@@ -78,7 +80,7 @@ public class FilterManager {
         }
     }
     /***
-     * 
+     * Method that the filter, the mask size and the threshold
      * @param f
      * @param size
      * @param thr 
@@ -89,14 +91,14 @@ public class FilterManager {
         threshold = thr;
     }
     /***
-     * 
+     * Sets the filter
      * @param f 
      */
     public static void setFilter(SupportedFilters f) {
         filter = f;
     }
     /***
-     * 
+     * Applies the average filter
      * @param image
      * @param maskSize
      * @return 
