@@ -25,6 +25,7 @@ public class FrameData implements Serializable {
 
     private int id;                 // frame position in the timeline
     private BufferedImage image;    // image
+    private int rgb;              // average value calculated from the whole set of pixels
 
     // Params relevant to motion detection
     private int[][] tilemap = null;
@@ -40,6 +41,8 @@ public class FrameData implements Serializable {
     public FrameData(int id, BufferedImage image) {
         this.id = id;
         this.image = image;
+        
+        rgb = computeColor(); // average color in the image
     }
 
     public FrameData(int id, BufferedImage image, int[][] tilemap, int[][][] movements) {
@@ -47,6 +50,8 @@ public class FrameData implements Serializable {
         this.image = image;
         this.movements = movements;
         this.tilemap = tilemap;
+        
+        rgb = computeColor(); // average color in the image
     }
 
     // Setter
@@ -87,6 +92,10 @@ public class FrameData implements Serializable {
     public int getId() {
         return id;
     }
+    
+    public int getRGB() {
+        return rgb;
+    }
 
     // Given the position (x, y) of the tilemap, returns a matrix with the values of the pixels inside the tile
     public int[][][] getImageFragment(int x, int y) {
@@ -102,11 +111,11 @@ public class FrameData implements Serializable {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 try {
-                    Color color = new Color(image.getRGB(i + x * w, j + y * h));
+                    Color c = new Color(image.getRGB(i + x * w, j + y * h));
                     
-                    fragment[i][j][0] = color.getRed();
-                    fragment[i][j][1] = color.getGreen();
-                    fragment[i][j][2] = color.getBlue();
+                    fragment[i][j][0] = c.getRed();
+                    fragment[i][j][1] = c.getGreen();
+                    fragment[i][j][2] = c.getBlue();
                     
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // out of range
@@ -125,8 +134,8 @@ public class FrameData implements Serializable {
         // Set image color to match the given fragment
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                Color color = new Color(fragment[i][j][0], fragment[i][j][1], fragment[i][j][2]);
-                image.setRGB(i + x * w, j + y * h, color.getRGB());
+                Color c = new Color(fragment[i][j][0], fragment[i][j][1], fragment[i][j][2]);
+                image.setRGB(i + x * w, j + y * h, c.getRGB());
             }
         }
     }
@@ -137,6 +146,31 @@ public class FrameData implements Serializable {
 
         return (mov[0] + mov[1] != 0);
     }
+    
+    // Calculates the average RGB value of the image
+    public int computeColor() {
+        int r = 0;  // average red component
+        int g = 0;  // average green 
+        int b = 0;  // average blue
+        
+        // Traverse through all the pixels in the image
+        for (int i=0; i<image.getWidth(); i++) {
+            for (int j=0; j<image.getHeight(); j++) {
+                Color c = new Color(image.getRGB(i, j));
+                r += c.getRed();
+                g += c.getGreen();
+                b += c.getBlue();
+            }
+        }
+        
+        int size = image.getWidth() * image.getHeight();
+        r /= size;
+        g /= size;
+        b /= size;
+
+        return (new Color(r, g, b)).getRGB();   // return color RGB int
+    }
+    
 
     // Store given frame data
     public static void store(FrameData data, String path) throws FileNotFoundException, IOException {

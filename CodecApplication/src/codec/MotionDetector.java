@@ -176,13 +176,12 @@ public class MotionDetector {
 
         // Tile size in pixels
         int tileWidth = Math.max(1, (int) Math.ceil((float) image.getWidth() / CodecConfig.n_tiles_x));
-        int tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / CodecConfig.n_tiles_y));
-        Color color = new Color(0, 0, 0);
+        int tileHeight = Math.max(1, (int) Math.ceil((float) image.getHeight() / CodecConfig.n_tiles_y));  
 
         for (int i = 0; i < tileWidth; i++) {
             for (int j = 0; j < tileHeight; j++) {
                 try {
-                    image.setRGB(i + x * tileWidth, j + y * tileHeight, color.getRGB());
+                    image.setRGB(i + x * tileWidth, j + y * tileHeight, frame.getRGB());
                 } catch (Exception e) {
                     // Color out of range
                 }
