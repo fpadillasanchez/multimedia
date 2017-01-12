@@ -71,7 +71,7 @@ public class ArgParser {
     
     @Parameter(names = "--nTiles", description = "Number of tiles per image", 
             validateWith = Validator.class)
-    private Integer nTiles;
+    private Integer nTiles = 100;
     
     @Parameter(names = "--GOP", 
             description = "Number of images between two reference frames", 
@@ -126,6 +126,10 @@ public class ArgParser {
     
     public boolean isSharpen() {
         return sharpen;
+    }
+    
+    public boolean isEmboss() {
+        return emboss;
     }
     
     public boolean isBlur() {

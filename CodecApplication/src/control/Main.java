@@ -63,6 +63,8 @@ public class Main {
             } else if (parser.isLaplacian()) // laplacian filtering
             {
                 FilterManager.setFilter(FilterManager.SupportedFilters.Laplacian);
+            } else if (parser.isEmboss()) { // emboss filtering
+                FilterManager.setFilter(FilterManager.SupportedFilters.Emboss);
             }
 
             parser.setConfig();     // set codec configuration

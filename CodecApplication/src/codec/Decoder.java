@@ -6,13 +6,14 @@
 package codec;
 
 import control.CodecConfig;
+import image_processing.FilterManager;
 import io.FileIO;
 import io.FrameData;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import utils.Queue;
+import utils.Stack;
 
 /***
  * 
@@ -34,20 +35,8 @@ public class Decoder {
 
         FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
 
-        Queue paths = new Queue();
+        Stack paths = new Stack();
         for (File file : temp_dir.listFiles()) {
-            /*
-            // Read frame data from the extracted temporary file
-            FrameData frame = FrameData.load(file.getAbsolutePath());
-            frame.setTileMap(MotionDetector.tesselate(frame.getImage()));   // compute tilemap
-
-            // TODO: extend decoding 
-            String image_path = output + File.separator + Integer.toString(frame.getId());
-            FileIO.writeImage(retrieveImage(frame), image_path);
-
-            file.delete();  // delete temporary file
-            */
-            
             paths.push(file.getAbsolutePath()); // paths to temporary data files
         }
         
@@ -57,6 +46,10 @@ public class Decoder {
             // Get reference frame
             FrameData refer = FrameData.load(referencePath);
             refer.setTileMap(MotionDetector.tesselate(refer.getImage()));   // compute tilemap
+            
+            // Store reference image, applying desired filter
+            String refer_path = output + File.separator + Integer.toString(refer.getId());
+            FileIO.writeImage(FilterManager.filtrate(refer.getImage()), refer_path);
                  
             // Compute set of frames, which takes previous frame as a reference
             for (int j=0; j<CodecConfig.gop; j++) {
@@ -67,9 +60,9 @@ public class Decoder {
                 
                 // Retrieve image in current frame
                 BufferedImage retrieved = retrieveImage(refer, other);
-                // Store image 
+                // Store image, applying desired filter
                 String image_path = output + File.separator + Integer.toString(other.getId());
-                FileIO.writeImage(retrieved, image_path);
+                FileIO.writeImage(FilterManager.filtrate(retrieved), image_path);
                 
                 // Delete temporary file
                 (new File(path)).delete();
@@ -77,8 +70,7 @@ public class Decoder {
             
             // Delete reference temp file
             (new File(referencePath)).delete();    
-        }
-        
+        }    
 
         temp_dir.delete();  // delete temporary directory
     }
