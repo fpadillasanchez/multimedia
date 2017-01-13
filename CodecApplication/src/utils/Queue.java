@@ -7,7 +7,7 @@ package utils;
 
 /***
  * Queue implemented as a FILO linked list.
- * @author gondu
+ * @author Sergi Diaz Fernando Padilla
  */
 public class Queue extends LinkedList {
     

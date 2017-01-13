@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 /***
  * Items pushed out of a circular buffer are queued again so that the buffer never empties.
- * @author gondu
+ * @author Fernando Padilla Sergi Diaz
  */
 public class CircularBuffer extends Buffer {
     /***

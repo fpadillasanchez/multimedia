@@ -16,7 +16,7 @@ import utils.Queue;
 
 /**
  *
- * @author SDP
+ * @author Sergi Diaz
  */
 public class MovementsData extends Queue implements Serializable {
     
