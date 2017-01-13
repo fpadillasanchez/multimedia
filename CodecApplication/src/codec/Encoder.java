@@ -129,8 +129,8 @@ public class Encoder {
         }
         
         // Store movements file
-        MovementsData.store(mov_data, temp_dir + File.separator + counter + "DATA");
-        encoded_files.add(temp_dir + File.separator + counter + "DATA");
+        MovementsData.store(mov_data, temp_dir + File.separator + "DATA");
+        encoded_files.add(temp_dir + File.separator + "DATA");
         
         // Compress files in temp directory
         output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;

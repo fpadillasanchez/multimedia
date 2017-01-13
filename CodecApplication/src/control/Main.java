@@ -31,7 +31,8 @@ import java.util.zip.ZipFile;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-    
+        DEBUG();
+        /*
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
@@ -115,7 +116,7 @@ public class Main {
             CodecConfig.gop = gop;
         }
 
-        Decoder.decode(CodecConfig.input, CodecConfig.output);
+        Decoder.decode_2(CodecConfig.input, CodecConfig.output);
         /*
         Aquesta primera linia ja fa tota la decodificacio. Guarda les imatges del video
         al output.
@@ -252,6 +253,20 @@ public class Main {
      */
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
         return FileIO.extractImages(input, output);
+    }
+    
+    private static void DEBUG() {
+        String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\my_video.zip.zip";
+        String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips";    
+                
+        
+        try {
+            Decoder.decode_2(input, output);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

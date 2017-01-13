@@ -9,10 +9,12 @@ import control.CodecConfig;
 import image_processing.FilterManager;
 import io.FileIO;
 import io.FrameData;
+import io.MovementsData;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import utils.Stack;
 
 /***
@@ -74,6 +76,66 @@ public class Decoder {
 
         temp_dir.delete();  // delete temporary directory
     }
+    
+    public static void decode_2(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
+        // Abort if input is not a video generated using this codec
+        if (!FileIO.getExtension(input).equals(CodecConfig.video_format)) {
+            System.out.println("input file format not supported!");
+            throw new Exception("input file format not supported!");
+        }
+
+        ArrayList<String> image_files;  // paths to image files
+        MovementsData mov_data = null;  // movements data from all frames
+        File temp_dir;                  // directory used for storing temporary files
+
+        temp_dir = new File(output + File.separator + CodecConfig.decoder_sub_directory);
+        temp_dir.mkdir();         // create temporary directory
+
+        //FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
+        // TODO: Sort this fucking list
+        image_files = FileIO.extractImages(input, temp_dir.getAbsolutePath());
+        
+        // Classify images bewteen DATA file and images
+        for (File file : temp_dir.listFiles()) {
+            if (file.getName().equals("DATA")) {    // file is DATA
+                mov_data = MovementsData.load(file.getAbsolutePath());
+                break;
+            }
+        }
+        if (mov_data == null) {
+            throw new Exception("DATA file could not be found");
+        }
+        
+        int counter = 0;
+        while(!image_files.isEmpty()) {
+            
+            BufferedImage refer = FileIO.readImage(image_files.remove(0));  // reference image
+            FrameData refer_data = new FrameData(counter++, refer);
+            refer_data.setTileMap(MotionDetector.tesselate(refer));
+            refer_data.setMovements((int[][][]) mov_data.get());
+            
+            // Store reference image after applying desired filter and move on
+            FileIO.writeImage(FilterManager.filtrate(refer), temp_dir.getAbsolutePath() + File.separator + counter);
+            
+            // Compute each frame between references
+            for (int i=0; i<CodecConfig.gop; i++) {
+                
+                BufferedImage frame = FileIO.readImage(image_files.remove(0));  // next frame
+                FrameData frame_data = new FrameData(counter++, frame);
+                frame_data.setTileMap(MotionDetector.tesselate(frame));
+                frame_data.setMovements((int[][][]) mov_data.get());
+
+                // Retrieve original image associated to this frame
+                BufferedImage retrieved = retrieveImage(refer_data, frame_data);
+
+                // Store retrieved image after applying desired filter and move on
+                FileIO.writeImage(FilterManager.filtrate(retrieved), temp_dir.getAbsolutePath() + File.separator + counter);
+            }
+        } 
+
+        //temp_dir.delete();  // delete temporary directory
+    }
+    
 
     /***
      * Retrieve images using movements and tiling matrixes
@@ -131,5 +193,4 @@ public class Decoder {
      
         return other.getImage();    // return the retrieved image
     }
-
 }

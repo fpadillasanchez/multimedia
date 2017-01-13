@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
  * @author Sergi Diaz Fernando Padilla
  */
 public class FileIO {
+    
     /***
      * 
      * @param files
@@ -183,7 +184,7 @@ public class FileIO {
 
             zis.closeEntry();
         }
-        Collections.sort(files);
+        Collections.sort(files, String.CASE_INSENSITIVE_ORDER);
         return convert(files);
     }
 
@@ -279,5 +280,6 @@ public class FileIO {
         return file.substring(pos);
         
     }
+    
 
 }
