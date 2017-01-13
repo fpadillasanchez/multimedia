@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- *
+ * Punctual filter (pixel by pixel)
  * @author Sergi Diaz, Fernando Padilla
  */
 public abstract class SimpleFilter {

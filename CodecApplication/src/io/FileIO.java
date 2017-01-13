@@ -5,6 +5,7 @@
  */
 package io;
 
+import control.CodecConfig;
 import image_processing.FilterManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -184,7 +185,7 @@ public class FileIO {
 
             zis.closeEntry();
         }
-        Collections.sort(files);
+        Collections.sort(files, new PathComparator(CodecConfig.decoder_sub_directory));
         return convert(files);
     }
 

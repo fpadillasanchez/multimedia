@@ -8,8 +8,8 @@ package io;
 import java.util.Comparator;
 
 /**
- *
- * @author SDP
+ * Class used for sorting codec's file paths. Such paths are expected to contain some sort of numerical identificator.
+ * @author Sergi Díaz
  */
 public class PathComparator implements Comparator<String> {
     String key = "";
@@ -20,10 +20,19 @@ public class PathComparator implements Comparator<String> {
      
     @Override
     public int compare(String s1, String s2) {
-  
-        String sub_s1 = s1.substring(s1.lastIndexOf(key)+key.length(), s1.lastIndexOf('.'));
-        String sub_s2 = s2.substring(s2.lastIndexOf(key)+key.length(), s2.lastIndexOf('.'));
+        try {
+            // Use key to obtain relevant fragment from path
+            String sub_s1 = s1.substring(s1.lastIndexOf(key)+key.length(), s1.lastIndexOf('.'));
+            String sub_s2 = s2.substring(s2.lastIndexOf(key)+key.length(), s2.lastIndexOf('.'));
+            // Such fragment is expected to be a number, return then a numerical comparison
+            return Integer.parseInt(sub_s1) - Integer.parseInt(sub_s2);
+            
+        } catch (Exception ex) {
+            // Use default comparison if previous one failed
+            return s1.compareTo(s2);
+        }
+        
           
-        return Integer.parseInt(sub_s1) - Integer.parseInt(sub_s2);
+        
     }
 }

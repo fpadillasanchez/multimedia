@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 /***
  * 
- * @author 
+ * @author Sergi Díaz
  */
 public class BlurFilter extends LinearTransformation {
     

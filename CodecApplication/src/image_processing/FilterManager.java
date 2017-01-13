@@ -8,7 +8,7 @@ package image_processing;
 import java.awt.image.BufferedImage;
 
 /***
- * Class manages the logic involve when applicating
+ * Class manages the logic involve when applicating.
  * @author 
  */
 public class FilterManager {

@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /***
+ * Motion Blur filter
  * 
  * @author Sergi Diaz
  */

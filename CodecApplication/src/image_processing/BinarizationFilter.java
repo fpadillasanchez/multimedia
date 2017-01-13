@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /***
- * 
+ * Binarization filter. Output image turned to black & white.
  * @author Sergi Diaz
  */
 public class BinarizationFilter extends SimpleFilter {

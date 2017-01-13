@@ -11,7 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /***
- * 
+ * Sharpen filter
  * @author Sergi Diaz
  */
 public class SharpenFilter extends LinearTransformation {

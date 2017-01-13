@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /***
- * 
+ * Linear transformation (interpixel filter)
  * @author Sergi Diaz
  */
 public abstract class LinearTransformation {

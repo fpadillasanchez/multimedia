@@ -12,8 +12,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /***
- * Laplacian Filter class. Extends funtionalities avaialble in LinearTrasnformation
- *
+ * Laplacian Filter class. Extends funtionalities avaialble in LinearTrasnformation.
  * @author Sergi Diaz
  */
 public class LaplacianFilter extends LinearTransformation {

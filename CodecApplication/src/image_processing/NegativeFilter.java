@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 
 /**
  * *
- *
- * @author gondu
+ * Negative filter.
+ * @author Sergi Díaz
  */
 public class NegativeFilter extends SimpleFilter {
 

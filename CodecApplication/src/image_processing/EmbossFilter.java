@@ -11,8 +11,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /***
- * 
- * @author gondu
+ * Emboss filter.
+ * @author Sergi Díaz
  */
 public class EmbossFilter extends LinearTransformation {
     

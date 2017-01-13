@@ -11,8 +11,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /***
+ * Averaging filter.
  * 
- * @author gondu
+ * @author Sergi Díaz
  */
 public class AverageFilter extends LinearTransformation {   
     
