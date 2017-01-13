@@ -308,7 +308,7 @@ public class FrameData implements Serializable {
         // Read movements matrix
         int w = in.readInt();       // read movements size
         int h = in.readInt();
-        movements = new int[w][h][2];
+        movements = new int[w][h][3];
 
         for (int i = 0; i < w; i++) {       // read movements data
             for (int j = 0; j < h; j++) {
