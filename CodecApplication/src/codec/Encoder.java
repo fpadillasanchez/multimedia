@@ -119,7 +119,7 @@ public class Encoder {
                 frame.setImage(FilterManager.average(frame.getImage(), 
                         CodecConfig.codec_avg_mask));   
 
-                String file = temp_dir + File.separator + counter;
+                String file = temp_dir + File.separator + CodecConfig.encoder_sub_directory + counter;
                 FileIO.writeImage(frame.getImage(), file);
                 
                 //FrameData.store(frame, file);
@@ -129,8 +129,8 @@ public class Encoder {
         }
         
         // Store movements file
-        MovementsData.store(mov_data, temp_dir + File.separator + counter + "DATA");
-        encoded_files.add(temp_dir + File.separator + counter + "DATA");
+        MovementsData.store(mov_data, temp_dir + File.separator + "DATA");
+        encoded_files.add(temp_dir + File.separator + "DATA");
         
         // Compress files in temp directory
         output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;

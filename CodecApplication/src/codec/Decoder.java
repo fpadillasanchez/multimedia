@@ -9,10 +9,13 @@ import control.CodecConfig;
 import image_processing.FilterManager;
 import io.FileIO;
 import io.FrameData;
+import io.MovementsData;
+import io.PathComparator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import utils.Stack;
 
 /***
@@ -74,6 +77,76 @@ public class Decoder {
 
         temp_dir.delete();  // delete temporary directory
     }
+    
+    public static void decode_2(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
+        // Abort if input is not a video generated using this codec
+        if (!FileIO.getExtension(input).equals(CodecConfig.video_format)) {
+            System.out.println("input file format not supported!");
+            throw new Exception("input file format not supported!");
+        }
+
+        ArrayList<String> image_files;  // paths to image files
+        MovementsData mov_data = null;  // movements data from all frames
+        File temp_dir;                  // directory used for storing temporary files
+
+        temp_dir = new File(output + File.separator + CodecConfig.decoder_sub_directory);
+        temp_dir.mkdir();         // create temporary directory
+
+        FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
+        
+        // Classify images bewteen DATA file and images
+        image_files = new ArrayList<>();
+        for (File file : temp_dir.listFiles()) {
+            if (file.getName().equals("DATA")) {    // file is DATA
+                mov_data = MovementsData.load(file.getAbsolutePath());
+            } else {                                // file is an image
+                image_files.add(file.getAbsolutePath());
+            }
+        }
+        if (mov_data == null) {
+            throw new Exception("DATA file could not be found");
+        }
+        image_files.sort(new PathComparator(CodecConfig.encoder_sub_directory));
+        
+        int counter = 0;
+        while(!image_files.isEmpty()) {
+            String refer_path = image_files.remove(0);  // reference image
+            
+            FrameData refer_data = new FrameData(counter, FileIO.readImage(refer_path));
+            refer_data.setTileMap(MotionDetector.tesselate(refer_data.getImage()));
+            refer_data.setMovements((int[][][]) mov_data.get());
+            
+            // Store reference image after applying desired filter and move on
+            FileIO.writeImage(FilterManager.filtrate(refer_data.getImage()), 
+                    output + File.separator + counter);
+            counter++;
+            
+            // Delete temp file
+            (new File(refer_path)).delete();
+            
+            // Compute each frame between references
+            for (int i=0; i<CodecConfig.gop; i++) {
+                String path = image_files.remove(0);  // next frame
+                 
+                FrameData frame_data = new FrameData(counter, FileIO.readImage(path));
+                frame_data.setTileMap(MotionDetector.tesselate(frame_data.getImage()));
+                frame_data.setMovements((int[][][]) mov_data.get());
+
+                // Retrieve original image associated to this frame
+                BufferedImage retrieved = retrieveImage(refer_data, frame_data);
+
+                // Store retrieved image after applying desired filter and move on
+                FileIO.writeImage(FilterManager.filtrate(retrieved), output + File.separator + counter);
+                counter++;
+                
+                // Delete temp file
+                (new File(path)).delete();
+            }
+        } 
+
+        temp_dir.delete();  // delete temporary directory
+    }
+    
 
     /***
      * Retrieve images using movements and tiling matrixes
@@ -107,7 +180,7 @@ public class Decoder {
             for (int j=0; j < img_h; j++) {
                 try {
                     // Access to the movements matrix of other frame
-                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];   
+                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];
                     /*
                     First component of movement vector specifies if the (i,j) pixel
                     is to be taken from reference. If component is 1, pixel in other 
@@ -131,5 +204,4 @@ public class Decoder {
      
         return other.getImage();    // return the retrieved image
     }
-
 }

@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
  * @author Sergi Diaz Fernando Padilla
  */
 public class FileIO {
+    
     /***
      * 
      * @param files
@@ -158,7 +159,7 @@ public class FileIO {
             while (entry != null) {
                 String fileName = entry.getName();
                 if (entry.isDirectory()) {
-                    new File(outputDirectory.getName()+"/"+entry.getName()).mkdirs();
+                    new File(outputDirectory.getName()+ File.separator +entry.getName()).mkdirs();
                     entry = zis.getNextEntry();
                     continue;
                 }
@@ -279,5 +280,6 @@ public class FileIO {
         return file.substring(pos);
         
     }
+    
 
 }
