@@ -7,6 +7,7 @@ package codec;
 
 import control.CodecConfig;
 import io.FrameData;
+import io.MovementsData;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -40,6 +41,34 @@ public class MotionDetector {
 
         return frames;
     }
+    
+    public static ArrayList<FrameData> motionDetection_2(MovementsData data, ArrayList<BufferedImage> images, int counter) {
+        ArrayList<FrameData> frames = new ArrayList<>();
+        
+         // Compute reference frame
+        FrameData reference = new FrameData(counter, images.remove(0)); // take reference from set 
+        reference.setTileMap(tesselate(reference.getImage()));          // tesselate reference
+        
+        int mov[][][] = new int[1][1][3];                               // empty movement matrix
+        data.push(mov);
+        
+        frames.add(reference);
+        counter++;
+
+        // Compute non-referencial frames 
+        while (!images.isEmpty()) {
+            FrameData frame = new FrameData(counter, images.remove(0)); // take image from set
+            frame.setTileMap(tesselate(frame.getImage()));          // tesselate frame         
+            
+            data.push(getMovements(reference, frame));  // compute movements and add them to movements data
+
+            frames.add(frame);
+            counter++;
+        }
+        
+        return frames;
+    }
+            
 
     /**
      * *

@@ -11,6 +11,8 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
 import io.FileIO;
+import io.FrameData;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import java.util.zip.ZipFile;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-
+    
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
@@ -84,7 +86,9 @@ public class Main {
             System.out.println(ex.getMessage());
             System.out.println("Try --help for help.");
         }
-
+        /*
+        
+        */
     }
 
     /**
@@ -178,7 +182,7 @@ public class Main {
             t1 = System.nanoTime();
             Encoder e = new Encoder();  // initalize encoder.
             e.load();
-            e.encode(videoname);
+            e.encode_2(videoname);
             t2 = System.nanoTime();
             // --------------
             double elapsedTime = (t2 - t1) / 1000000000.0;
