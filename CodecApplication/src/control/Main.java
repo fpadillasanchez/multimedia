@@ -258,6 +258,11 @@ public class Main {
     private static void DEBUG() {
         String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\my_video.zip.zip";
         String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips";    
+        
+        CodecConfig.n_tiles_x = 100;
+        CodecConfig.n_tiles_y = 100;
+        CodecConfig.seekRange = 100;
+        CodecConfig.gop =1;
                 
         
         try {
@@ -267,6 +272,7 @@ public class Main {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
 }

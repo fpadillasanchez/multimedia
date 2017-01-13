@@ -119,7 +119,7 @@ public class Encoder {
                 frame.setImage(FilterManager.average(frame.getImage(), 
                         CodecConfig.codec_avg_mask));   
 
-                String file = temp_dir + File.separator + counter;
+                String file = temp_dir + File.separator + CodecConfig.encoder_sub_directory + counter;
                 FileIO.writeImage(frame.getImage(), file);
                 
                 //FrameData.store(frame, file);

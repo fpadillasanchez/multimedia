@@ -10,6 +10,7 @@ import image_processing.FilterManager;
 import io.FileIO;
 import io.FrameData;
 import io.MovementsData;
+import io.PathComparator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,19 +92,21 @@ public class Decoder {
         temp_dir = new File(output + File.separator + CodecConfig.decoder_sub_directory);
         temp_dir.mkdir();         // create temporary directory
 
-        //FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
-        image_files = FileIO.extractImages(input, temp_dir.getAbsolutePath());
+        FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
         
         // Classify images bewteen DATA file and images
+        image_files = new ArrayList<>();
         for (File file : temp_dir.listFiles()) {
             if (file.getName().equals("DATA")) {    // file is DATA
                 mov_data = MovementsData.load(file.getAbsolutePath());
-                break;
+            } else {                                // file is an image
+                image_files.add(file.getAbsolutePath());
             }
         }
         if (mov_data == null) {
             throw new Exception("DATA file could not be found");
         }
+        image_files.sort(new PathComparator(CodecConfig.encoder_sub_directory));
         
         int counter = 0;
         while(!image_files.isEmpty()) {
@@ -168,7 +171,7 @@ public class Decoder {
             for (int j=0; j < img_h; j++) {
                 try {
                     // Access to the movements matrix of other frame
-                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];   
+                    int mov[] = other.getMovements()[i / tile_w][j / tile_h];
                     /*
                     First component of movement vector specifies if the (i,j) pixel
                     is to be taken from reference. If component is 1, pixel in other 

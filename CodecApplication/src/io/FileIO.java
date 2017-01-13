@@ -184,7 +184,7 @@ public class FileIO {
 
             zis.closeEntry();
         }
-        Collections.sort(files, new PathComparator());
+        Collections.sort(files);
         return convert(files);
     }
 
