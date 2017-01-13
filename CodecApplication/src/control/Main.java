@@ -114,24 +114,10 @@ public class Main {
         }
 
         Decoder.decode(CodecConfig.input, CodecConfig.output);
-        /*
-        Aquesta primera linia ja fa tota la decodificacio. Guarda les imatges del video
-        al output.
-        
-        No se molt be com funciona el VideoPlayer, aixi que mira de fer que agafi les imatges
-        del output i les reprodueixi.
-        
-        El "if visible" de sota es per a que no es mostri la GUI si per comanda es posa --bash (mode debug o algo aixi)
-         */
 
         if (visible) {
             ArrayList<String> files = new ArrayList<>();
 
-            /*
-            Imagino que aixo petaria casi sempre, potser seria adequat fer que el decoder crei un directori
-            al output on guardar les imatges, algo tipo \video_DATA
-            
-             */
             File output_dir = new File(CodecConfig.output);
             for (String path : output_dir.list()) {
                 files.add(path);
