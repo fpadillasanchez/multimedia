@@ -110,32 +110,41 @@ public class Decoder {
         
         int counter = 0;
         while(!image_files.isEmpty()) {
+            String refer_path = image_files.remove(0);  // reference image
             
-            BufferedImage refer = FileIO.readImage(image_files.remove(0));  // reference image
-            FrameData refer_data = new FrameData(counter++, refer);
-            refer_data.setTileMap(MotionDetector.tesselate(refer));
+            FrameData refer_data = new FrameData(counter, FileIO.readImage(refer_path));
+            refer_data.setTileMap(MotionDetector.tesselate(refer_data.getImage()));
             refer_data.setMovements((int[][][]) mov_data.get());
             
             // Store reference image after applying desired filter and move on
-            FileIO.writeImage(FilterManager.filtrate(refer), temp_dir.getAbsolutePath() + File.separator + counter);
+            FileIO.writeImage(FilterManager.filtrate(refer_data.getImage()), 
+                    output + File.separator + counter);
+            counter++;
+            
+            // Delete temp file
+            (new File(refer_path)).delete();
             
             // Compute each frame between references
             for (int i=0; i<CodecConfig.gop; i++) {
-                
-                BufferedImage frame = FileIO.readImage(image_files.remove(0));  // next frame
-                FrameData frame_data = new FrameData(counter++, frame);
-                frame_data.setTileMap(MotionDetector.tesselate(frame));
+                String path = image_files.remove(0);  // next frame
+                 
+                FrameData frame_data = new FrameData(counter, FileIO.readImage(path));
+                frame_data.setTileMap(MotionDetector.tesselate(frame_data.getImage()));
                 frame_data.setMovements((int[][][]) mov_data.get());
 
                 // Retrieve original image associated to this frame
                 BufferedImage retrieved = retrieveImage(refer_data, frame_data);
 
                 // Store retrieved image after applying desired filter and move on
-                FileIO.writeImage(FilterManager.filtrate(retrieved), temp_dir.getAbsolutePath() + File.separator + counter);
+                FileIO.writeImage(FilterManager.filtrate(retrieved), output + File.separator + counter);
+                counter++;
+                
+                // Delete temp file
+                (new File(path)).delete();
             }
         } 
 
-        //temp_dir.delete();  // delete temporary directory
+        temp_dir.delete();  // delete temporary directory
     }
     
 

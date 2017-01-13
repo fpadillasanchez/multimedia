@@ -31,8 +31,7 @@ import java.util.zip.ZipFile;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        DEBUG();
-        /*
+
         ArgParser parser = new ArgParser();
         JCommander jCom = null;
 
