@@ -292,7 +292,7 @@ public class VideoPlayer extends javax.swing.JFrame {
         
         ImageIcon icon = new ImageIcon(imgBuffer.getImage());
         jLabelImagesSequences.setIcon(icon);
-        System.out.format("Frame: %15s FPS: %15s\n", id,this.fps);
+        System.out.format("FPS: %15s\n",this.fps);
         id++;
     }
 
