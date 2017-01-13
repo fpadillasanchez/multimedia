@@ -86,7 +86,7 @@ public class Encoder {
         output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;
         FileIO.compress(temp_dir, output);
 
-        (new File(temp_dir)).delete();  // delete temporary directory
+        //(new File(temp_dir)).delete();  // delete temporary directory
     }
     
     /***

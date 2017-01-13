@@ -112,9 +112,7 @@ public class Main {
         if(gop != 0){
             CodecConfig.gop = gop;
         }
-
         Decoder.decode(CodecConfig.input, CodecConfig.output);
-
         if (visible) {
             ArrayList<String> files = new ArrayList<>();
 

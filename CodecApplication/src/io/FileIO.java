@@ -83,7 +83,7 @@ public class FileIO {
                 out.closeEntry();
                 in.close();
 
-                file.delete();  // delete file
+                //file.delete();  // delete file
             }
         }
         // ZIP file completed
