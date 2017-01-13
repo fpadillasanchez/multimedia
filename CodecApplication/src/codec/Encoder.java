@@ -83,7 +83,7 @@ public class Encoder {
         encoded_files.add(temp_dir + File.separator + "DATA");
         
         // Compress files in temp directory
-        output = CodecConfig.output + File.separator + videoname + CodecConfig.video_format;
+        output = CodecConfig.output + File.separator + videoname;
         FileIO.compress(temp_dir, output);
 
         //(new File(temp_dir)).delete();  // delete temporary directory

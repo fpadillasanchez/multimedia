@@ -72,9 +72,9 @@ public class Main {
             if (parser.help) {
                 jCom.usage();
             } else if (parser.decode) {
-                decode(!parser.batch, parser.getFPS(), parser.getnTiles(),parser.getSeekRange(),parser.getGop()); // do not show GUI if batch
+                decode(!parser.batch, parser.getFPS(), parser.getnTiles(), parser.getSeekRange(), parser.getGop()); // do not show GUI if batch
             } else if (parser.encode) {
-                encode("my_video.zip", parser.getnTiles(),parser.getSeekRange(),parser.getGop());
+                encode("my_video.zip", parser.getnTiles(), parser.getSeekRange(), parser.getGop());
             }
 
         } catch (ParameterException ex) {
@@ -86,7 +86,7 @@ public class Main {
         }
         /*
         
-        */
+         */
     }
 
     /**
@@ -104,12 +104,12 @@ public class Main {
             CodecConfig.n_tiles_x = tiles;
             CodecConfig.n_tiles_y = tiles;
         }
-        
+
         if (seekRange != 0) {
             CodecConfig.seekRange = seekRange;
         }
-        
-        if(gop != 0){
+
+        if (gop != 0) {
             CodecConfig.gop = gop;
         }
         Decoder.decode(CodecConfig.input, CodecConfig.output);
@@ -133,23 +133,21 @@ public class Main {
      * @param videoname
      */
     private static void encode(String videoname, int tiles, int seekRange, int gop) {
-        long pesoOriginal = 0;
-        long pesoNuevo = 0;
-        
+        float pesoOriginal = 0;
+        float pesoNuevo = 0;
+
         if (tiles != 0) {
             CodecConfig.n_tiles_x = tiles;
             CodecConfig.n_tiles_y = tiles;
         }
-        
+
         if (seekRange != 0) {
             CodecConfig.seekRange = seekRange;
         }
-        
-        if(gop != 0){
+
+        if (gop != 0) {
             CodecConfig.gop = gop;
         }
-        
-        
 
         try {
             String input = CodecConfig.input;
@@ -185,7 +183,7 @@ public class Main {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                zf2 = new ZipFile(output + File.separator + videoname + CodecConfig.video_format);
+                zf2 = new ZipFile(output + File.separator + videoname);
                 Enumeration ee = zf2.entries();
                 while (ee.hasMoreElements()) {
                     ZipEntry ze = (ZipEntry) ee.nextElement();
@@ -197,7 +195,7 @@ public class Main {
             } catch (IOException ex) {
                 Logger.getLogger(VideoPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Factor de compresion: " + pesoOriginal / pesoNuevo * 100 + "%");
+            System.out.println("Factor de compresion: " + (1-(pesoNuevo / pesoOriginal))*100 + "%");
 
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
