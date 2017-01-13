@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import utils.Stack;
 
 /***
  * 
@@ -26,59 +25,6 @@ public class Decoder {
 
     // Perform the decoding of a video directed by input. Place the images at output directory.
     public static void decode(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
-        // Abort if input is not a video generated using this codec
-        if (!FileIO.getExtension(input).equals(CodecConfig.video_format)) {
-            throw new Exception("input file format not supported!");
-        }
-
-        File temp_dir;  // directory used for storing temporary files
-
-        temp_dir = new File(output + File.separator + CodecConfig.decoder_sub_directory);
-        temp_dir.mkdir();         // create temporary directory
-
-        FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
-
-        Stack paths = new Stack();
-        for (File file : temp_dir.listFiles()) {
-            paths.push(file.getAbsolutePath()); // paths to temporary data files
-        }
-        
-        while (!paths.isEmpty()) {
-            String referencePath = (String) paths.pop();
-            
-            // Get reference frame
-            FrameData refer = FrameData.load(referencePath);
-            refer.setTileMap(MotionDetector.tesselate(refer.getImage()));   // compute tilemap
-            
-            // Store reference image, applying desired filter
-            String refer_path = output + File.separator + Integer.toString(refer.getId());
-            FileIO.writeImage(FilterManager.filtrate(refer.getImage()), refer_path);
-                 
-            // Compute set of frames, which takes previous frame as a reference
-            for (int j=0; j<CodecConfig.gop; j++) {
-                String path = (String) paths.pop();
-                
-                FrameData other = FrameData.load(path);
-                other.setTileMap(MotionDetector.tesselate(other.getImage()));   // compute tilemap       
-                
-                // Retrieve image in current frame
-                BufferedImage retrieved = retrieveImage(refer, other);
-                // Store image, applying desired filter
-                String image_path = output + File.separator + Integer.toString(other.getId());
-                FileIO.writeImage(FilterManager.filtrate(retrieved), image_path);
-                
-                // Delete temporary file
-                (new File(path)).delete();
-            }
-            
-            // Delete reference temp file
-            (new File(referencePath)).delete();    
-        }    
-
-        temp_dir.delete();  // delete temporary directory
-    }
-    
-    public static void decode_2(String input, String output) throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
         // Abort if input is not a video generated using this codec
         if (!FileIO.getExtension(input).equals(CodecConfig.video_format)) {
             System.out.println("input file format not supported!");

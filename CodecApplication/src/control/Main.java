@@ -11,8 +11,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import image_processing.FilterManager;
 import io.FileIO;
-import io.FrameData;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,7 +113,7 @@ public class Main {
             CodecConfig.gop = gop;
         }
 
-        Decoder.decode_2(CodecConfig.input, CodecConfig.output);
+        Decoder.decode(CodecConfig.input, CodecConfig.output);
         /*
         Aquesta primera linia ja fa tota la decodificacio. Guarda les imatges del video
         al output.
@@ -182,7 +180,7 @@ public class Main {
             t1 = System.nanoTime();
             Encoder e = new Encoder();  // initalize encoder.
             e.load();
-            e.encode_2(videoname);
+            e.encode(videoname);
             t2 = System.nanoTime();
             // --------------
             double elapsedTime = (t2 - t1) / 1000000000.0;
@@ -252,26 +250,6 @@ public class Main {
      */
     private static ArrayList<String> getImageFiles(String input, String output) throws IOException {
         return FileIO.extractImages(input, output);
-    }
-    
-    private static void DEBUG() {
-        String input = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips\\my_video.zip.zip";
-        String output = "C:\\Users\\SDP\\Documents\\GitHub\\multimedia\\CodecApplication\\src\\zips";    
-        
-        CodecConfig.n_tiles_x = 100;
-        CodecConfig.n_tiles_y = 100;
-        CodecConfig.seekRange = 100;
-        CodecConfig.gop =1;
-                
-        
-        try {
-            Decoder.decode_2(input, output);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
 }

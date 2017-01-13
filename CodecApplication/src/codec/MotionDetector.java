@@ -18,31 +18,17 @@ import java.util.ArrayList;
  * @author Sergi Diaz
  */
 public class MotionDetector {
-
-    public static ArrayList<FrameData> motionDetection(ArrayList<BufferedImage> images, int counter) {
-        ArrayList<FrameData> frames = new ArrayList<>();
-
-        // Compute reference frame
-        FrameData reference = new FrameData(counter, images.remove(0)); // take reference from set 
-        reference.setTileMap(tesselate(reference.getImage()));          // tesselate reference
-        reference.setMovements(null);                                   // empty movement matrix
-        counter++;
-        frames.add(reference);
-
-        // Compute non-referencial frames 
-        while (!images.isEmpty()) {
-            FrameData frame = new FrameData(counter, images.remove(0)); // take image from set
-            frame.setTileMap(tesselate(frame.getImage()));          // tesselate frame
-            frame.setMovements(getMovements(reference, frame));         // compute movements   
-
-            counter++;
-            frames.add(frame);
-        }
-
-        return frames;
-    }
     
-    public static ArrayList<FrameData> motionDetection_2(MovementsData data, ArrayList<BufferedImage> images, int counter) {
+    /**
+     * *
+     * Tesselate given image. Return tesselation matrix
+     *
+     * @param data
+     * @param images
+     * @param counter
+     * @return ArrayList
+     */
+    public static ArrayList<FrameData> motionDetection(MovementsData data, ArrayList<BufferedImage> images, int counter) {
         ArrayList<FrameData> frames = new ArrayList<>();
         
          // Compute reference frame
