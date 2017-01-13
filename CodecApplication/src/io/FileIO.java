@@ -159,7 +159,7 @@ public class FileIO {
             while (entry != null) {
                 String fileName = entry.getName();
                 if (entry.isDirectory()) {
-                    new File(outputDirectory.getName()+"/"+entry.getName()).mkdirs();
+                    new File(outputDirectory.getName()+ File.separator +entry.getName()).mkdirs();
                     entry = zis.getNextEntry();
                     continue;
                 }
@@ -184,7 +184,7 @@ public class FileIO {
 
             zis.closeEntry();
         }
-        Collections.sort(files, String.CASE_INSENSITIVE_ORDER);
+        Collections.sort(files, new PathComparator());
         return convert(files);
     }
 

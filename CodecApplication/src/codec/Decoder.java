@@ -92,7 +92,6 @@ public class Decoder {
         temp_dir.mkdir();         // create temporary directory
 
         //FileIO.decompress(input, temp_dir.getAbsolutePath()); // extract frame data into the tenp directory
-        // TODO: Sort this fucking list
         image_files = FileIO.extractImages(input, temp_dir.getAbsolutePath());
         
         // Classify images bewteen DATA file and images
